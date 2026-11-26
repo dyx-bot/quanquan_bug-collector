@@ -1,0 +1,3617 @@
+{
+ "meta": {
+  "title": "Bug Collector Skill 测试案例集（候选）",
+  "version": "V1.4 候选稿（V1.3 + Bug Collector Skill V0.1.3 规则同步：分环境验证/事件去重/归并迁移/offline 隔离）",
+  "date": "2026-11-26",
+  "project": "数据中心 soso_data_center（GitLab: Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center，本地克隆 work/dc_repo_1910）",
+  "zentao_instance": "承载缺陷 #14685/#14686/#15030/#15032/#15036/#15048 的禅道实例",
+  "time_window": "2026-11-02 ~ 2026-11-24（按需扩大）",
+  "mode": "offline（隔离输出，不写正式案例库/水位/永久编号）",
+  "based_on": "bug-collector SKILL.md V0.1.3、references/collection-rules.md、filtering-rules.md、dedup-rules.md、output-schema.md（含 §10.5）、recurrence-rules.md（含 §2.6、§3.8）、quality-checklist.md、execution-rules.md；config/default.json；CHANGELOG-V0.1.3.md；一致性检查结果-V0.1.3.md；测试案例同步建议-V0.1.3.md；测试案例同步修改清单-V0.1.2.md；candidate-cases-V1.3.json（基线）",
+  "disclaimer": "本文件是【候选案例集】，不是已执行、已人工核实的参考答案。原始输入为真实、可回查的证据，但『预期结果』各项是按规则推导的候选参考答案，需人工确认后才能作为判分基准；『实际输出/测试结果/失败原因』本轮未执行，统一标为『待执行』。",
+  "chat_source": {
+   "group_name": "数据小队",
+   "open_conversation_id": "cidxs5TpPs34DWnKqMsf+WrEw==",
+   "members": 15,
+   "owner_open_dingtalk_id": "DdZQiPbYasHN8NdJ8RyRdXthtLlCIPHKI0",
+   "message_range": "2026-11-16 09:45:46 ~ 2026-11-24 12:00:03",
+   "query_window": "2026-11-06 11:52:32 ~ 2026-11-25 13:26:14",
+   "read_completeness": "complete=true, hasMore=false, pagesFetched=5, count=415, failedCount=0, truncated=false, stopReason=source_complete",
+   "note": "此前按「数据中心开发群」取证的说法作废；本轮按发起人指示改为「数据小队」，全量读取 415 条消息。"
+  },
+  "changelog": "V1.2（2026-11-25）：TC-A5 原同时承载 11-18「数据归集匹配失败」簇与 11-24「防护版发布验收」簇，导致 expected_defect_count=1 与 expected_filter 中「health 误杀 = 独立缺陷（P-103）」自相矛盾。改为按证据簇拆分：TC-A5 只保留 G10/G11（1 缺陷 = 错误提示不区分 502，MR !113）；新增 TC-A8 承载 G27/G28（1 缺陷 = P-103 健康误杀），并把「验收通过但欠 2 项」作为独立判定点。",
+  "changelog_v13": "V1.3（2026-11-25）：①每案例新增 assertions（id/stage/check/expected），判分以断言为最小单元；②新增 expected_counts 六类计数（confirmed/suspect/evidence/fix/occurrences/recurrence + repeat_unresolved 等），不混计；③TC-007 数量不再强制（证据不足→undetermined）；TC-008 增 repeated-occurrence 区分（修复 2 次≠发生 2 次）；TC-A2 明确子场景计数（confirmed 8/suspect 1/performance 1/边界 1 类/执行 1 类/口径差异 1 项）；TC-A7 补 G25 进输入（原预期引用了不在输入里的 G25）；TC-A5 与 TC-A8 拆分在 V1.2 已完成、本轮保持；④测试输入与参考答案分离：test-inputs-V1.3.json（无 goal/category/expected/basis/negatives/usage）；⑤证据升级为完整快照（提交 subject+body 全文、禅道 2026-11-25 快照 8 张新增 #15049/#15057、群聊 29 条全文随包）；缺失项逐条标注不补造；⑥新增 TC-R1/R2/R3 三条 synthetic 复发正向案例（reopen 复发 / 回滚未生效重现 / 同类不同缺陷），与真实案例分离；⑦coverage/gaps 与案例对齐：删除已失效的『无数据中心开发群授权』表述（群聊证据已建于「数据小队」群）。",
+  "three_artifacts": {
+   "candidate-cases-V1.4.json": "带注释的完整候选包（证据+预期+断言+规则引用+覆盖），用于评审与维护",
+   "test-inputs-V1.4.json": "独立测试输入（仅原始数据与必要元数据；real_inputs / synthetic_inputs 分区），喂给被测 Skill",
+   "expected-results-V1.4.json": "候选参考答案（expected_* + expected_counts + assertions + rule_refs + judge_notes），判分/人工确认用"
+  },
+  "scoring_policy": "判分以 assertions 为最小判定单元（每条 pass/fail/na）；meta.global_assertions 对所有案例共同生效，不重复计入各案例断言数；expected_* 为整体参考；全部需人工确认后才可作为正式判分基准。",
+  "count_policy": [
+   {
+    "key": "confirmed_defects",
+    "name": "已确认缺陷数量",
+    "definition": "有缺陷记录锚点（禅道单/群内明确报告含预期偏差）且证据充分的缺陷条数"
+   },
+   {
+    "key": "suspect_defects",
+    "name": "疑似缺陷数量",
+    "definition": "现象存在但证据不足以确认的候选条数；不得计入 confirmed；可为 null（未定性）"
+   },
+   {
+    "key": "evidence_items",
+    "name": "证据数量",
+    "definition": "本案例输入证据的条数（按 ref 计；一条消息/一次提交/一张快照各记 1）"
+   },
+   {
+    "key": "fix_actions",
+    "name": "修复动作次数（可选指标）",
+    "definition": "可逐条枚举的独立处置次数；同一动作的多轮提交算 1；同一 MR 修多缺陷各记 1；无法确认写 null 并注明；不得用轮数/MR 数/Commit 数推算（recurrence-rules §3.6）"
+   },
+   {
+    "key": "independent_occurrences",
+    "name": "独立发生次数",
+    "definition": "first + repeat_unresolved + repeat_after_fix + rollback_regress 的有效 occurrence 记录数（事件去重后，recurrence-rules §3.1）"
+   },
+   {
+    "key": "repeat_unresolved_events",
+    "name": "持续未解决期间的再次发生事件数",
+    "definition": "kind=repeat_unresolved 的记录数；仅在未解决期间出现新的独立触发/异常证据时登记，不按缺陷固定计 1（§2.2/§3.3）"
+   },
+   {
+    "key": "unresolved_open_bugs",
+    "name": "未解决状态缺陷数",
+    "definition": "lifecycle 为 open/fixing 的缺陷数，用于表达持续未解决（§3.7）"
+   },
+   {
+    "key": "recurrence_events",
+    "name": "广义复发次数",
+    "definition": "repeat_after_fix 条数 + rollback_regress 条数（§3.2）"
+   },
+   {
+    "key": "recurrence_by_subtype",
+    "name": "复发子类型分布",
+    "definition": "{repeat_after_fix, rollback_regress} 分项计数，必须与总数同时给出（§3.2）"
+   },
+   {
+    "key": "related_cases",
+    "name": "同类关联数",
+    "definition": "bugs.related[].kind=similar_class 的条数；same_incident/caused_by 不计入本指标，也不计复发（§3.4/§3.7）"
+   },
+   {
+    "key": "bugs_without_occurrence",
+    "name": "无发生记录缺陷数",
+    "definition": "有缺陷主记录但无有效 occurrence 的缺陷数；不得用缺陷数反推发生数（§3.1）"
+   },
+   {
+    "key": "verified_environments",
+    "name": "验证适用环境",
+    "definition": "由 verified_fixed/closed 流转行及其证据可确认的 canonical_name 去重集合；全无可归一环境时报『未知/未披露』，不得写 0（§2.6/§3.7）"
+   },
+   {
+    "key": "coverage",
+    "name": "统计覆盖范围",
+    "definition": "时间窗、来源、批次、时间精度覆盖、未覆盖部分与未知数量（§3.7/§3.8）"
+   }
+  ],
+  "snapshot_at": "2026-11-25 15:55 (北京时间)",
+  "synthetic_policy": "TC-R1/R2/R3 为构造边界案例（synthetic=true），存放于 cases_synthetic 与 test-inputs.synthetic_inputs，不得与真实案例混评。",
+  "changelog_v14": "V1.4（2026-11-26）：①补齐 V1.3 未执行的 V0.1.2 同步项：TC-001 的 filter_decision=excluded→template/sync、TC-008 的 repeat_unresolved_events 1→0 且不建 occurrence、TC-A4/R2/R3/R1 的非法 occurrence.kind 改为 reason_tag / 正确 kind、TC-005 的 role=related 改 status_evidence、TC-A1/A6 的 diagnosis/excluded 改为合法枚举；②按 V0.1.3 新增断言：分环境验证与 canonical_name 归一（§2.6/§10.5）、同分类不同环境独立性（TC-R4）、事件去重细则（§3.8，TC-R6：日期精度混合/report 与修复证据交集/反证阻断）、归并时 occurrence 只迁移不重判（dedup §4.3，TC-R7）、回滚重现正向（§2.4，TC-R5）、修复未生效与已部署未验证的分支（TC-A3/A4/R2）、offline 隔离与临时编号（output-schema §1.2、execution-rules §5/§9，TC-R8）、配置与版本一致性（TC-R8）；③每个案例新增 rule_refs、每条新增/修改断言新增 rule 字段（规则文件+章节）；④expected_counts 按 §3.7 十项指标补齐（含 recurrence_by_subtype、unresolved_open_bugs、bugs_without_occurrence、verified_environments、coverage）；⑤新增 5 条 synthetic（TC-R4~R8），真实案例与证据引用保持不变；⑥新增 meta.global_assertions（G-01~G-12），所有案例共同适用；⑦coverage/gaps 同步；规则本身的矛盾与无法形成确定预期的点另见《规则问题与待确认清单-V1.4.md》。",
+  "rule_ref_policy": "每个案例带 rule_refs（该案例预期所依据的规则文件与章节）；每条新增或修改的断言带 rule 字段；未标 rule 的断言沿用其原有依据，V1.4 未改动。",
+  "global_assertions": [
+   {
+    "id": "G-01",
+    "stage": "schema",
+    "check": "所有 occurrence.kind ∈ {first, repeat_unresolved, repeat_after_fix, rollback_regress}；无 reopen_recurrence / fix_not_live / deployment_drift / similar_but_distinct / related_case",
+    "expected": true,
+    "rule": "output-schema §10.2；recurrence-rules §2"
+   },
+   {
+    "id": "G-02",
+    "stage": "schema",
+    "check": "所有 filter_decision ∈ {candidate, evidence_only, template, sync, noise}；不使用 excluded",
+    "expected": true,
+    "rule": "output-schema §10.2；filtering-rules §3.1"
+   },
+   {
+    "id": "G-03",
+    "stage": "schema",
+    "check": "所有 bug_links.role ∈ {primary_fix, related_fix, background, status_evidence, report}；旧词（related/root_cause/failed_delivery/second_fix/origin）不得作 role",
+    "expected": true,
+    "rule": "output-schema §4、§10.2"
+   },
+   {
+    "id": "G-04",
+    "stage": "schema",
+    "check": "描述标签（fix_not_live / fix_not_effective / deployment_drift / mr_ref_unverified / context_only）只出现在 reason/basis/review.reason/报告，不写入枚举字段",
+    "expected": true,
+    "rule": "output-schema §10.2.1"
+   },
+   {
+    "id": "G-05",
+    "stage": "count",
+    "check": "每个案例的 expected_counts 十项指标齐全；null/未知已注明原因，未用 0 冒充未知",
+    "expected": true,
+    "rule": "recurrence-rules §3.7；output-schema §9 第 13 项"
+   },
+   {
+    "id": "G-06",
+    "stage": "count",
+    "check": "recurrence_events 与 recurrence_by_subtype 同时给出，且总数 == 两子类型之和",
+    "expected": true,
+    "rule": "recurrence-rules §3.2"
+   },
+   {
+    "id": "G-07",
+    "stage": "integrity",
+    "check": "verified_environments 只统计可归一 canonical_name；无从归一时报『未知/未披露』，不写 0、不外推同分类其他环境",
+    "expected": true,
+    "rule": "recurrence-rules §2.6/§3.7；output-schema §10.5"
+   },
+   {
+    "id": "G-08",
+    "stage": "integrity",
+    "check": "报告同时披露 coverage（时间窗/来源/时间精度/未覆盖/未知数量）与事件去重已合并组数、待复核数",
+    "expected": true,
+    "rule": "recurrence-rules §3.8；output-schema §9"
+   },
+   {
+    "id": "G-09",
+    "stage": "integrity",
+    "check": "派生统计可由 occurrences/bugs/transitions 重算并与运行概览逐项对上；不只给结论数字",
+    "expected": true,
+    "rule": "output-schema §9；execution-rules §8"
+   },
+   {
+    "id": "G-10",
+    "stage": "integrity",
+    "check": "offline 运行不写正式 data/<project>/、不改水位、不分配 DC-/EV-/OC-/RV-/TR- 正式编号，使用 offline-<run_id>- 临时键",
+    "expected": true,
+    "rule": "output-schema §1.2/§1.3；execution-rules §5/§9"
+   },
+   {
+    "id": "G-11",
+    "stage": "filter",
+    "check": "未核实的 MR 引用只作待核查线索（mr_ref_unverified），不写成 kind=mr 证据、不作归并强证据",
+    "expected": true,
+    "rule": "output-schema §4、§10.2.1"
+   },
+   {
+    "id": "G-12",
+    "stage": "integrity",
+    "check": "运行声明的 skill_version 与规则文件版本头一致（V0.1.3）；项目配置含 __TBD__ 时按不完整配置处理，不把占位当真实参数",
+    "expected": true,
+    "rule": "SKILL.md §2；config/default.json meta；execution-rules §4"
+   }
+  ]
+ },
+ "evidence": [
+  {
+   "id": "E1",
+   "type": "GitLab commit",
+   "locator": "d631b389（yangxiaoyun，2026-11-13）",
+   "excerpt": "title=「test commit dc-api」，body 为空",
+   "usage": "纯噪声/测试提交",
+   "_commit": {
+    "sha_full": "d631b389837b1d00a2675c56d2c306130d7758f8",
+    "sha_short": "d631b389",
+    "parents": [
+     "f013f444c0e10c5dbc8ea12728931aa94c2bc300"
+    ],
+    "parent_count": 1,
+    "author": "yangxiaoyun",
+    "author_time": "2026-11-13T10:16:30Z",
+    "subject": "test commit dc-api",
+    "body": ""
+   }
+  },
+  {
+   "id": "E2",
+   "type": "GitLab commit",
+   "locator": "84cf120b（陈昔，2026-11-18）",
+   "excerpt": "title=「调整 runtime/storage 的插入位置，保证与 develop@122e700 可无冲突合并」；body 明示『文件内容与上一提交一致，只调整了 diff 落点』",
+   "usage": "合并落点调整，无独立缺陷",
+   "_commit": {
+    "sha_full": "84cf120b47af7d69cd2b56505b742d4d019f6247",
+    "sha_short": "84cf120b",
+    "parents": [
+     "7a24e154e49ba10c87055895193246f12007f63e"
+    ],
+    "parent_count": 1,
+    "author": "陈昔",
+    "author_time": "2026-11-18T06:33:57Z",
+    "subject": "调整 runtime/storage 的插入位置，保证与 develop@122e700 可无冲突合并",
+    "body": "server.py 的 rp/dcs 导入放到 sys.path 补齐与 CFG 读取之后（远离 develop 的\nbankflow 导入插入点）；Dockerfile 保持 develop 修改的基础 COPY 行不变，运行时\n两个文件的 COPY 移到 USER 之后单独一行；config.json 回到本分支基线，\ndevelop 自己的配置变更交给合并带入。\n\n文件内容与上一提交一致（合入 develop 后的最终形态不变），只调整了 diff 落点，\n使 MR 可直接合并。pytest 72 项通过。\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>"
+   }
+  },
+  {
+   "id": "E3",
+   "type": "GitLab commit",
+   "locator": "27da39f3（范灵秀，2026-11-24；父提交=2）",
+   "excerpt": "subject=「Merge branch 'fix/dc-onto-token-refresh-20261124' into 'develop'」；body=「fix(dc): 本体 token 过期自动重登，修复 /api/dc/onto/scenes 502（HTTP 401）」+ See merge request …!188",
+   "usage": "Merge 正文含独有 Bug 信息",
+   "_commit": {
+    "sha_full": "27da39f3cefd65a4bbf51ecb05d3af80d4b283e5",
+    "sha_short": "27da39f3",
+    "parents": [
+     "50942b414dd49209eafc00d2dec9cafe27b2d11d",
+     "137308a07e2fab70dd292eabf0aa9ef08d5cae66"
+    ],
+    "parent_count": 2,
+    "author": "范灵秀",
+    "author_time": "2026-11-24T01:59:19Z",
+    "subject": "Merge branch 'fix/dc-onto-token-refresh-20261124' into 'develop'",
+    "body": "fix(dc): 本体 token 过期自动重登，修复 /api/dc/onto/scenes 502（HTTP 401）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!188"
+   }
+  },
+  {
+   "id": "E4",
+   "type": "GitLab commit",
+   "locator": "da00120f（温晓宇，2026-11-07）",
+   "excerpt": "subject=「feat(dc): 全站视觉美化·澄蓝精工方向」；body 含「修复存量 bug：--muted-foreground 原为 18% 深灰（近黑），改回 46%」",
+   "usage": "feat 中隐藏 Bug 修复",
+   "_commit": {
+    "sha_full": "da00120fcc61be20fc1dae572a66da921b08c6e2",
+    "sha_short": "da00120f",
+    "parents": [
+     "a8d5c046401920544cc713f2186ffe92130e1411"
+    ],
+    "parent_count": 1,
+    "author": "温晓宇",
+    "author_time": "2026-11-07T22:31:50+08:00",
+    "subject": "feat(dc): 全站视觉美化·澄蓝精工方向（方向A选定，qiaomu-design 试衣间）",
+    "body": "- styles.css 设计令牌重铸：暖中性画布 + 白卡 + 发丝线，品牌蓝 #2f5fd0\n  收敛为点缀；语义色 success/warning/info 重调；chart 序列对齐\n- 修复存量 bug：--muted-foreground 原为 18% 深灰（近黑），改回 46%\n- kit.tsx StatusPill 圆角收敛 full\n- sync-board 配色常量与面板内联样式：antd 蓝绿黄紫 → 品牌调色板\n  （语义角色不变），14 处硬编码色改 token/CSS 变量\n- 新增 DESIGN.md：全站设计锚（色彩/排版/形状/组件工艺唯一权威）\n- design-previews/2026-11-07-dc-beautify/：四方向试衣间存档（方向A选定依据）\n- .gitignore 补 .claude/（本地 skill 不入库）\n\n验收：45 页 before/after 截图对比；tsc 存量 17 行错误改动前后一致；\nvite build 通过；无斜体/紫渐变/居中 Hero。路由与业务逻辑零改动。"
+   }
+  },
+  {
+   "id": "E5",
+   "type": "GitLab commit",
+   "locator": "2c70dbdb（陈昔，2026-11-18）",
+   "excerpt": "title=「表格切片修复：分隔行识别、真实表头继承、空壳行与<br>清理、禁表格上下文拼接（禅道 #14686）」，无 feat/fix 前缀",
+   "usage": "无前缀缺陷修复，挂禅道 #14686",
+   "_commit": {
+    "sha_full": "2c70dbdb5d8589ca53701656dd3965806af625a8",
+    "sha_short": "2c70dbdb",
+    "parents": [
+     "d6bcc16c4d3a8f331d598ea6f6a950e7eb7304ec"
+    ],
+    "parent_count": 1,
+    "author": "陈昔",
+    "author_time": "2026-11-18T07:48:09Z",
+    "subject": "表格切片修复：分隔行识别、真实表头继承、空壳行与<br>清理、禁表格上下文拼接（禅道 #14686）",
+    "body": "- normalize_table_md：识别「分隔行在首行」的 OXR 形态，移位为真实表头在前、分隔行随后；单元格内 <br> 变体替换为空格；全空壳行继续丢弃\n- split_table_md：按位置定位表头+分隔行，超长拆段时每段重复真实表头+分隔行，段内不残留多余分隔行\n- normalize_table_blocks：无表头结构的续块从前一个带表头的 table 块继承；整篇无表头时不凭空拼分隔行\n- build_chunks_dg：表格切片不再拼「前文/后文上下文」，避免同表尾行重复进切片\n- 新增 tests/test_table_md.py（17 例）：首行分隔行、跨块表头、无表头、合并单元格、xlsx/docx/pdf 形态、<br> 清理、上下文禁拼、幂等\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>"
+   }
+  },
+  {
+   "id": "E6",
+   "type": "GitLab commit",
+   "locator": "1388d78（陈昔，2026-11-18）",
+   "excerpt": "title=「补表格切片回归测试（禅道 #14686）：首行分隔行/跨块表头/无表头/合并单元格/多形态/<br>清理/上下文禁拼」",
+   "usage": "#14686 的回归测试证据",
+   "_commit": {
+    "sha_full": "1388d788f0fbcf670e1eaf45b6f1ec40d36acda7",
+    "sha_short": "1388d78",
+    "parents": [
+     "2c70dbdb5d8589ca53701656dd3965806af625a8"
+    ],
+    "parent_count": 1,
+    "author": "陈昔",
+    "author_time": "2026-11-18T07:48:16Z",
+    "subject": "补表格切片回归测试（禅道 #14686）：首行分隔行/跨块表头/无表头/合并单元格/多形态/<br>清理/上下文禁拼",
+    "body": "Co-Authored-By: Claude Code <noreply@anthropic.com>"
+   }
+  },
+  {
+   "id": "E7",
+   "type": "GitLab commit",
+   "locator": "fd01100（陈昔，2026-11-18）",
+   "excerpt": "title=「fix(dc): 表格表头继承被非表格块打断时重置（#14686 复测反馈）」",
+   "usage": "#14686 复测反馈补修",
+   "_commit": {
+    "sha_full": "fd011006a3ba67d84a971c3e6c2da3747b4378ca",
+    "sha_short": "fd01100",
+    "parents": [
+     "1388d788f0fbcf670e1eaf45b6f1ec40d36acda7"
+    ],
+    "parent_count": 1,
+    "author": "陈昔",
+    "author_time": "2026-11-18T08:52:47Z",
+    "subject": "fix(dc): 表格表头继承被非表格块打断时重置（#14686 复测反馈）",
+    "body": "normalize_table_blocks 遇到非 table 块时重置 prev_head_prefix：\n中间隔了正文/标题后，下一张无表头的表是另一张表，不再继承\n上一张表的表头；紧邻续块的继承行为不变。\n\n补回归用例 test_header_inheritance_broken_by_non_table_block\n（table→text→table(no header) 保持自身数据行 + 连续继承仍有效）。"
+   }
+  },
+  {
+   "id": "E8",
+   "type": "GitLab commit",
+   "locator": "2ac5f64（陈昔，2026-11-18）",
+   "excerpt": "title=「fix(dc): 表格切片在 naive/md/table/image 切片器同样不拼前文上下文（禅道 #14686）」",
+   "usage": "#14686 多切片器补修",
+   "_commit": {
+    "sha_full": "2ac5f64a500d8f1222ebb0c49ed5217759893e07",
+    "sha_short": "2ac5f64",
+    "parents": [
+     "9ce3998146cb0d9295565a8abaa3ab4b0a5fa38a"
+    ],
+    "parent_count": 1,
+    "author": "陈昔",
+    "author_time": "2026-11-18T11:21:35Z",
+    "subject": "fix(dc): 表格切片在 naive/md/table/image 切片器同样不拼前文上下文（禅道 #14686）",
+    "body": "xlsx 默认类目走 naive 切片器，此前只改了 dg：长表切片仍以「【前文上下文】上一段尾行」开头，\n同批行在切片里重复出现，命中行被顶出首屏。本次把 dg 的口径同步到会处理表格块的\nmd / naive / table / image 四个切片器：表格切片只保留（标题）+（表头+分隔行+数据行），\n图片块仍保留上下文。\n\n补参数化用例覆盖 5 个切片器的「表格切片无上下文/表格正文首行是真实表头」，\n以及长表拆段后 naive 每段都以真实表头开头；dc-server 全量 105 passed。"
+   }
+  },
+  {
+   "id": "E9",
+   "type": "GitLab commit / MR",
+   "locator": "534ac0c（温晓宇，2026-11-23；父提交=2）",
+   "excerpt": "subject=「Merge branch 'fix/dc-15030-skip-recover-20261123' into 'develop'」；body=「fix(dc): 15030 乱码误判四条修法 + 覆盖率分母（基于 shared 切片索引分支）」…!167",
+   "usage": "#15030 的四条修法合并",
+   "_commit": {
+    "merge": {
+     "sha_full": "534ac0ce23f820ed2ab4d5e5e7ee76fa6701e510",
+     "sha_short": "534ac0c",
+     "parents": [
+      "97eb3356ad0eabd8529969e58684ca78b8d5fd79",
+      "42cbf01af81ae3ae68b556d0e8906ce4fe35b395"
+     ],
+     "parent_count": 2,
+     "author": "温晓宇",
+     "author_time": "2026-11-23T08:55:21Z",
+     "subject": "Merge branch 'fix/dc-15030-skip-recover-20261123' into 'develop'",
+     "body": "fix(dc): 15030 乱码误判四条修法 + 覆盖率分母（基于 shared 切片索引分支）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!167"
+    }
+   }
+  },
+  {
+   "id": "E10",
+   "type": "GitLab commit / MR",
+   "locator": "b9ead6f（温晓宇，2026-11-23；父提交=2）+ db52528",
+   "excerpt": "merge subject=「Merge branch 'fix/dc-15032-reparse-rematch-20261123'」；db52528=「fix(dc): 15032 重新解析按新正文重匹配切片器（full 模式回落 auto）」",
+   "usage": "#15032 的修复",
+   "_commit": {
+    "merge": {
+     "sha_full": "b9ead6f4aac3f6d34d54d9db8b791c86c8597050",
+     "sha_short": "b9ead6f",
+     "parents": [
+      "6274cc280f16c41fd7bdbae0087712577b4751fd",
+      "db5252848473e81aeca667274b605677285b5b5d"
+     ],
+     "parent_count": 2,
+     "author": "温晓宇",
+     "author_time": "2026-11-23T11:14:55Z",
+     "subject": "Merge branch 'fix/dc-15032-reparse-rematch-20261123' into 'develop'",
+     "body": "fix(dc): 15032 重新解析按新正文重匹配切片器（full 模式回落 auto）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!174"
+    },
+    "extra": [
+     {
+      "sha_full": "db5252848473e81aeca667274b605677285b5b5d",
+      "sha_short": "db52528",
+      "parents": [
+       "6274cc280f16c41fd7bdbae0087712577b4751fd"
+      ],
+      "parent_count": 1,
+      "author": "温晓宇",
+      "author_time": "2026-11-23T11:04:43Z",
+      "subject": "fix(dc): 15032 重新解析按新正文重匹配切片器（full 模式回落 auto）",
+      "body": "Co-Authored-By: Claude Code <noreply@anthropic.com>"
+     }
+    ]
+   }
+  },
+  {
+   "id": "E11",
+   "type": "GitLab commit / MR",
+   "locator": "0f77e11 / b5d6bdb / 045234d + d988394（2026-11-23/24）",
+   "excerpt": "三条 feat 均挂 #15036（OOM 四层防护：子进程隔离/流式表格/oversize 车道/背压分片、worker 池），d988394=「Merge branch 'fix/dc-oom-guard-15036-20261123'」",
+   "usage": "#15036 OOM 的多提交证据链",
+   "_commit": {
+    "extra": [
+     {
+      "sha_full": "0f77e11c2815951a8d78499c0e31e0429141e195",
+      "sha_short": "0f77e11",
+      "parents": [
+       "50942b414dd49209eafc00d2dec9cafe27b2d11d"
+      ],
+      "parent_count": 1,
+      "author": "温晓宇",
+      "author_time": "2026-11-23T13:41:23Z",
+      "subject": "feat(dc): #15036 OOM 防护——解析子进程隔离/流式表格/oversize 分流/背压分片",
+      "body": "四层口径：②解析在独立子进程（RLIMIT_AS）；③大表格本地流式解析（不整表物化）+ oversize 车道与禁续跑；④内存水位背压 + blocks_raw 分片留档。新增回归 tests/test_oom_guard_20261123.py。\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>"
+     },
+     {
+      "sha_full": "b5d6bdb86b197c0819b88ab49fd05e68a0879519",
+      "sha_short": "b5d6bdb",
+      "parents": [
+       "0f77e11c2815951a8d78499c0e31e0429141e195"
+      ],
+      "parent_count": 1,
+      "author": "温晓宇",
+      "author_time": "2026-11-23T13:41:28Z",
+      "subject": "feat(dc): server 接入 #15036 四层 OOM 防护（解析隔离/流式表格/oversize 车道/背压与分片留档）",
+      "body": "- 本地重解析（流式表格、路由 PDF/图片）跑独立子进程，RLIMIT_AS 限制，OOM 只死子进程、任务可重试\n- 大 xlsx（≥8MB）走本地流式解析，按行窗口出块；oversize（≥40MB 或 >2000 万字）独立车道并发 1、禁止复用断点留档\n- 内存水位 ≥85% 暂停派发新任务（已接的跑完）；/metrics 增补背压/oversize/解析隔离指标\n- blocks_raw 超阈值改分片流式写，不再生成单份几百 MB 大 JSON\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>"
+     },
+     {
+      "sha_full": "045234d12c6219c55ea2f6dd7dd0b6dfe23181c5",
+      "sha_short": "045234d",
+      "parents": [
+       "7bedfc173ef8fe8d64223ef8df0721af576843e3"
+      ],
+      "parent_count": 1,
+      "author": "温晓宇",
+      "author_time": "2026-11-23T16:37:06Z",
+      "subject": "feat(dc): 解析 worker 池一期——API 只调度、重解析在 worker 子进程（#15036）",
+      "body": "- 新增 parse_pool：worker 队列 + 在途上限(2×worker) + 内存水位背压 + OOM/超时/异常自动重试(≤2，台账持久化)\n- 解析子进程 RLIMIT_AS 之外加 RSS 看门狗（超限 kill，避免虚拟地址预留造成假 OOM）\n- server 接入：_parse_isolated 统一入口（DC_PARSE_POOL=0 回退 parse_isolate 直调），oversize 不重试\n- 调度背压叠加池在途闸门；/metrics 增 dc_parse_pool_* 九项\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>"
+     },
+     {
+      "sha_full": "d988394d6c3e747e9724a4a25abe52b4a03c861e",
+      "sha_short": "d988394",
+      "parents": [
+       "27da39f3cefd65a4bbf51ecb05d3af80d4b283e5",
+       "a556f02d1f7ba3ef757255407795743a2d0bb2c2"
+      ],
+      "parent_count": 2,
+      "author": "温晓宇",
+      "author_time": "2026-11-24T02:28:36Z",
+      "subject": "Merge branch 'fix/dc-oom-guard-15036-20261123' into 'develop'",
+      "body": "#15036 OOM 防护四层：解析子进程隔离 + 流式表格 + oversize 分流 + 背压/分片留档\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!176"
+     }
+    ]
+   }
+  },
+  {
+   "id": "E12",
+   "type": "GitLab commit / MR",
+   "locator": "71bc6835（温晓宇，2026-11-23；父提交=2）",
+   "excerpt": "subject=「Merge branch 'fix/dc-route-qc-batch-20261123' into 'develop'」；body=「fix(dc): 解析路由质检整改一批（文本层兜底/乱码探测/表格结构/切片页码/入库拆账）」…!163",
+   "usage": "一个 MR 覆盖多类问题",
+   "_commit": {
+    "merge": {
+     "sha_full": "71bc6835100118a62a4784dbd0b0f381122aeb36",
+     "sha_short": "71bc6835",
+     "parents": [
+      "6bfc0f5f81ab27ada9876cbbeec52b9225670582",
+      "0bca7d80d6cea72e0812bf758b6242d9827ee743"
+     ],
+     "parent_count": 2,
+     "author": "温晓宇",
+     "author_time": "2026-11-23T05:48:56Z",
+     "subject": "Merge branch 'fix/dc-route-qc-batch-20261123' into 'develop'",
+     "body": "fix(dc): 解析路由质检整改一批（文本层兜底/乱码探测/表格结构/切片页码/入库拆账）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!163"
+    }
+   }
+  },
+  {
+   "id": "E13",
+   "type": "GitLab commit / MR",
+   "locator": "bc489ee8（!185，2026-11-23）+ 50942b41（!186，2026-11-23）",
+   "excerpt": "!185 body=「fix(dc): 标题噪声收紧——说明行/长句/无编号标题不进标题栈（#15048 跟进）」；!186 body=「fix(dc): 标题噪声收紧二轮——running header 降级 + 无编号标题保留（#15048 跟进）」",
+   "usage": "#15048 的两轮『跟进』补修",
+   "_commit": {
+    "merges": [
+     {
+      "sha_full": "bc489ee82bbbf5b571cbe0e6e87e675fdb20a0de",
+      "sha_short": "bc489ee8",
+      "parents": [
+       "9af8ef018a15de7b76650d5ddfca00ce5eac3f86",
+       "be78a3a483e2245e1a591008900f0ac76efc164d"
+      ],
+      "parent_count": 2,
+      "author": "温晓宇",
+      "author_time": "2026-11-23T16:22:48Z",
+      "subject": "Merge branch 'fix/dc-title-noise-20261124' into 'develop'",
+      "body": "fix(dc): 标题噪声收紧——说明行/长句/无编号标题不进标题栈（#15048 跟进）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!185"
+     },
+     {
+      "sha_full": "50942b414dd49209eafc00d2dec9cafe27b2d11d",
+      "sha_short": "50942b41",
+      "parents": [
+       "bc489ee82bbbf5b571cbe0e6e87e675fdb20a0de",
+       "0cb467096908e1114317fe9d13533ce46cf547e7"
+      ],
+      "parent_count": 2,
+      "author": "温晓宇",
+      "author_time": "2026-11-23T16:29:55Z",
+      "subject": "Merge branch 'fix/dc-title-noise2-20261124' into 'develop'",
+      "body": "fix(dc): 标题噪声收紧二轮——running header 降级 + 无编号标题保留（#15048 跟进）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!186"
+     }
+    ]
+   }
+  },
+  {
+   "id": "E14",
+   "type": "GitLab commit",
+   "locator": "8e05cad（陈昔，2026-11-24）",
+   "excerpt": "subject=「feat(dc): 云端解析接入（华为 Aura sidecar）——独立分支，默认不启用」；body 末「明确未验证：Aura 真机端点（无凭证）、OCR（交付包目录缺失）」",
+   "usage": "状态不明/证据不足，不应认定为已知缺陷",
+   "missing": [
+    {
+     "item": "Aura 真机凭证、OCR 交付包目录",
+     "reason": "提交自述缺失项，属被测环境资料，未随包也不得补造"
+    }
+   ]
+  },
+  {
+   "id": "Z-14686",
+   "type": "禅道 Bug",
+   "locator": "#14686",
+   "snapshot": {
+    "id": 14686,
+    "status": "resolved",
+    "pri": 2,
+    "activatedCount": 0,
+    "openedBy": "zhuangyanwen 庄艳雯",
+    "openedDate": "2026-11-17T08:38:07Z",
+    "resolvedBy": "chenxi2 陈昔",
+    "resolution": "fixed",
+    "resolvedDate": "2026-11-18T12:06:48Z",
+    "closedDate": null,
+    "lastEditedDate": "2026-11-18T12:06:54Z",
+    "snapshot_at": "2026-11-25 15:55 (北京时间)"
+   },
+   "usage": "跨源锚点 TC-004/TC-005",
+   "title": "【国电投soso-dev测试】表格类文档解析结果存在多余信息"
+  },
+  {
+   "id": "Z-14685",
+   "type": "禅道 Bug",
+   "locator": "#14685",
+   "snapshot": {
+    "id": 14685,
+    "status": "resolved",
+    "pri": 2,
+    "activatedCount": 0,
+    "openedBy": "zhuangyanwen 庄艳雯",
+    "openedDate": "2026-11-17T08:37:53Z",
+    "resolvedBy": "chenxi2 陈昔",
+    "resolution": "fixed",
+    "resolvedDate": "2026-11-18T12:03:02Z",
+    "closedDate": null,
+    "lastEditedDate": "2026-11-18T12:04:05Z",
+    "snapshot_at": "2026-11-25 15:55 (北京时间)"
+   },
+   "usage": "伴随缺陷（本批未单独出题，供对账）",
+   "title": ""
+  },
+  {
+   "id": "Z-15030",
+   "type": "禅道 Bug",
+   "locator": "#15030",
+   "snapshot": {
+    "id": 15030,
+    "status": "active",
+    "pri": 1,
+    "activatedCount": 0,
+    "openedBy": "wenxiaoyu 温晓宇",
+    "openedDate": "2026-11-23T06:45:19Z",
+    "resolvedBy": null,
+    "resolution": "",
+    "resolvedDate": null,
+    "closedDate": null,
+    "lastEditedDate": null,
+    "snapshot_at": "2026-11-25 15:55 (北京时间)"
+   },
+   "usage": "锚点 TC-006",
+   "title": ""
+  },
+  {
+   "id": "Z-15032",
+   "type": "禅道 Bug",
+   "locator": "#15032",
+   "snapshot": {
+    "id": 15032,
+    "status": "active",
+    "pri": 2,
+    "activatedCount": 0,
+    "openedBy": "wenxiaoyu 温晓宇",
+    "openedDate": "2026-11-23T06:45:27Z",
+    "resolvedBy": null,
+    "resolution": "",
+    "resolvedDate": null,
+    "closedDate": null,
+    "lastEditedDate": null,
+    "snapshot_at": "2026-11-25 15:55 (北京时间)"
+   },
+   "usage": "锚点 TC-006",
+   "title": ""
+  },
+  {
+   "id": "Z-15036",
+   "type": "禅道 Bug",
+   "locator": "#15036",
+   "snapshot": {
+    "id": 15036,
+    "status": "active",
+    "pri": 1,
+    "activatedCount": 0,
+    "openedBy": "wenxiaoyu 温晓宇",
+    "openedDate": "2026-11-23T13:15:45Z",
+    "resolvedBy": null,
+    "resolution": "",
+    "resolvedDate": null,
+    "closedDate": null,
+    "lastEditedDate": "2026-11-23T13:42:21Z",
+    "files_empty": true,
+    "snapshot_at": "2026-11-25 15:55 (北京时间)"
+   },
+   "usage": "锚点 TC-006（附件缺失见 missing）",
+   "title": "",
+   "missing": [
+    {
+     "item": "禅道 #15036 附件",
+     "reason": "snapshot.files 为空（原单未带附件或无读取权限），不补造"
+    }
+   ]
+  },
+  {
+   "id": "Z-15048",
+   "type": "禅道 Bug",
+   "locator": "#15048",
+   "snapshot": {
+    "id": 15048,
+    "status": "active",
+    "pri": 1,
+    "activatedCount": 0,
+    "openedBy": "wenxiaoyu 温晓宇",
+    "openedDate": "2026-11-23T15:40:59Z",
+    "resolvedBy": null,
+    "resolution": "",
+    "resolvedDate": null,
+    "closedDate": null,
+    "lastEditedDate": "2026-11-23T16:34:51Z",
+    "snapshot_at": "2026-11-25 15:55 (北京时间)"
+   },
+   "usage": "锚点 TC-008",
+   "title": ""
+  },
+  {
+   "id": "Z-15049",
+   "type": "禅道 Bug",
+   "locator": "#15049",
+   "snapshot": {
+    "id": 15049,
+    "status": "active",
+    "pri": 1,
+    "activatedCount": 0,
+    "openedBy": "wenxiaoyu 温晓宇",
+    "openedDate": "2026-11-23T18:06:48Z",
+    "resolvedBy": null,
+    "resolution": "",
+    "resolvedDate": null,
+    "closedDate": null,
+    "lastEditedDate": "2026-11-23T18:07:11Z",
+    "snapshot_at": "2026-11-25 15:55 (北京时间)"
+   },
+   "usage": "跨源对账（TC-A6 的外部证据，判分用加分项）",
+   "title": "外发事故：dc_route 模块 261 次对外上传（P1）"
+  },
+  {
+   "id": "Z-15057",
+   "type": "禅道 Bug",
+   "locator": "#15057",
+   "snapshot": {
+    "id": 15057,
+    "status": "active",
+    "pri": 1,
+    "severity": 1,
+    "activatedCount": 0,
+    "openedBy": "wenxiaoyu 温晓宇",
+    "assignedTo": "wenxiaoyu 温晓宇",
+    "openedDate": "2026-11-24T03:50:34Z",
+    "resolvedBy": null,
+    "resolution": "",
+    "resolvedDate": null,
+    "closedDate": null,
+    "title": "【数据中心】dc_server 健康检查误杀（P1）：87 快查批内高负载下 /health 连续超时，Swarm 判死重建导致 101 秒不可用（非 OOM）",
+    "snapshot_at": "2026-11-25 15:55 (北京时间)"
+   },
+   "usage": "跨源对账（TC-A8 的 P-103 对应单，判分参考锚点）",
+   "title": "【数据中心】dc_server 健康检查误杀（P1）：87 快查批内高负载下 /health 连续超时，Swarm 判死重建导致 101 秒不可用（非 OOM）"
+  }
+ ],
+ "cases": [
+  {
+   "case_id": "TC-001",
+   "category": "数据清洗",
+   "goal": "验证『纯同步/合并落点调整/空 body 测试提交』不被计为缺陷，且排除理由可回查。",
+   "raw_input": "E1 d631b389「test commit dc-api」（body 空）；E2 84cf120b「调整 runtime/storage 的插入位置，保证与 develop@122e700 可无冲突合并」（body 明示『文件内容与上一提交一致，只调整了 diff 落点』）。",
+   "expected_defect_count": "0",
+   "expected_filter": "两条均按非候选处理：E1 filter_decision=template（triage_reason=template_noise），E2 filter_decision=sync（triage_reason=context_only，合并落点准备）；保留排除理由，可重查，不得使用 excluded。",
+   "expected_merge": "无（不进入缺陷库）。",
+   "expected_attribution": "不作为任何缺陷的证据。",
+   "expected_recurrence": "无。",
+   "basis": "两条都没有『实际现象 vs 预期』的不一致：E1 body 为空且是测试提交；E2 自述内容与上一提交一致、仅调整 diff 落点，不产生新行为。",
+   "negatives": "不得把 E2 的『合并』字样误判为 Merge 缺陷；不得因 E1 无内容就臆造缺陷；纯噪声也要写排除理由而非静默丢弃。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "expected_counts": {
+    "confirmed_defects": 0,
+    "suspect_defects": 0,
+    "evidence_items": 2,
+    "fix_actions": 0,
+    "independent_occurrences": 0,
+    "recurrence_events": 0,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 0,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-13~11-18；来源 gitlab（2 条提交）；时间精度：秒级；未覆盖：无（纯排除案例）；未知：无",
+    "non_candidate_records": 2
+   },
+   "assertions": [
+    {
+     "id": "TC-001-1",
+     "stage": "filter",
+     "check": "两条输入的 filter_decision 分别取 template（E1）/ sync（E2），均不得使用 excluded",
+     "expected": true,
+     "rule": "output-schema §10.2；filtering-rules §3.1；V0.1.2 同步清单 G-5"
+    },
+    {
+     "id": "TC-001-2",
+     "stage": "filter",
+     "check": "E1 triage_reason == template_noise",
+     "expected": true,
+     "rule": "output-schema §10.2.1"
+    },
+    {
+     "id": "TC-001-3",
+     "stage": "filter",
+     "check": "E2 triage_reason == context_only（合并落点准备，作上下文保留）",
+     "expected": true,
+     "rule": "output-schema §10.2.1"
+    },
+    {
+     "id": "TC-001-4",
+     "stage": "count",
+     "check": "confirmed_defects == 0 且 suspect_defects == 0",
+     "expected": true
+    },
+    {
+     "id": "TC-001-5",
+     "stage": "integrity",
+     "check": "每条排除记录都带 triage_reason（无静默丢弃）",
+     "expected": true
+    },
+    {
+     "id": "TC-001-6",
+     "stage": "negative",
+     "check": "E2 的『合并』字样未被误读为 Merge commit 缺陷",
+     "expected": true
+    },
+    {
+     "id": "TC-001-7",
+     "stage": "schema",
+     "check": "occurrence.kind 为空（0 缺陷）；expected_counts 十项指标齐全并把不适用项标 0/—",
+     "expected": true,
+     "rule": "output-schema §10.2；recurrence-rules §3.7"
+    }
+   ],
+   "evidence_refs": [
+    "E1",
+    "E2"
+   ],
+   "entry_type": "real",
+   "rule_refs": [
+    "references/filtering-rules.md §3.1",
+    "references/output-schema.md §10.2/§10.2.1"
+   ]
+  },
+  {
+   "case_id": "TC-002",
+   "category": "Commit 筛选",
+   "goal": "验证 Merge commit（subject 是纯合并模板）正文里的独有 Bug 信息被提取，不被当纯合并排除。",
+   "raw_input": "E3 27da39f3，父提交=2；subject=「Merge branch 'fix/dc-onto-token-refresh-20261124' into 'develop'」；body 首行=「fix(dc): 本体 token 过期自动重登，修复 /api/dc/onto/scenes 502（HTTP 401）」+「See merge request …!188」。",
+   "expected_defect_count": "1（本体 token 过期未自动重登导致 scenes 接口 502/401 的缺陷）",
+   "expected_filter": "不因 subject 是纯 Merge 直接排除；识别父提交=2 为 Merge；提取 body 中的 fix 描述进入语义分析；不因『已 merge』直接判『已修复上线』。",
+   "expected_merge": "若禅道/群聊有同现象记录应归并（本轮该缺陷仅此 GitLab 证据）。",
+   "expected_attribution": "27da39f3 与该 MR!188 均作为该缺陷的 primary_fix 证据（同一修复的两条来源，记录层不重复建号）。",
+   "expected_recurrence": "无。",
+   "basis": "父提交数量=2 即 Merge；body 含『token 过期/502/401』独有业务描述，区别于纯合并同步。",
+   "negatives": "①是否直接排除 Merge=否；②是否提取正文=是；③是否直接认定已修复上线=否（合并≠部署复验）；④是否编造具体异常=否。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 1,
+    "fix_actions": 1,
+    "independent_occurrences": 1,
+    "recurrence_events": 0,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 0,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-20~11-24；来源 gitlab+zentao；时间精度：秒级；未覆盖：部署与复验证据；未知：环境身份"
+   },
+   "assertions": [
+    {
+     "id": "TC-002-1",
+     "stage": "filter",
+     "check": "27da39f3 被识别为 Merge commit（parent_count >= 2）",
+     "expected": true
+    },
+    {
+     "id": "TC-002-2",
+     "stage": "filter",
+     "check": "body 缺陷描述（token 过期未自动重登 → /api/dc/onto/scenes 502 HTTP 401）被提取为缺陷候选，未因『纯合并』排除",
+     "expected": true
+    },
+    {
+     "id": "TC-002-3",
+     "stage": "count",
+     "check": "confirmed_defects == 1",
+     "expected": true
+    },
+    {
+     "id": "TC-002-4",
+     "stage": "integrity",
+     "check": "输出缺陷的现象集合仅包含 body 原文所列内容（无编造细节）",
+     "expected": true
+    },
+    {
+     "id": "TC-002-5",
+     "stage": "attribution",
+     "check": "27da39f3 与 MR !188 均挂到同一缺陷上（bug_links 2 条，记录层不重复建号）",
+     "expected": true
+    },
+    {
+     "id": "TC-002-6",
+     "stage": "recurrence",
+     "check": "『已修复上线』判定 == false（无部署/复验证据）",
+     "expected": true
+    },
+    {
+     "id": "TC-002-7",
+     "stage": "negative",
+     "check": "『已 merge』未被直接当作『已修复且已上线』",
+     "expected": true
+    },
+    {
+     "id": "TC-002-8",
+     "stage": "recurrence",
+     "check": "输出 occurrence.kind == first（本缺陷唯一一次可核验发生）",
+     "expected": true,
+     "rule": "recurrence-rules §2.1"
+    },
+    {
+     "id": "TC-002-9",
+     "stage": "schema",
+     "check": "bug_links.role 只取 primary_fix / status_evidence；不得用 root_cause、failed_delivery 等旧词",
+     "expected": true,
+     "rule": "output-schema §4/§10.2"
+    }
+   ],
+   "evidence_refs": [
+    "E3"
+   ],
+   "entry_type": "real",
+   "rule_refs": [
+    "references/recurrence-rules.md §2.1",
+    "references/output-schema.md §4/§8"
+   ]
+  },
+  {
+   "case_id": "TC-003",
+   "category": "Commit 筛选",
+   "goal": "验证以 feat 前缀提交中隐藏的『修复存量 bug』子句被单独识别为缺陷候选，不被 feat 语义吞掉。",
+   "raw_input": "E4 da00120f，subject=「feat(dc): 全站视觉美化·澄蓝精工方向（方向A选定…）」；body 第 2 条=「修复存量 bug：--muted-foreground 原为 18% 深灰（近黑），改回 46%」。",
+   "expected_defect_count": "1（前景色 token 过暗导致对比度/可读性不足的缺陷）",
+   "expected_filter": "不从 feat 前缀直接判为非缺陷而跳过；从 body 抽出『修复存量 bug』子句作为独立缺陷候选；视觉美化主体与新缺陷分离，不把整站改版算缺陷。",
+   "expected_merge": "无（独立小缺陷）。",
+   "expected_attribution": "da00120f 对该缺陷 role=primary_fix；视觉美化其余内容为背景，不并入缺陷。",
+   "expected_recurrence": "无。",
+   "basis": "body 显式写明『修复存量 bug』并给出原值 18%/目标 46%，是现象+预期可判定的修复。",
+   "negatives": "不得把整个 feat 当缺陷；不得漏掉隐藏修复；不得把『方向A选定』等设计决策当 Bug。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 1,
+    "fix_actions": 1,
+    "independent_occurrences": 1,
+    "recurrence_events": 0,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 0,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-19~11-24；来源 gitlab；时间精度：秒级；未覆盖：部署与复验证据；未知：环境身份"
+   },
+   "assertions": [
+    {
+     "id": "TC-003-1",
+     "stage": "filter",
+     "check": "feat 前缀未导致提交被跳过",
+     "expected": true
+    },
+    {
+     "id": "TC-003-2",
+     "stage": "filter",
+     "check": "『修复存量 bug：--muted-foreground 18%→46%』子句被识别为独立缺陷候选",
+     "expected": true
+    },
+    {
+     "id": "TC-003-3",
+     "stage": "count",
+     "check": "confirmed_defects == 1",
+     "expected": true
+    },
+    {
+     "id": "TC-003-4",
+     "stage": "filter",
+     "check": "视觉美化主体未被计为缺陷（background）",
+     "expected": true
+    },
+    {
+     "id": "TC-003-5",
+     "stage": "attribution",
+     "check": "da00120f 对该缺陷 role == primary_fix",
+     "expected": true
+    },
+    {
+     "id": "TC-003-6",
+     "stage": "negative",
+     "check": "隐藏修复未被漏报（输出缺陷数 >= 1）",
+     "expected": true
+    },
+    {
+     "id": "TC-003-7",
+     "stage": "recurrence",
+     "check": "occurrence.kind == first；『隐藏修复』仍按首次发生登记",
+     "expected": true,
+     "rule": "recurrence-rules §2.1"
+    }
+   ],
+   "evidence_refs": [
+    "E4"
+   ],
+   "entry_type": "real",
+   "rule_refs": [
+    "references/recurrence-rules.md §2.1",
+    "references/filtering-rules.md §3.1"
+   ]
+  },
+  {
+   "case_id": "TC-004",
+   "category": "Commit 筛选",
+   "goal": "验证无 feat/fix 前缀的中文描述型修复提交被识别为修复，并据禅道编号与内容与既有缺陷归并。",
+   "raw_input": "E5 2c70dbdb，title=「表格切片修复：分隔行识别、真实表头继承、空壳行与<br>清理、禁表格上下文拼接（禅道 #14686）」，单父提交，无常规前缀；对应 Z-14686（resolved/fixed）。",
+   "expected_defect_count": "1",
+   "expected_filter": "不因无 feat/fix 前缀当作无关/需求；标题含『修复』+ 现象清单 +『禅道 #14686』→ 识别为缺陷修复。",
+   "expected_merge": "与禅道 #14686 归并为同一缺陷（high：编号锚定 + 内容吻合『表格切片/多余信息』）。",
+   "expected_attribution": "2c70dbdb role=primary_fix；#14686 作为 source_status.zentao 快照（resolved/fixed）。",
+   "expected_recurrence": "无。",
+   "basis": "标题显式『修复』『禅道 #14686』，正文逐条对应现象；禅道 #14686 标题与现象一致。",
+   "negatives": "不得因无前缀漏提；不得新建与 #14686 重复的『独立表格缺陷』；归并须编号+内容双核验。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 2,
+    "fix_actions": 1,
+    "independent_occurrences": 1,
+    "recurrence_events": 0,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 0,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-18~11-25；来源 gitlab+zentao（#14686 resolved 快照）；时间精度：秒级；未覆盖：复验记录；未知：环境身份"
+   },
+   "assertions": [
+    {
+     "id": "TC-004-1",
+     "stage": "filter",
+     "check": "无 feat/fix 前缀的中文修复标题被识别为修复（非无关/需求）",
+     "expected": true
+    },
+    {
+     "id": "TC-004-2",
+     "stage": "merge",
+     "check": "归并到禅道 #14686，merge_confidence == high（编号+内容双核验）",
+     "expected": true
+    },
+    {
+     "id": "TC-004-3",
+     "stage": "count",
+     "check": "confirmed_defects == 1 且 duplicate_candidates == 0",
+     "expected": true
+    },
+    {
+     "id": "TC-004-4",
+     "stage": "attribution",
+     "check": "2c70dbdb role == primary_fix；证据带 #14686 状态快照（resolved/fixed）",
+     "expected": true
+    },
+    {
+     "id": "TC-004-5",
+     "stage": "negative",
+     "check": "未新建与 #14686 重复的『独立表格缺陷』",
+     "expected": true
+    },
+    {
+     "id": "TC-004-6",
+     "stage": "recurrence",
+     "check": "occurrence.kind == first；禅道 resolved 只更新 source_status，不推进 lifecycle/不产生第二次发生",
+     "expected": true,
+     "rule": "output-schema §8；recurrence-rules §2.1"
+    },
+    {
+     "id": "TC-004-7",
+     "stage": "attribution",
+     "check": "#14686 的状态快照在 bug_links 上 role=status_evidence（不得当作 verified_fixed 的验证证据）",
+     "expected": true,
+     "rule": "output-schema §4/§8"
+    }
+   ],
+   "evidence_refs": [
+    "E5",
+    "Z-14686"
+   ],
+   "entry_type": "real",
+   "judge_notes": "禅道快照（2026-11-25）：#14686 resolved/fixed（解 陈昔 11-18），快照未变。",
+   "rule_refs": [
+    "references/output-schema.md §4/§8",
+    "references/recurrence-rules.md §2.1"
+   ]
+  },
+  {
+   "case_id": "TC-005",
+   "category": "跨源去重",
+   "goal": "验证一个缺陷对应多条提交时的正确归并与证据角色分配，且『复测反馈补修』不被误判为复发。",
+   "raw_input": "Z-14686（resolved/fixed，activatedCount=0）＋4 条提交：E5 2c70dbdb（主修）、E6 1388d78（补回归测试）、E7 fd01100（复测反馈：表头继承被非表格块打断时重置）、E8 2ac5f64（naive/md/table/image 多切片器补修）。",
+   "expected_defect_count": "1（同一条 #14686）",
+   "expected_filter": "4 条提交全部保留；E6 测试提交 role=status_evidence（回归证据），不作为独立缺陷。",
+   "expected_merge": "全部归并到 #14686；不得因 4 条提交产生 4 个缺陷；不得把『复测反馈』另立新缺陷。",
+   "expected_attribution": "E5=primary_fix；E7、E8=related_fix（复测补修）；E6=related（测试）。同一缺陷多证据、role 记在关联上。",
+   "expected_recurrence": "属同一发生的后续补修，非复发：禅道 activatedCount=0、直接 resolved，无 resolved→reopen 轨迹。",
+   "basis": "E5-E8 正文均含 #14686；禅道状态直接 fixed 而非重新激活。",
+   "negatives": "错并/错拆=否；不得把复测补修当『复发新发生』；不得把回归测试提交当缺陷。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 5,
+    "fix_actions": 4,
+    "independent_occurrences": 1,
+    "recurrence_events": 0,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 0,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-17~11-25；来源 gitlab（4 条提交）+zentao；时间精度：秒级；未覆盖：复验记录；未知：环境身份",
+    "reason_tag": "followup_unresolved（描述标签，不在枚举字段）"
+   },
+   "assertions": [
+    {
+     "id": "TC-005-1",
+     "stage": "count",
+     "check": "confirmed_defects == 1（同一条 #14686）",
+     "expected": true
+    },
+    {
+     "id": "TC-005-2",
+     "stage": "merge",
+     "check": "4 条提交全部归并至 #14686；输出缺陷条数 == 1",
+     "expected": true
+    },
+    {
+     "id": "TC-005-3",
+     "stage": "count",
+     "check": "fix_actions == 4（主修/回归/复测反馈补修/多切片器补修）",
+     "expected": 4
+    },
+    {
+     "id": "TC-005-4",
+     "stage": "attribution",
+     "check": "E5=primary_fix、E6=status_evidence（回归测试提交）、E7=related_fix、E8=related_fix",
+     "expected": true,
+     "rule": "output-schema §4（role 枚举与选择口径）"
+    },
+    {
+     "id": "TC-005-5",
+     "stage": "count",
+     "check": "independent_occurrences == 1（复测反馈不构成新发生）",
+     "expected": 1
+    },
+    {
+     "id": "TC-005-6",
+     "stage": "recurrence",
+     "check": "recurrence_events == 0 且 occurrence.kind 中无 repeat_after_fix / rollback_regress",
+     "expected": true,
+     "rule": "recurrence-rules §2/§3.2"
+    },
+    {
+     "id": "TC-005-7",
+     "stage": "negative",
+     "check": "回归测试提交（E6）未被计为缺陷",
+     "expected": true
+    },
+    {
+     "id": "TC-005-8",
+     "stage": "count",
+     "check": "fix_actions == 4 且四条独立处置可逐条枚举；若无法逐条枚举则输出 null 并注明，不得由提交条数推算",
+     "expected": true,
+     "rule": "recurrence-rules §3.6"
+    },
+    {
+     "id": "TC-005-9",
+     "stage": "merge",
+     "check": "归并动作没有顺带改判 kind 或补记复发：4 条证据归并后 occurrence 仍为 1 条 first",
+     "expected": true,
+     "rule": "dedup-rules §4.3"
+    },
+    {
+     "id": "TC-005-10",
+     "stage": "count",
+     "check": "统计按主记录聚合，别名不重复计数（confirmed == 1，不是 4）",
+     "expected": true,
+     "rule": "dedup-rules §4.3；recurrence-rules §3"
+    }
+   ],
+   "evidence_refs": [
+    "Z-14686",
+    "E5",
+    "E6",
+    "E7",
+    "E8"
+   ],
+   "entry_type": "real",
+   "rule_refs": [
+    "references/dedup-rules.md §4.3",
+    "references/output-schema.md §4",
+    "references/recurrence-rules.md §3/§3.6"
+   ]
+  },
+  {
+   "case_id": "TC-006",
+   "category": "问题链拆分",
+   "goal": "验证同一业务流程（解析/重解析）中根因不同的多个缺陷被拆分为独立缺陷，而不是按时间/位置批量并为一条。",
+   "raw_input": "三条同处解析流程、均 active 的独立缺陷：Z-15030（乱码探测整份走 DP 无产出、覆盖率虚报 1.0，对应 E9/MR!167『四条修法+覆盖率分母』）、Z-15032（全量重解析沿用旧切片策略，对应 E10/db52528）、Z-15036（容器 OOM P1，对应 E11 三条 feat + d988394）。",
+   "expected_defect_count": "3（各自独立）",
+   "expected_filter": "三条均保留为独立 candidate；不因『都在解析流程/同一天』合并。",
+   "expected_merge": "不合并：现象（乱码误判/切片策略/OOM）、根因、修复 MR 均不同。",
+   "expected_attribution": "Z-15030←E9；Z-15032←E10；Z-15036←E11（多提交=同一缺陷证据链）。",
+   "expected_recurrence": "无（均为首次登记）。",
+   "basis": "三缺陷现象与根因互不相同，仅共享『解析』业务域；各自有独立禅道号与修复分支。",
+   "negatives": "不得把『解析一波问题』归为 1 个；也不得把同一缺陷的多条修复拆成多缺陷（与 TC-007 反向校验）。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "expected_counts": {
+    "confirmed_defects": 3,
+    "suspect_defects": 0,
+    "evidence_items": 6,
+    "fix_actions": 3,
+    "independent_occurrences": 3,
+    "recurrence_events": 0,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 3,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-20~11-25；来源 gitlab+zentao（3 张 active 快照）；时间精度：秒级；未覆盖：闭环状态与复验；未知：环境身份"
+   },
+   "assertions": [
+    {
+     "id": "TC-006-1",
+     "stage": "count",
+     "check": "confirmed_defects == 3",
+     "expected": 3
+    },
+    {
+     "id": "TC-006-2",
+     "stage": "merge",
+     "check": "merge_groups == 3（三缺陷互不归并）",
+     "expected": 3
+    },
+    {
+     "id": "TC-006-3",
+     "stage": "attribution",
+     "check": "E9→#15030、E10→#15032、E11→#15036 映射正确",
+     "expected": true
+    },
+    {
+     "id": "TC-006-4",
+     "stage": "filter",
+     "check": "三条缺陷候选均保留（无被过滤丢弃）",
+     "expected": true
+    },
+    {
+     "id": "TC-006-5",
+     "stage": "negative",
+     "check": "未按『同在解析流程/同一天』批量归并为 1 条",
+     "expected": true
+    },
+    {
+     "id": "TC-006-6",
+     "stage": "recurrence",
+     "check": "三条 occurrence.kind 均为 first；互不生成对方 occurrence、互不增加 recurrence_events",
+     "expected": true,
+     "rule": "recurrence-rules §2.1/§3.4"
+    },
+    {
+     "id": "TC-006-7",
+     "stage": "count",
+     "check": "same_incident/caused_by 关联不计入 related_cases（该指标只统计 similar_class）",
+     "expected": true,
+     "rule": "recurrence-rules §3.4/§3.7"
+    }
+   ],
+   "evidence_refs": [
+    "Z-15030",
+    "Z-15032",
+    "Z-15036",
+    "E9",
+    "E10",
+    "E11"
+   ],
+   "entry_type": "real",
+   "judge_notes": "禅道快照（2026-11-25）：#15030/#15032/#15036 均 active 未解决。",
+   "rule_refs": [
+    "references/recurrence-rules.md §2.1/§3.4/§3.7",
+    "references/dedup-rules.md §5"
+   ]
+  },
+  {
+   "case_id": "TC-007",
+   "category": "证据归属",
+   "goal": "验证『一个 MR 覆盖多类问题』与『一个缺陷多条修法』两种情形的证据归属区分，role 定义在缺陷⇄证据关联上。",
+   "raw_input": "E12 71bc6835 / MR!163 body=「解析路由质检整改一批（文本层兜底/乱码探测/表格结构/切片页码/入库拆账）」（列明 5 类问题域）；对照 E9 534ac0c / MR!167 body=「15030 乱码误判四条修法 + 覆盖率分母」（同一 #15030 的四条修法）。",
+   "expected_defect_count": "MR!167：1（#15030，MR 正文编号锚定）。MR!163：不强制规定缺陷数量——正文虽列 5 个问题域（文本层兜底/乱码探测/表格结构/切片页码/入库拆账），但输入没有各域的独立现象证据；正确输出是把 5 个域各登记为候选域且互不自动归并、互不自动确认，缺陷数量字段输出 undetermined（或各域标 unconfirmed）；已带锚点的域（如乱码探测域与 #15030 对账）可确认归并或保留独立，歧义进人工复核。",
+   "expected_filter": "均保留；不把一批整改整体当单一缺陷，也不把同一缺陷的多条修法拆成多缺陷；MR!163 的 5 问题域各自成候选（unconfirmed），证据不足的域不强制确认数量。",
+   "expected_merge": "MR!163 与多个缺陷多对多关联；MR!167 仅关联 #15030。",
+   "expected_attribution": "同一 MR 对不同缺陷可承担不同 role（如对乱码探测=primary_fix，对表格结构=related_fix）；role 记在 bug_links 而非证据本体。",
+   "expected_recurrence": "无。",
+   "basis": "MR!163 标题并列 5 个不同问题域（非同一现象的四条修法）；MR!167 四条修法同属 #15030。",
+   "negatives": "不得『一 MR 只登记 1 缺陷』漏提；不得把同 bug 的多条修法拆成多 bug（错拆）；role 不得写成证据固有属性。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": null,
+    "evidence_items": 2,
+    "fix_actions": 2,
+    "independent_occurrences": null,
+    "recurrence_events": 0,
+    "suspect_range": [
+     1,
+     4
+    ],
+    "quantity_policy": "undetermined_until_evidence",
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 1,
+    "related_cases": 0,
+    "bugs_without_occurrence": 1,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-20~11-25；来源 gitlab（MR!167/!163 正文）；时间精度：秒级；未覆盖：5 个问题域各自的独立现象证据；未知：域数量（1~4 待定）"
+   },
+   "assertions": [
+    {
+     "id": "TC-007-1",
+     "stage": "count",
+     "check": "MR!167 关联 #15030 → confirmed_defects == 1",
+     "expected": true
+    },
+    {
+     "id": "TC-007-2",
+     "stage": "count",
+     "check": "MR!163 域数量字段为 undetermined 或各域 unconfirmed（未输出 2~5 的确定条数）",
+     "expected": true
+    },
+    {
+     "id": "TC-007-3",
+     "stage": "filter",
+     "check": "MR!163 的 5 个问题域各自登记为候选（既未并为 1 条缺陷、也未漏域）",
+     "expected": true
+    },
+    {
+     "id": "TC-007-4",
+     "stage": "count",
+     "check": "无锚点域的 confirmed 计数 == 0（证据不足不确认）",
+     "expected": 0
+    },
+    {
+     "id": "TC-007-5",
+     "stage": "attribution",
+     "check": "role 记在 bug_links（缺陷⇄证据关联）上，同一 MR 对不同缺陷可承担不同 role",
+     "expected": true
+    },
+    {
+     "id": "TC-007-6",
+     "stage": "merge",
+     "check": "MR!167 仅关联 #15030",
+     "expected": true
+    },
+    {
+     "id": "TC-007-7",
+     "stage": "negative",
+     "check": "#15030 的四条修法未被拆成 4 个缺陷",
+     "expected": true
+    },
+    {
+     "id": "TC-007-8",
+     "stage": "recurrence",
+     "check": "无锚定的问题域不生成 occurrence；bugs_without_occurrence ≥ 1 或按域标注未确认，不虚构发生",
+     "expected": true,
+     "rule": "recurrence-rules §2.2/§3.1"
+    },
+    {
+     "id": "TC-007-9",
+     "stage": "schema",
+     "check": "match_result 与 category 分列输出，不把筛选/匹配/语义分类的阶段枚举互相顶替",
+     "expected": true,
+     "rule": "output-schema §10.2.2"
+    }
+   ],
+   "evidence_refs": [
+    "E12",
+    "E9"
+   ],
+   "entry_type": "real",
+   "rule_refs": [
+    "references/recurrence-rules.md §2.2/§3.1",
+    "references/output-schema.md §10.2.2"
+   ]
+  },
+  {
+   "case_id": "TC-008",
+   "category": "复发识别",
+   "goal": "验证『原缺陷一直未解决/反复跟进补修』不被判为『已修复后再次发生的复发』，未 resolved 不得报已解决。",
+   "raw_input": "Z-15048（active，pri1，opened 温晓宇 2026-11-23 15:40，activatedCount=0，从未 resolved）＋E13：MR!185「标题噪声收紧…（#15048 跟进）」、MR!186「标题噪声收紧二轮…（#15048 跟进）」。",
+   "expected_defect_count": "1（#15048）",
+   "expected_filter": "保留；MR!185/!186 标 related_fix（跟进补修）。",
+   "expected_merge": "并入 #15048。",
+   "expected_attribution": "MR!185/!186 对 #15048 role=related_fix；两轮跟进均属同一缺陷的持续处理；独立发生次数保持 1。",
+   "expected_recurrence": "定性为『原缺陷一直未彻底解决、反复补修』（lifecycle=open，未到 verified_fixed）：未解决期间没有出现新的独立触发/异常证据（只有两轮跟进 MR），因此不登记 occurrence、repeat_unresolved_events=0；该状态由 lifecycle 与流转记录表达。“fix_not_live”“持续未解决”只作描述，不写进 occurrence.kind。未来若 reopened 且有新现象/时间/环境证据，才可按 §2.2 判 repeat_unresolved。",
+   "basis": "禅道 status=active、从未 resolved、activatedCount=0；两条 MR 标题均为『跟进』，缺部署/复验证据。",
+   "negatives": "不得因『修了两次』就报『复发新发生』；不得因 MR 合并就判『已修复上线』；不得把两轮跟进当两个独立缺陷。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 3,
+    "fix_actions": null,
+    "independent_occurrences": 1,
+    "recurrence_events": 0,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 1,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-23~11-25；来源 zentao（active，activatedCount=0）+gitlab（MR!185/!186）；时间精度：秒级；未覆盖：部署与复验证据；未知：无"
+   },
+   "assertions": [
+    {
+     "id": "TC-008-1",
+     "stage": "count",
+     "check": "confirmed_defects == 1 且 evidence_items == 3",
+     "expected": true
+    },
+    {
+     "id": "TC-008-2",
+     "stage": "count",
+     "check": "fix_actions 为 null 或 2（2 须逐条说明独立处置）；不得由两轮 MR 数直接推算",
+     "expected": "null 或 2（2 须逐条给依据）",
+     "rule": "recurrence-rules §3.6"
+    },
+    {
+     "id": "TC-008-3",
+     "stage": "count",
+     "check": "recurrence_events == 0 且 repeat_unresolved_events == 0 且 unresolved_open_bugs == 1",
+     "expected": true,
+     "rule": "recurrence-rules §2.2/§3.3/§3.7"
+    },
+    {
+     "id": "TC-008-4",
+     "stage": "recurrence",
+     "check": "occurrence.kind 中不含 repeat_unresolved（无新独立证据不建发生）",
+     "expected": true,
+     "rule": "recurrence-rules §2.2"
+    },
+    {
+     "id": "TC-008-5",
+     "stage": "recurrence",
+     "check": "『已解决』判定 == false（禅道快照 status == active）",
+     "expected": true
+    },
+    {
+     "id": "TC-008-6",
+     "stage": "attribution",
+     "check": "MR!185/!186 对 #15048 role 均为 related_fix",
+     "expected": true
+    },
+    {
+     "id": "TC-008-7",
+     "stage": "negative",
+     "check": "未据两轮 MR 生成 2 条 repeat_unresolved/复发事件；MR 合并未被判『已修复上线』",
+     "expected": true
+    },
+    {
+     "id": "TC-008-8",
+     "stage": "integrity",
+     "check": "coverage 写明时间精度（禅道快照/提交为秒级）与未覆盖项（部署与复验证据缺失）；不得把未解决写成已解决",
+     "expected": true,
+     "rule": "recurrence-rules §3.7/§3.8"
+    }
+   ],
+   "evidence_refs": [
+    "Z-15048",
+    "E13"
+   ],
+   "entry_type": "real",
+   "judge_notes": "禅道快照（2026-11-25）：#15048 active/P1/activatedCount=0，与 V1.1 案例编写时的 basis 一致。",
+   "rule_refs": [
+    "references/recurrence-rules.md §2.2/§3.3/§3.6",
+    "references/output-schema.md §10.2.1"
+   ]
+  },
+  {
+   "case_id": "TC-009",
+   "category": "信息完整性",
+   "goal": "验证证据不足/状态不明时进入低优先级待复核、不臆造缺陷与验证结论。",
+   "raw_input": "E14 8e05cad，subject=「feat(dc): 云端解析接入（华为 Aura sidecar）——独立分支，默认不启用」；body 明示『明确未验证：Aura 真机端点（无凭证）、OCR（交付包目录缺失）』。",
+   "expected_defect_count": "0（或至多 1 条 suspect，且不确认）",
+   "expected_filter": "标 candidate + priority=low / triage_reason=insufficient_evidence，或归入『需求/变更』类而非缺陷；状态字段标 unknown 并进 review.fields_unverified。",
+   "expected_merge": "无。",
+   "expected_attribution": "8e05cad 仅作 background，不升级为已确认缺陷证据。",
+   "expected_recurrence": "无。",
+   "basis": "body 明示『默认不启用』『明确未验证 Aura 真机/OCR』，无『实际现象 vs 预期』的不一致，也无复现证据；不足以判缺陷。",
+   "negatives": "不得把『未验证』当『已知问题』；不得编造验证结果或附件；缺陷数量与状态不得硬填确定值。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "expected_counts": {
+    "confirmed_defects": 0,
+    "suspect_defects": null,
+    "evidence_items": 1,
+    "fix_actions": 0,
+    "independent_occurrences": 0,
+    "recurrence_events": 0,
+    "suspect_max": 1,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 0,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-24~11-25；来源 gitlab（1 条提交）；时间精度：秒级；未覆盖：真机端点与 OCR 交付包；未知：是否成立（0~1 suspect）"
+   },
+   "assertions": [
+    {
+     "id": "TC-009-1",
+     "stage": "count",
+     "check": "confirmed_defects == 0",
+     "expected": 0
+    },
+    {
+     "id": "TC-009-2",
+     "stage": "count",
+     "check": "suspect 输出 ≤ 1 且状态 unconfirmed（0~1 区间，禁止 confirmed）",
+     "expected": true
+    },
+    {
+     "id": "TC-009-3",
+     "stage": "filter",
+     "check": "triage_reason == insufficient_evidence（或归类为需求/变更而非缺陷）",
+     "expected": true
+    },
+    {
+     "id": "TC-009-4",
+     "stage": "filter",
+     "check": "priority == low（或进入未确认复核池）",
+     "expected": true
+    },
+    {
+     "id": "TC-009-5",
+     "stage": "integrity",
+     "check": "『未验证』项登记到 fields_unverified，条目 == 2（Aura 真机端点、OCR 交付包目录）",
+     "expected": 2
+    },
+    {
+     "id": "TC-009-6",
+     "stage": "negative",
+     "check": "未编造验证结果；缺失附件/资料未被补造",
+     "expected": true
+    },
+    {
+     "id": "TC-009-7",
+     "stage": "integrity",
+     "check": "未确认候选不建 occurrence；coverage 指明证据缺口，不把 0 发生写成不存在",
+     "expected": true,
+     "rule": "recurrence-rules §3.1/§3.7"
+    }
+   ],
+   "evidence_refs": [
+    "E14"
+   ],
+   "entry_type": "real",
+   "rule_refs": [
+    "references/recurrence-rules.md §3.1/§3.7",
+    "references/filtering-rules.md §3.1"
+   ]
+  }
+ ],
+ "appendix_cases": [],
+ "coverage": [
+  {
+   "scenario": "数据清洗（纯 Merge/同步/无关 chore）",
+   "case": "TC-001",
+   "status": "已用真实证据覆盖"
+  },
+  {
+   "scenario": "Commit 筛选：Merge 正文独有 Bug 信息",
+   "case": "TC-002",
+   "status": "已用真实证据覆盖"
+  },
+  {
+   "scenario": "Commit 筛选：feat 中隐藏 Bug 修复",
+   "case": "TC-003",
+   "status": "已用真实证据覆盖"
+  },
+  {
+   "scenario": "Commit 筛选：无前缀缺陷修复 + 编号归并",
+   "case": "TC-004",
+   "status": "已用真实证据覆盖"
+  },
+  {
+   "scenario": "跨源去重：一缺陷多提交/复测反馈",
+   "case": "TC-005",
+   "status": "已用真实证据覆盖"
+  },
+  {
+   "scenario": "问题链拆分：相同业务流程不同缺陷",
+   "case": "TC-006",
+   "status": "已用真实证据覆盖"
+  },
+  {
+   "scenario": "证据归属：多域整改批 vs 单缺陷多修法（不强制数量）",
+   "case": "TC-007",
+   "status": "已用真实证据覆盖（V1.3 修订计数口径）"
+  },
+  {
+   "scenario": "复发识别（负向）：持续未解决/反复跟进 ≠ 复发",
+   "case": "TC-008",
+   "status": "已用真实证据覆盖（V1.3 增计数分离断言）"
+  },
+  {
+   "scenario": "信息完整性：证据不足/状态不明",
+   "case": "TC-009",
+   "status": "已用真实证据覆盖"
+  },
+  {
+   "scenario": "群聊提取：跨多消息归并同一缺陷（环境漂移）",
+   "case": "TC-A1",
+   "status": "已用真实证据覆盖"
+  },
+  {
+   "scenario": "群聊提取：一条长消息拆多缺陷 + 性能/边界/执行问题分口径",
+   "case": "TC-A2",
+   "status": "已用真实证据覆盖（V1.3 修订计数口径）"
+  },
+  {
+   "scenario": "群聊提取：需求→修复未生效",
+   "case": "TC-A3",
+   "status": "已用真实证据覆盖"
+  },
+  {
+   "scenario": "群聊提取：部署 pin 漂移（二次上报先查部署形态）",
+   "case": "TC-A4",
+   "status": "已用真实证据覆盖"
+  },
+  {
+   "scenario": "群聊提取：环境闪断不记缺陷 + 提示缺陷单独登记",
+   "case": "TC-A5",
+   "status": "已用真实证据覆盖"
+  },
+  {
+   "scenario": "群聊提取：证据缺口 partial + 平台播报不记缺陷",
+   "case": "TC-A6",
+   "status": "已用真实证据覆盖"
+  },
+  {
+   "scenario": "群聊提取：上游更正的事实版本管理",
+   "case": "TC-A7",
+   "status": "已用真实证据覆盖（V1.3 补 G25 输入）"
+  },
+  {
+   "scenario": "群聊提取：验收通过≠零遗留、执行问题/缺陷/观察项三分",
+   "case": "TC-A8",
+   "status": "已用真实证据覆盖（P-103 已核实 = 禅道 #15057）"
+  },
+  {
+   "scenario": "复发识别（正向）：已修复验证通过后 reopen 再发生",
+   "case": "TC-R1",
+   "status": "已合成覆盖（synthetic）"
+  },
+  {
+   "scenario": "复发识别（正向）：发布回滚/未部署到位导致重现 ≠ 复发",
+   "case": "TC-R2",
+   "status": "已合成覆盖（synthetic）"
+  },
+  {
+   "scenario": "复发识别（正向）：同类现象不同根因 → 两条独立缺陷",
+   "case": "TC-R3",
+   "status": "已合成覆盖（synthetic）"
+  },
+  {
+   "scenario": "历史提交处理：悬空 vs 可达去重/独有缺陷",
+   "case": "—",
+   "status": "本轮未覆盖：需对仓库 refs/reflog 做可达性分析，未采集，留待下一批"
+  },
+  {
+   "case_id": "TC-R4",
+   "scenario": "分环境验证适用范围按 canonical_name 判定（同分类不同环境）",
+   "covers": "verified_fixed 只覆盖 test-a；test-b 不继承；未覆盖环境进 recurrence_check",
+   "rule": "recurrence-rules §2.6/§4；output-schema §8/§10.5"
+  },
+  {
+   "case_id": "TC-R5",
+   "scenario": "回滚重现正向（rollback_regress）",
+   "covers": "曾 verified_fixed + 回退证据 + 同环境再出现 → 计入广义复发，子类型分报",
+   "rule": "recurrence-rules §2.4/§3.2"
+  },
+  {
+   "case_id": "TC-R6",
+   "scenario": "事件去重（日期精度混合 / report 交集 / 反证阻断）",
+   "covers": "同日合并仅认 report 交集；仅共享修复证据不合并；反证阻断；歧义进复核；原精度保留",
+   "rule": "recurrence-rules §3.8"
+  },
+  {
+   "case_id": "TC-R7",
+   "scenario": "归并时 occurrence 只迁移不重判",
+   "covers": "迁移不改 kind、不补记复发、别名不重复计数、审计保留",
+   "rule": "dedup-rules §4.3"
+  },
+  {
+   "case_id": "TC-R8",
+   "scenario": "offline 写入隔离与临时编号纪律",
+   "covers": "不写正式库/水位/编号；offline- 前缀；__TBD__ 降级；版本一致性",
+   "rule": "output-schema §1.2/§1.3；execution-rules §4/§5/§9"
+  }
+ ],
+ "gaps": [
+  "历史提交处理（悬空/可达）：本地克隆仅含单分支历史，未做 refs/reflog 可达性分层分析，本批未出该类案例。",
+  "MR 评审/审批流水（评论、diff 讨论）未随证据包采集；如需测『MR 讨论抽取』场景需另补。",
+  "附件类证据缺失已逐条标注（G10 截图、#15036 files=[]、E14 自述缺失项、G26 外发明细），不得补造。",
+  "群聊场景采样限于「数据小队」群 2026-11-16~11-24 窗口；撤回/编辑消息、跨群转发等形态未采样。",
+  "TC-R1/R2/R3 为 synthetic：其构造输入与答案均需评审确认后才可进入正式判分集。",
+  "全部『预期结果/断言』为按规则推导的候选参考答案，须人工确认；未经确认不得作为自动判分基准。",
+  "案例应作为独立测试集存放于 skill-evaluation/test-inputs 与 expected-results，不并入技能 examples/confirmed-cases。",
+  "分环境验证缺少真实跨环境证据（现有 TC-R1/R2/R4/R5 均为 synthetic），真实案例未采集到带 canonical_name 的复测记录。",
+  "事件去重缺少真实同日多源 occurrence 数据（TC-R6 为 synthetic），真实案例尚无同日两条以上 occurrence。",
+  "归并迁移缺少真实别名记录（TC-R7 为 synthetic），现有真实案例未出现 merge.merged_into 与 occurrence 并存。",
+  "offline 隔离缺少真实运行留痕（TC-R8 为 synthetic），本轮为静态规则推导，未实际执行。",
+  "coverage / verified_environments 无结构化字段定义（见《规则问题与待确认清单-V1.4》Q-09/Q-10），只能用文本断言判分。"
+ ],
+ "evidence_chat": [
+  {
+   "id": "G1",
+   "type": "群消息",
+   "locator": "2026-11-17 09:16:53 陈昔　msgJbsX7MvSYKkjbA5UkSsYVw==",
+   "excerpt": "「soso-dev环境，新建的应用，需要有默认的内置类目、字段、索引、词典」",
+   "usage": "需求原点 TC-A3",
+   "full_text": "@小圈圈 soso-dev环境，新建的应用，需要有默认的内置类目、字段、索引、词典",
+   "message_id": "msgJbsX7MvSYKkjbA5UkSsYVw=="
+  },
+  {
+   "id": "G2",
+   "type": "群消息",
+   "locator": "2026-11-17 10:05:14 小圈圈　msg/oPLunyutDj3WQ0IpdlB1Q==",
+   "excerpt": "已提交 MR !105（fix/dc-tenant-detail-20261117 → develop）；类目播种走 MR !104",
+   "usage": "执行回执 TC-A3",
+   "full_text": "@陈昔 \n 任务：soso-dev 非默认应用详情页切片为空、原文件预览和下载返回 404，已修改并提交 MR \n 已按上一轮的定位完成改动，并提交了 MR !105（状态 opened，author=陈昔 chenxi2， fix/dc-tenant-detail-20261117  →  develop ）： https://git.datagrand.com/Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center/-/merge_requests/105 提交： c67925e0 \n 后端  dc-server/server.py \n •新增  _doc_app(doc_id, app=\"\") ，按「显式参数、文档记录里的  app 、当前请求租户」的顺序解析租户；即使后台线程没有请求上下文，也能靠文档记录拿到正确的 app\n•es_fetch_doc_chunks  /  es_fetch_chunk  /  es_update_chunks_bulk  改用  app_es_alias(ES[\"alias\"], _doc_app(...)) ，更新走  ensure_index(_doc_app(...)) （此前固定读全局  soso_dc_chunks ，所以详情页显示「已入库 145 切片」但列表为空、修改切片返回 404）\n•retire_superseded  把旧文档的  app  传给切片清理和行资产清理\n•同类问题一并修： load_blocks  用切片回退重建解析块、 suggest_tags 、行资产重建、拆分时清理子文档、去重合并 \n 前端  src/lib/dc-api.ts \n •docPreviewPdf  改走  withPortalAuth() ，带上  X-Soso-App （原来用裸 fetch，非默认应用直接 404）\n•docFileUrl  直链补  ?app=<当前应用> （window.open 发不了请求头） \n 验证（都是本地、没连真实 ES） ： py_compile  通过；打桩测试 13 条断言全过（非默认应用读、单条读、bulk 更新都指向  soso_dc_chunks-testcx1 ，默认应用仍走  soso_dc_chunks ，显式 app 优先、无 app 时回落请求租户，retire 与 load_blocks/suggest_tags 传对租户）；前端两个文件用 TS 解析器检查 0 诊断。 没做 前端全量构建（本地无 node_modules）、没部署 81，所以还没拿  doc_4e70a14487a8 / doc_3a98f1779343  做页面回归。 \n 后续：这个 MR 需要合并后才会生效，合并后我可以用  testcx1  那两个文档做详情页回归（切片列表、解析文本、Office 预览、下载原文件）；合并和部署要你明确点头，我不会自己合。 \n 在圈圈查看任务",
+   "message_id": "msg/oPLunyutDj3WQ0IpdlB1Q=="
+  },
+  {
+   "id": "G3",
+   "type": "群消息",
+   "locator": "2026-11-17 11:25:38 陈昔　msgtFl4rfb9DVW0b1pJNp0DAA==",
+   "excerpt": "「合并 MR !104 、 MR !105 ，然后部署」",
+   "usage": "操作指令（非缺陷）TC-A3",
+   "full_text": "@小圈圈 合并 MR !104 、 MR !105 ，然后部署",
+   "message_id": "msgtFl4rfb9DVW0b1pJNp0DAA=="
+  },
+  {
+   "id": "G4",
+   "type": "群消息",
+   "locator": "2026-11-17 11:42:45 小圈圈　msgr0AHNLGrbFV8vd9yOTyNsg==",
+   "excerpt": "「MR !104 … merged，merge commit e4f28f1」「MR !105 … merged，merge commit 8ebc493」并已部署 soso-dev",
+   "usage": "修复事实 TC-A3",
+   "full_text": "@陈昔 \n 任务：合并 MR !104 / !105 并部署到 soso-dev（81） \n 两个 MR 已经合并，并已用合并后的代码部署完成。 \n 合并 \n •MR !104  feat(dc): 新建应用自动播种内置类目/字段/索引/词典  → merged，merge commit  e4f28f1\n•MR !105  fix(dc): 资产详情按文档所属应用读写切片与原文件  → merged，merge commit  8ebc493\n•两条都合进  develop （soso_data_center），无冲突 \n 部署（81 / soso-dev） \n •新镜像： dc_server:dev_20261117_mr104105 、 dc_frontend:dev_20261117_mr104105 （前端用合并后源码 vite 构建，后端基于现网  dev_20261115_multirepo  基础镜像打）\n•soso_dc_server 、 soso_dc_frontend  已  docker service update  并 converged，均  1/1 Running ，无重启 \n 验证 \n •/api/dc/health  正常（ES/oxr 地址在），公网  172.26.26.81:8866/api/dc/health  同样 200\n•/dc/  页面返回的新 bundle  assets/index-BXobeavL.js ，与本地构建产物一致（前端改动已生效）\n•容器内  /app/server.py  已含  ensure_builtin_config （6 处）和  _doc_app （10 处）， ast.parse  通过\n•配置接口  /api/dc/config/dictionaries  正常；启动日志显示为  soso_search_dvp  幂等补齐了缺失的内置字段  app （MR !104 的播种逻辑确实在跑） \n 一点说明：非默认租户（如 soso_guanyutest）的文档详情校验依赖门户登录态，匿名接口会落默认租户，我这边只能验证到「跨租户访问被正确隔离（404）、默认租户读写正常」。建议你用门户账号登进去，打开 soso_guanyutest 的一篇文档详情页确认 MR !105 的空白问题已修复——这是唯一需要人眼确认的一项。 \n 镜像目前只打在 81 本地，未推 registry；需要归档或给其他环境用时说一声我再推。 \n 在圈圈查看任务",
+   "message_id": "msgr0AHNLGrbFV8vd9yOTyNsg=="
+  },
+  {
+   "id": "G5",
+   "type": "群消息",
+   "locator": "2026-11-17 15:44:06 陈昔　msgm7pTOHsAfGiJoCD7UdLjHg==",
+   "excerpt": "「我刚刚创建了一个应用 ai_jian_zheng_quan ，这个应用依旧没有内置的类目、字段、索引、词典」",
+   "usage": "修复未生效 TC-A3",
+   "full_text": "@小圈圈 我刚刚创建了一个应用 ai_jian_zheng_quan ，这个应用依旧没有内置的类目、字段、索引、词典",
+   "message_id": "msgm7pTOHsAfGiJoCD7UdLjHg=="
+  },
+  {
+   "id": "G6",
+   "type": "群消息",
+   "locator": "2026-11-17 12:13:02 陈昔　msgu3iq+y95AT8oZxxZWtvxlg==",
+   "excerpt": "「首页搜索命中数据中心的切片，点击搜索结果列表的切片，查看原文时需要定位到对应切片的位置」",
+   "usage": "需求原点 TC-A4",
+   "full_text": "@小圈圈 soso-dev环境，首页搜索命中数据中心的切片，点击搜索结果列表的切片，查看原文时需要定位到对应切片的位置",
+   "message_id": "msgu3iq+y95AT8oZxxZWtvxlg=="
+  },
+  {
+   "id": "G7",
+   "type": "群消息",
+   "locator": "2026-11-17 15:36:18 小圈圈　msgD2ngRZ5VVVZFEls6Bt3Mmg==",
+   "excerpt": "「detail_url 已带切片锚点…打开详情页后右侧切片列表自动选中第 #N 片」「Playwright 实测 ?chunk=42 时切片 #42 选中」",
+   "usage": "首次交付证据 TC-A4",
+   "full_text": "@陈昔 \n 任务：首页搜索命中数据中心切片后「查看原文」定位原文 \n 已完成，改动已上线 soso-dev 并做了端到端验证： \n 实际效果 ：hybrid-search 返回的切片结果里  detail_url  已带切片锚点，例如  /dc/#/files/detail/doc_ddbd337a5d1d?chunk=10 ；打开详情页后右侧切片列表自动选中第 #N 片并滚动高亮，左侧预览（文本/PDF/Office）联动定位到对应位置。Playwright 实测  ?chunk=42  时切片 #42 选中、PDF 第 4/46 页段落高亮，无 console 报错。现网镜像  soso_search:dev_20261117_chunkdetail2 、 dc_frontend:dev_20261117_chunkfix2 。 \n 代码已提 MR（作者已回读为陈昔，目标 develop，均未合并） \n 1. pangu_search_online MR !4：fusion 侧给 data_center 条目拼  ?chunk= （兼容  chunk_index  与  chunk_metadata.chunk_idx ，无序号不拼空锚点），补了单测并通过 https://git.datagrand.com/Search_Recommend_Department/Intelligent_Search/soso_project/pangu_search_online/-/merge_requests/4\n2. soso_data_center MR !108：详情页解析  ?chunk=  自动定位，文本/PDF/Office/图片预览与切片列表双向高亮；数据库行资产不做定位 https://git.datagrand.com/Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center/-/merge_requests/108 \n 还需要你这边做的 ：两个 MR 我这边不合，要等评审合入 develop；合并后按既有镜像链路重建，soso-dev 就跑在主干上而不是临时分支镜像。 \n 一个待确认的小边界： ?chunk=  用的是 ES 返回的切片序号（从 0 起）。如果同一文档在两次入库之间重新切过片，旧链接的序号可能对不上——要不要加一层内容指纹兜底，你定。 \n 在圈圈查看任务",
+   "message_id": "msgD2ngRZ5VVVZFEls6Bt3Mmg=="
+  },
+  {
+   "id": "G8",
+   "type": "群消息",
+   "locator": "2026-11-18 10:37:03 陈昔　msgtiQ1Rcq/j+ZyVSiW1R4vCw==",
+   "excerpt": "「…点击搜索结果列表的切片，查看原文时依旧没有定位到对应切片的位置，看看是什么原因」",
+   "usage": "二次上报 TC-A4",
+   "full_text": "@小圈圈 soso-dev环境，首页搜索命中数据中心的切片，点击搜索结果列表的切片，查看原文时依旧没有定位到对应切片的位置，看看是什么原因",
+   "message_id": "msgtiQ1Rcq/j+ZyVSiW1R4vCw=="
+  },
+  {
+   "id": "G9",
+   "type": "群消息",
+   "locator": "2026-11-18 11:29:21 小圈圈　msg+EZ5mZcyku25sxY6sJOPXQ==",
+   "excerpt": "「不是代码问题，是部署被冲掉了。11-17 的定位修复当时只拿临时镜像…docker-compose.yml 里的 pin 一直停在修复前构建的 dev_20261115_multirepo…已切回含修复镜像并实测定位正常」",
+   "usage": "部署漂移根因 TC-A4",
+   "full_text": "@陈昔 \n 任务：排查 soso-dev「查看原文」不定位切片——部署被冲回旧镜像，已切回含修复镜像并实测定位正常 \n 原因 ：不是代码问题，是部署被冲掉了。11-17 的定位修复当时只拿临时镜像  dc_frontend:dev_20261117_chunkfix2  用  docker service update  挂上去， soso_deploy/docker-compose.yml  里的 pin 一直停在修复前构建的  dev_20261115_multirepo （bundle 里没有  ?chunk=  解析代码）；昨晚 18:55 develop 部署按 compose 重下发，把 dc_frontend 冲回旧镜像，于是再点「查看原文」就不定位了。后端没受影响。 \n 已处置 ：dc_frontend 已切到含修复的  dev_20261117_mr109 ，compose pin 同步改为该 tag（备份  docker-compose.yml.bak-20261118_chunkfix ），下次部署不会再冲掉。 \n 本轮实测（均为刚跑的真实结果） ： \n •现网  soso_dc_frontend  运行镜像 =  dev_20261117_mr109 ，与 compose pin 一致，服务 1/1；门户  /dc/  实际下发的 bundle（ index-CUtPf6v5.js ）含  get(\"chunk\")  定位代码。\n•search-online 现网镜像含切片锚点：多组查询实测 dc 结果均返回  detail_url=…/doc_xxx?chunk=N （如  doc_ddbd337a5d1d?chunk=99 、 doc_a25063de5c13?chunk=6 ）。\n•Playwright 端到端： doc_ddbd337a5d1d?chunk=99  → PDF 跳第 13/46 页、切片列表滚动到 #99； doc_a25063de5c13?chunk=6 （PPTX）→ PDF 第 5/6 页原文高亮、右侧「切片 #6」卡片选中描边。截图核对过，无 console 报错。 \n 你现在从首页搜索点「查看原文」应该就恢复了；如果浏览器还停着旧页面，先强刷一次（Ctrl+F5）再试。若仍不定位，把你点的搜索词或新标签页地址栏 URL 发我，我按那条链路继续查（仅混合检索链路带了切片锚点，走兜底旧链路的结果目前不带，这是下一个要补的点）。 \n 一个已确认的小边界：右侧列表的选中高亮会被「PDF 翻页联动」覆盖成命中切片所在页的第一片（同页多片时高亮首片），PDF 页码和原文高亮仍准确；要精确高亮命中片需要再改一版前端，需要的话我来改。 \n 在圈圈查看任务",
+   "message_id": "msg+EZ5mZcyku25sxY6sJOPXQ=="
+  },
+  {
+   "id": "G10",
+   "type": "群消息",
+   "locator": "2026-11-18 10:46:25 陈昔　msgCmF5P8WrpyrQQAH36nsppg==",
+   "excerpt": "「soso-dev环境，数据归集-上传文件后，选择智能加工策略，但是匹配加工策略失败」＋截图",
+   "usage": "现象（后归因环境）TC-A5",
+   "full_text": "@小圈圈 soso-dev环境，数据归集-上传文件后，选择智能加工策略，但是匹配加工策略失败，具体见截图如下[图片消息](mediaId=@lQLPJxY4vNGyiFnNAkrNB2iwzUDcy6d2UGkKzMFY8fLTAA)",
+   "message_id": "msgCmF5P8WrpyrQQAH36nsppg==",
+   "missing": [
+    {
+     "item": "G10 附带的报错截图",
+     "reason": "群消息附件未归档；本证据包仅存消息文本"
+    }
+   ]
+  },
+  {
+   "id": "G11",
+   "type": "群消息",
+   "locator": "2026-11-18 11:23:42 小圈圈　msgZbdxftOXDrLg6RROg717zA==",
+   "excerpt": "「匹配逻辑没有问题，是你测试的 10:38~10:49 那几分钟，soso_dc_frontend 正好被重新部署…返回 502（nginx 错误页而非 JSON），前端解析失败就把每个文件统一标成『匹配失败』」",
+   "usage": "环境外因 + 提示缺陷 TC-A5",
+   "full_text": "@陈昔 \n 任务：排查数据归集选智能加工策略后全部显示「匹配失败」的原因 \n 结论：匹配逻辑没有问题，是你测试的 10:38~10:49 那几分钟，soso_dc_frontend 正好被重新部署（multirepo→mr109），服务闪断，匹配接口 /api/dc/processing-strategies/match 返回 502（nginx 错误页而非 JSON），前端解析失败就把每个文件统一标成「匹配失败，上传时由服务端按文件类型匹配」。 \n 证据（soso-dev 三层日志时间线）： \n •10:35~10:38 另一会话的匹配请求全部 200，说明接口和匹配逻辑当时是好的；\n•10:38:40 dc_frontend 旧容器被杀（dc_server 日志出现对应 BrokenPipe），10:38:42~10:39:41 你发的匹配请求 1×499 + 4×502（8866 nginx 日志，soso-dev.datagrand.com/dc/）；\n•10:43~10:49 dc_frontend 以 mr109 镜像重新就绪；现网 compose 目前 pin 在  dc_frontend:dev_20261117_mr109 、 dc_server:dev_20261117_5d8cc15 。 \n 我按截图四个文件名实测 /match 全部 200 且匹配正确：两个文件名带「问答」的（xlsx/mp4）→问答/FAQ 加工策略、png→图片/扫描件加工策略、docx→通用文档加工策略。 页面上那个错误态是按文件缓存的，服务恢复后不会自动重试——刷新页面重进「数据归集」重新选一次文件即可恢复正常。 \n 两个值得改的点：① 前端把 502/401 等真实错误吞成了统一「匹配失败」文案，可以改成透出真实原因并自动重试一次，免得部署窗口撞车时误判；② mp4 因为文件名含「问答」被文件名关键词优先匹配到了「问答/FAQ」切片策略（媒体扩展名没有自己的推荐规则），视频被按 FAQ 切片多半不合预期。这两处要改的话说一声，我提 MR。 \n 在圈圈查看任务",
+   "message_id": "msgZbdxftOXDrLg6RROg717zA=="
+  },
+  {
+   "id": "G12",
+   "type": "群消息",
+   "locator": "2026-11-19 09:16:19 陈昔　msgEXrRIY1FPcuTcdis5lV+JQ==",
+   "excerpt": "「原文有标题，对应切片却显示无章节标题，看看是什么原因」＋图片",
+   "usage": "报告 TC-A1",
+   "full_text": "@小圈圈 原文有标题，对应切片却显示无章节标题，看看是什么原因[图片消息](mediaId=@lQLPJwnt4uH3MGXNAtbNBmiwairdaAWIPXkKzfZQzrYiAA)",
+   "message_id": "msgEXrRIY1FPcuTcdis5lV+JQ=="
+  },
+  {
+   "id": "G13",
+   "type": "群消息",
+   "locator": "2026-11-19 09:25:51 小圈圈　msg2voV9yw1h7IZgCL4XxZ33Q==",
+   "excerpt": "「不是解析丢标题，是 table 切片器没写 title 字段」「!124 的标题统一没有覆盖 build_chunks_table（server.py:6306），text 切片 title 仍硬编码为文档名（server.py:6353）」",
+   "usage": "初判根因（后被 G17 按切片器拆两因）TC-A1",
+   "full_text": "@陈昔 \n 任务：白皮书切片显示「无章节标题」原因排查，已定位（不是解析丢标题，是 table 切片器没写 title 字段） \n 根因（代码 + 数据都核实过） ： \n 1. 这篇文档入库时 智能解析按内容自动选中了 table 表格切片器 （ 表格行 68 行，占正文 27%  → 智能切片：table），不是 dg 通用切片器。\n2. !124 的标题统一 没有覆盖  build_chunks_table （server.py:6306）：它的 text 切片 title 仍硬编码为文档名（server.py:6353），表格切片只取紧邻表题、无表题也落文档名。\n3. 讽刺的是标题信息都在：blocks 留档里  # 1 摘要  就是 title 块，table 切片器还把它拼进了切片正文（就是截图里的「【1 摘要】」前缀），只是没写进 title 字段 → 前端见 title==文档名 → 降级显示「无章节标题」。 \n ES 实测 （soso_dc_chunks-testcx1_v1 / doc_c9991f55a0ea，135 片）：118 个 text 片 + 13 个 table 片 title=文档名，只有 4 个自带表题的表格片有真标题（如「表 4-1 平台分层说明」）；切片 #6 title=文档名，与截图完全吻合。 \n 影响面 ：全平台 45 篇 active 文档走 table 切片器（默认租户 20、广发 15、国家电投 6、testcx1 4），全部同样表现； build_chunks_image  也有同样的 doc_title 残留（server.py:6593，6 篇）。 存量回填救不了它们 ——backfill 重跑的还是同一个 table 切片器。 \n 修法 ：给  build_chunks_table  补 heading_stack（复用现成的 heading_level_text/push_heading，text 片 title=章节路径、表格片=自带表名>章节路径，content 不动）； build_chunks_image  兜底换成 chunk_fallback_title。合并部署后对这 51 篇跑一次回填即可。 \n 要修的话说一声，我开分支补这两个切片器提 MR。 \n 在圈圈查看任务",
+   "message_id": "msg2voV9yw1h7IZgCL4XxZ33Q=="
+  },
+  {
+   "id": "G14",
+   "type": "群消息",
+   "locator": "2026-11-19 09:29:01 Audrey　msgD9Y1wLdli3DXDmd+Zql+5A==",
+   "excerpt": "「我在改 es，稍等，等我改完」",
+   "usage": "同群他人环境变更 TC-A1",
+   "full_text": "@陈昔 我在改 es，稍等，等我改完",
+   "message_id": "msgD9Y1wLdli3DXDmd+Zql+5A=="
+  },
+  {
+   "id": "G15",
+   "type": "群消息",
+   "locator": "2026-11-19 16:04:12 Audrey　msgC/L1dLFp8mWpB8PZWH3MJA==",
+   "excerpt": "「改完了，」",
+   "usage": "环境变更完成 TC-A1",
+   "full_text": "@陈昔 改完了，",
+   "message_id": "msgC/L1dLFp8mWpB8PZWH3MJA=="
+  },
+  {
+   "id": "G16",
+   "type": "群消息",
+   "locator": "2026-11-19 16:40:08 陈昔　msg940Ddiaw6nHI8lYJyXBe0A==",
+   "excerpt": "「重新基于环境现在的情况，排查一下原因」",
+   "usage": "复查请求（非新缺陷）TC-A1",
+   "full_text": "@小圈圈 重新基于环境现在的情况，排查一下原因",
+   "message_id": "msg940Ddiaw6nHI8lYJyXBe0A=="
+  },
+  {
+   "id": "G17",
+   "type": "群消息",
+   "locator": "2026-11-19 16:48:18 小圈圈　msgravRolNpYHJJizPJSro8pA==",
+   "excerpt": "「环境确实变了，旧结论不能直接搬：soso_dc_server 现在是 dev_20261119_filechain2（今天 15:13 由其他会话部署）…上一轮定位用的 doc_c9991f55a0ea 在当前库已不存在」「同一个『无章节标题』现象是两个不同原因，要按文档的切片器区分」",
+   "usage": "重判（环境漂移致旧结论失效）TC-A1",
+   "full_text": "@陈昔 \n 任务：按现网最新情况重查白皮书切片「无章节标题」原因 \n 环境确实变了，旧结论不能直接搬： soso_dc_server  现在是  dev_20261119_filechain2 （今天 15:13 由其他会话部署）， soso_dc_frontend  是  dev_20261118_5d79f9c ，默认应用为  soso_search_dvp ，库内 213 篇文档 / 32483 片。上一轮定位用的  doc_c9991f55a0ea  在当前库已不存在，所以全部重新取证。 \n 结论：现网同一个「无章节标题」现象是两个不同原因，要按文档的切片器区分。 \n 一、table 表格切片器 —— 仍是代码缺陷，不是在写库环节丢的 \n •运行镜像和 develop 的  build_chunks_table  完全一致：没有标题栈，text 切片  title  写死为文档名，表格切片只取「表题 > 最近标题」。\n•实测  chunk-preview?doc_id=doc_ddbd337a5d1d&parser_type=table （多模态数据湖技术建议书.pdf）：328 片，text 片 title 全是「多模态数据湖技术建议书」，而正文开头是「【1.1 支撑复杂场景智能决策的需要】」——标题块被拼进正文当 pending_title，没写进 title 字段。\n•现网影响面：16 篇 table 文档、2714 片，2083 个 text 片里 2050 个 title=文档名（灵石县 945/950、三宝营 818/841、光伏组件 184/215、JYJC 163/176 与 48/51 等）。\n•对该篇跑  titles-backfill  dry_run： changed=0  ——  回填救不了 table 切片器 ，必须改代码。 build_chunks_image  同样用 doc_title 兜底（6 篇）。 \n 二、dg / naive / md / qa 切片器 —— 代码已修好，是存量数据没回填 \n •这些切片器在 develop 和运行镜像里都已有标题栈（ heading_path_of  /  push_heading  /  chunk_fallback_title ）。\n•但 43 篇 dg 文档的 289 个 text 片是 11-18 21:00（!124 部署）之前切的，ES 里存的还是文档名。用同一份解析块现切  doc_22e85d405a4c ，text 片 title 已是「一、XX系统服务 / 二、培训服务」；对其 dry_run  changed=38 。\n•全租户 dry_run：171 篇里 168 篇可算， 31 篇 483 片需要改 （dg 23 / naive 6 / md 1 / qa 1）；3 篇被护栏跳过（软团队AI变革进程 43vs42、财管公式 24vs23、繁峙县 es=0），3 篇  db://  文档按设计无切片。 \n 两类为什么界面表现一模一样 ：前端  chunkChapterTitle （files.detail.$id.tsx:195-200）判断  title === doc.title || title === file_name  就返回空，直接显示「无章节标题」。table 切片器产出的 title 正好等于 doc.title，老数据的 title 也正好等于 doc.title，界面上区分不出来。 \n 下一步（按性价比） ：① 立刻跑一次  titles-backfill （dry_run 已确认 483 片可改、0 冲突），能马上消掉 dg/naive/md 这批老文档的「无章节标题」；② table 那 16 篇要先给  build_chunks_table  补标题栈（复用现成 heading_path_of/push_heading，表格片取 表题>章节路径）， build_chunks_image  兜底换  chunk_fallback_title ，合并部署后再回填一次。 \n 这两步可以直接做，回一句「回填」我就先跑存量，或说「修代码」我先开分支补 table 切片器提 MR。 \n 在圈圈查看任务",
+   "message_id": "msgravRolNpYHJJizPJSro8pA=="
+  },
+  {
+   "id": "G18",
+   "type": "群消息",
+   "locator": "2026-11-19 16:53:37 Audrey　msginDCV6K7Anxpd63T7AQY9w==",
+   "excerpt": "「回填+修代码」",
+   "usage": "指令 TC-A1",
+   "full_text": "@小圈圈 回填+修代码",
+   "message_id": "msginDCV6K7Anxpd63T7AQY9w=="
+  },
+  {
+   "id": "G19",
+   "type": "群消息",
+   "locator": "2026-11-19 16:59:39 小圈圈　msgNfoDMIbb1oGD8NAg623SQw==",
+   "excerpt": "「存量回填：已写入 483 片，0 失败…有 3 篇被 align_skipped 护栏跳过，即重建后的切片数与 ES 中的切片数不一致，因此不做回填」",
+   "usage": "数据补救 + 已知限制 TC-A1",
+   "full_text": "@温晓宇 \n 任务：切片标题「存量回填」+ 补 table/image 切片器代码，这两件事都已完成 \n 1) 存量回填：已写入 483 片，0 失败  在 81 的现网环境（ soso_dc_server=dev_20261119_filechain2 ）上先跑了一次 dry_run（试运行）：共 171 篇文档，有 483 片需要修改；再用  dry_run=false  正式执行，实际更新 483 片、失败 0 片。有 3 篇被  align_skipped  护栏跳过，即重建后的切片数与 ES 中的切片数不一致，因此不做回填（软团队AI变革进程 43vs42、财管公式 24vs23、繁峙县 es=0）；另有 3 篇  db://  文档本来没有切片，属正常。抽验  doc_0aa059e2a6b7 （兴业会议纪要，101 片）后确认：切片标题已从只显示文档名，变成按章节显示，如「一、会议主题」「二、会议核心内容」「三、我方平台及产品能力介绍」。 \n 2) table / image 切片器的代码已补齐，已提交 MR !128  https://git.datagrand.com/Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center/-/merge_requests/128 \n •分支  fix/dc-table-image-titles-20261119 ，提交  55b08fd ，基于最新 develop  fdeafb4b\n•build_chunks_table  补上了标题栈：text 切片的 title 取章节路径，table 切片取「表格自带表名 > 章节路径」，image 切片同样如此，没有章节时回落到文档名；正文里「【最近标题】」前缀的规则保持不变，content、chunk_idx 和向量都没有改动\n•build_chunks_image  同样补上了标题栈：没有章节时沿用「文档名 · 第 N 页」，单页且无章节时改用内容首行兜底\n•新增 4 个单元测试， tests/  全量  152 passed ；用现网  doc_ddbd337a5d1d  的 blocks 跑了一遍新的 table 切片器：共 328 片，310 个 text 切片里 title 仍是文档名的有  0 个 （现网 ES 里是 2050/2083），首个切片的 title 已是「1.1 支撑复杂场景智能决策的需要」\n•这个 MR 的作者是  wenxiaoyu （本轮 GitLab 绑定账号），负责人已设为陈昔  chenxi2 \n 尚未生效的部分 ：!128 还没合并、也没部署。table 那 16 篇（2714 片）要等这次修复上线后，再跑一次  titles-backfill ，界面上才会显示章节标题；回复「合并部署」我就合并、部署 81，并补跑这批回填。 \n 在圈圈查看任务",
+   "message_id": "msgNfoDMIbb1oGD8NAg623SQw=="
+  },
+  {
+   "id": "G20",
+   "type": "群消息",
+   "locator": "2026-11-19 17:33:04 陈昔　msgUbeb6B5oJAb389z6SDitHQ==",
+   "excerpt": "「合并部署」",
+   "usage": "指令 TC-A1",
+   "full_text": "@小圈圈 合并部署",
+   "message_id": "msgUbeb6B5oJAb389z6SDitHQ=="
+  },
+  {
+   "id": "G21",
+   "type": "群消息",
+   "locator": "2026-11-19 17:45:36 小圈圈　msg5yDduaZ0p61PYcc6F8ffow==",
+   "excerpt": "「!128 已合入 develop，merge commit a1841997」「soso_dc_server：dev_20261119_filechain2 → dev_20261119_filechain2_title128，现网 1/1」",
+   "usage": "修复上线 TC-A1",
+   "full_text": "@陈昔 \n 任务：MR !128 合并、部署 81、table/image 文档存量回填，已完成并现场复验 \n 合并 ：!128 已合入  develop ，merge commit  a1841997 ，合并时间 2026-11-19 17:34（本轮经 GitLab API 回读确认  state=merged ）。 \n 部署 81 （旧→新）： \n •soso_dc_server ： dev_20261119_filechain2  →  dev_20261119_filechain2_title128 ，现网  1/1\n•soso_dc_frontend 不动 ，仍是  dev_20261118_5d79f9c ， 1/1 （!128 只改 dc-server，前端已有「无章节标题」降级 UI）\n•现网镜像  dev_20261119_filechain2  里含有其他会话未合并的 shared-index 改动，不能拿 develop 的 server.py 直接构建，所以取运行镜像里的 server.py 叠加 !128 的 diff 后再打包；回滚 tag 保留  dev_20261119_filechain2 \n 存量回填 ：先 dry_run（171 篇 / 2505 片可改）→  dry_run=false  实写  2505 片、0 失败 ；3 篇被  align_skipped  护栏跳过（软团队AI变革进程 43vs42、财管公式 24vs23、繁峙县 es=0），3 篇  db://  无切片属正常。刚才再跑一次 dry 探针： docs_ok=168 / docs_failed=3 / changed=0 ，已收敛。 \n 现场复验 （刚在 81 上跑的）： \n •chunk-preview?doc_id=doc_ddbd337a5d1d&parser_type=table ：328 片，首片 title 已是「1.1 支撑复杂场景智能决策的需要」，第 4 片起是「2总体架构」——table 切片器标题栈生效\n•chunk-search?q=支撑复杂场景智能决策 ：落库切片 title 就是章节名，不再是文档名\n•compose pin 已同步远端  soso_deploy/deploy_dev ，提交  a9ce687 ，pin 为  dc_server:dev_20261119_filechain2_title128  +  dc_frontend:dev_20261118_5d79f9c \n 一个数据质量提醒：部分 PDF（如灵石县那份）解析时把页脚「第 199 页 共319 页」识别成了标题块，回填后它的切片标题会是「6.附件 / 第 199 页 共319 页」这类，不再是无标题但偏噪。要更干净得在解析端加页眉页脚过滤，属于另一个改动，这次没动；要做的话我可以单独开分支。 \n 在圈圈查看任务",
+   "message_id": "msg5yDduaZ0p61PYcc6F8ffow=="
+  },
+  {
+   "id": "G22",
+   "type": "群消息",
+   "locator": "2026-11-22 16:18:55 Audrey　msg667v8MDLaXiGQ1o1oiUB4g==",
+   "excerpt": "一条 1,941 字消息：【我独立取的现状】4 组（报数 93/89/7 vs 87；排队第 50 位已等 5100 秒而预计 1600 秒；81 dc_server 只用 0.22 核/限额 8 核、51 GPU6 98% 而 GPU0–5 全 0%；21 个失败任务卡在「排队中/解析中」、任务列表接口写死 200 行）＋【五个目标】验收口径＋【四件事】追问",
+   "usage": "一消息多缺陷 TC-A2",
+   "full_text": "@小圈圈  直连 OXR 上线了就接着往下推，不用停。这件事从现在起由我按质检口径逐项复测，你做完在群里报结果和证据路径，不用等我问。\n\n【我独立取的现状，16:12 实测】\n\n1. 原素材那批共 87 个任务，69 完成、18 失败、0 在跑。失败里音视频 4 个全是 ASR 超时，大 PDF 写 ES 断管 2 个（2740 条和 5741 条切片全丢），1779 页超限 1 个，不支持格式 11 个。你之前报的 93 个文件、89 个任务、7 个重复，和 87 对不上。\n\n2. 压测那批 86 分钟完成 26 个，约每小时 18 个；排队第 50 位已等 5100 秒，预计等待却显示 1600 秒。\n\n3. 81 的 dc_server 只用 0.22 核（限额 8 核）。51 的 GPU6 利用率 98%，GPU0 到 GPU5 利用率全是 0%，上面挂着 layout、ocr、table、formula 等 worker 进程，还有 3 个 dp_unite 副本。\n\n4. 21 个失败任务的文案还停在「重新排队、排队中、解析中」；任务列表接口写死只回 200 行，分页参数无效。\n\n【五个目标怎么验收，每项都要原始采样】\n\n1. 速度：整批端到端页/分钟 = 总页数 ÷（最后一个完成时刻 − 提交时刻），另报个/小时和单文件时延 p50、p95。目标不低于整改前基线的 10 倍，并报出你压出来的上限 N。\n\n2. 资源利用率：吞吐饱和度 = 实测总吞吐 ÷ 各解析实例单发吞吐之和，要求不低于 70%；解析 GPU 利用率按秒采样，中位数不低于 70%。并发按 1、2、4、8、16、32 做梯度，取拐点留余量。\n\n3. 一次性成功率：不靠重试一次就成功的文件数 ÷ 可解析文件数，目标 100%；最终完成率 100%；卡死 0、超时 0；没到 100% 的每个失败给根因。\n\n4. 完整性：逐文件对账表，提交数 = 完成 + 重复跳过 + 预检拒绝 + 失败；每个 PDF 页覆盖率 100%（空白页单列）；分段并行的页号集合等于 1 到 N，不缺不重；空切片 0 个。AES 加密那份的去向也写进对账表。\n\n5. 准确性：沿用字符 3-gram F1 加覆盖率，但 DP 和 OXR 同一批文件各跑一遍做对比，按文件类型给分流建议；覆盖率不在 0.95 到 1.05 的、F1 低于 90 的逐个给原因。77.8、85.6、86.9 那三份 docx 和覆盖率 1.26 那份先查清。换引擎后不许比 DP 基线低 2 分以上。\n\n【边改边用数据钉死这四件事】\n\n1. dp.datagrand.cn 后面是不是就是 51 这套 dp_v2。如果是，旧链路的瓶颈在 87 的 dgpe-worker 派发并发（你昨天量到 8 个在途只有 1 个在解析），给出这个上限、能不能调、归谁管。\n\n2. OXR 模型才 3.0G，显存大头是 vLLM 预留。降预留能不能在 51 的 GPU0、2、4（各空闲 10.9 到 13.1G）再起 2 到 3 份，实测吞吐掉多少。其他 GPU 机器也盘一遍，给卡级清单。\n\n3. 每个文件各阶段耗时分解（转换、解析、切片、写 ES、本体、图谱），哪个阶段累计占用解析槽最久先治哪个。本体推送同步占 worker 这轮解决。\n\n4. 两条解析链路同时用，按文件类型和准确率分流，不搞一刀切。\n\n【必须修的缺陷，逐条录禅道后把单号回我】\n\n1. 音视频 4 个全败：600 秒一段、超时也是 600 秒，等于必超。\n\n2. 解析完写 ES 断管丢全部切片：用 MAT-041 和 MAT-004 原文件复测。\n\n3. 超过 1000 页的自动拆分入库再合并，不要让用户手动拆。\n\n4. 失败任务残留进行中文案；任务列表接口加真分页；预计等待算准。\n\n5. 11 个不支持格式：vsd、vsdx、rar 能自动转的就转完入库，dwg、ofd 转不了的明确拒绝并给办法，逐个格式给结论。\n\n6. 82 个压测文件现在混在 soso_search_dvp 正式应用的资产目录和 ES 里。以后压测走独立测试应用，测完清理。\n\n【注意事项】\n\n1. 81 是共享机，load 40 以上，根盘只剩 15G，new-data 剩 51G。每次压测前先报磁盘余量，并带背压，不许把宿主打到影响其他租户。\n\n2. dp.datagrand.cn 和 51 的卡都是共享的，先拿到并发上限再压。\n\n3. 预检拒绝不计入熔断统计；重试不得重跑已成功的阶段。\n\n4. 完整口径在附件《测试计划》里，按它出一份《压测报告》，原始采样留路径。",
+   "message_id": "msg667v8MDLaXiGQ1o1oiUB4g=="
+  },
+  {
+   "id": "G23",
+   "type": "群消息",
+   "locator": "2026-11-23 00:04:10 Audrey　msgjIQSGx9fu/qInPXwuhu4Ww==",
+   "excerpt": "「速度：批量 76.5 页/分钟，单份大文件 48.9。这一批 99.9% 的页带文本层…」",
+   "usage": "后经自我更正 TC-A7",
+   "full_text": "@小圈圈  温晓宇刚定了方向：目标只有一个，把他这批素材解析得又快又好又准。没达到的要求由你改到位，不再只报「未达标」。这条请在当前工作线处理，不要另开线程部署。\n\n【边界，先说死】\n\n1. 23:32 起跑的 93 文件全量还在跑。跑完并且我复核之前：不合并部署仓、不发布、不清库、不往 soso_dc_qa 传文件、不占用两个解析实例。开发和自测在现网之外做，用独立目录和独立进程，不经过 dc_server。\n\n2. 这一轮全量的结果和逐文件表留档，不许删，新路径要拿它做对照。\n\n3. 清库、发布、批量上传这类动作之前，先确认没有别的线在跑。今晚 23:25 那次清库把另一条线做到 85% 的云池一起删了，不许再发生。\n\n4. 大模型只用公司网关上已有的，不调外部接口。\n\n【现在差在哪】\n\n5. 速度：批量 76.5 页/分钟，单份大文件 48.9。这一批 99.9% 的页带文本层，却全部渲染成图片走 OXR，单卡约 1 页/秒是这条路线的上限。\n\n6. 利用率：批量饱和度 65%，单文件 41%，都没到 70%。\n\n7. 一次性成功和完整性：正式应用里原批 18 个失败；dwg、ofd、rar 共 4 个文件直接被拒；54 个 PDF 里有 23 页有文本但没产出。\n\n8. 准确性：xlsx 等低分文件的清洗调优没做；现在的打分基准就是 PDF 文本层，看不出阅读顺序和表格结构对不对。\n\n【要做成什么样：按文件选解析路径】\n\n9. 参照合合的做法：电子档直接读文本层是最快的一档，扫描件走小模型级联，视觉大模型只做可选档，按页并行。\n\n10. 每个文件先算一遍特征：格式、页数、带文本层的页占比、乱码比例、图片覆盖、表格线密度。规则能定的直接定：\n\na. 文本层可用的 PDF 和转成 PDF 的 Visio：直接读文本层，带坐标取块，判断分栏和阅读顺序，去页眉页脚，表格从文本层重建。只用 CPU。\n\nb. 扫描件和图片：走 51 上的 DP 级联，失败再走 OXR。\n\nc. 拿不准的页、复杂表格、公式、手写：走 OXR。同一份文件里按页混走。\n\nd. rar：解包后里面每个文件按上面的规则各自处理。ofd：有文本层直接读，没有就转成图再识别。dwg：抽出文字标注、图块名、图框标题栏入库，并注明只含图纸文字。\n\n11. 规则拿不准的新文件，交给大模型判断一次：输入是特征摘要加抽 2 到 3 页（网关有视觉模型就带页面图，没有就带文本层片段），输出固定 JSON：文档类型、路径、参数、置信度、理由。置信度低的走最稳的 OXR 并标出来。\n\n12. 路径记忆：判断过的按类别记进路径表，类别由格式、特征档、文档类型组成，对应路径、参数、成功率和质量抽样结果。同类文件再来了直接查表走，不再调模型。每类定期抽 5% 复核，失败或质量下降就降级该类别并重新判断。每个文件记下特征、路径、是否查表命中、是否调过模型、耗时。\n\n13. 质量把关：每个文件解析完自动比对文本量、页覆盖、乱码和重复行比例，异常的回退 OXR。再抽样让模型对照页面图检查阅读顺序和表格，结果回写路径表。\n\n14. 单份大文件的并行度从 2 提到 4 到 6。文本层通道按容器 8 核配满，不够就报需要多少核。瓶颈挪到了清洗、切片或写库，报出来并一并解决。\n\n【怎么验收，同一批 93 个文件】\n\n15. 速度：全批端到端 30 分钟以内，争取 20 分钟，今晚这一轮的实际用时做对照。单份 1779 页的解析 3 分钟以内。\n\n16. 利用率：批处理期间不出现有活没干、资源闲着。每条通道的饱和度和瓶颈在哪一级都要报。\n\n17. 一次性成功：压测应用 83 个全部一次成功；正式应用原批 87 个全部有结果，包括那 4 个被拒的格式。\n\n18. 完整性：93 个文件逐个有着落；页覆盖不低于 99.5%，其余页逐页写原因；现在那 23 页有文本没产出的要归零。\n\n19. 准确性：同口径 3-gram F1 不低于 OXR 的中位 92.2。另外抽不少于 30 页（多栏 15、表格 15），对照页面图和 OXR 结果核阅读顺序和表格，错的不超过 5%。低分文件清洗调优后给同口径前后对比。\n\n20. 交：五项指标各一个数、逐文件对账表、路径表、模型调用次数和耗时、按秒采样的原始文件。\n\n【顺序】\n\n21. 现在：出方案，同时开始离线开发。方案写清路径表结构、模型判断的输入输出、文本层通道怎么做、三种格式怎么支持。方案直接做，不用等我回。\n\n22. 全量跑完我复核后，先用现在的版本把正式应用原批 18 个失败件里能救的重跑，那 4 个格式除外，让温晓宇明早能看到结果。\n\n23. 新路径做完自测后合并成一次发布，发布前群里说一声。发完在压测应用重跑同一批 93 个，按 15 到 20 交结果。\n\n24. 我复核通过后，正式应用里这批 87 个按新路径重跑一遍，交最终逐文件状态。\n\n25. 旧账别丢：81 磁盘扩容今天提；图谱删除接口（15017）追到人为止；你报告里说 87 的 GPU 和 saas-prod 共用，给我 nvidia-smi 的进程清单；项目结束拆掉常驻采样。",
+   "message_id": "msgjIQSGx9fu/qInPXwuhu4Ww=="
+  },
+  {
+   "id": "G24",
+   "type": "群消息",
+   "locator": "2026-11-23 01:29:04 Audrey　msg1zMWZXBYJx6w9n9Ra5Q7nA==",
+   "excerpt": "「【先更正我的错】我 00:04 那条第 5 点说『这批 99.9% 的页带文本层』，错了…51 个 PDF 共 8,041 页，没有文本层的 842 页，占 10.5%；30 字以上 6,852 页，占 85.2%」",
+   "usage": "更正版本 TC-A7",
+   "full_text": "@小圈圈  93 文件全量 01:16 跑完了，我核完了，结论和下一步一起给你。方案我看过，有三处要改，另外我有一个数报错了，先更正。这条请在你当前工作线处理，不要另开线程部署。\n\n【先更正我的错】\n\n1. 我 00:04 那条第 5 点说「这批 99.9% 的页带文本层」，错了。我在 81 上逐页数过：51 个 PDF 共 8,041 页，没有文本层的 842 页，占 10.5%；30 字以下的 347 页；30 字以上的 6,852 页，占 85.2%。没有文本层的主要是 9 个整本扫描件，约 800 页：MAT-041 评定标准 252 页、MAT-042 公路沉管隧道 130 页、MAT-038 124 页、MAT-050 122 页、MAT-037 66 页、MAT-036 31 页、MAT-048 28 页、MAT-047 22 页、答疑澄清说明文件 22 页。\n\n2. 这改变了方案的分量：文本层通道管 85% 的页，剩下约 800 页扫描件必须靠 DP 级联或 OXR。DP 级联在这 9 个扫描件上的速度和质量现在是空白，M2 里先实测出来，和 OXR 对比后再定扫描件走哪条。\n\n【全量的结果，我自己取的数】\n\n3. 通过的：你 01:23 报的数和我独立取的一致。83 个全部一次成功，失败 0、重试 0；93 个文件对上账（83 个入库，6 个重复都留了痕，4 个格式不支持被拒）；加工策略都匹配上了；全程没有重启。\n\n4. 速度没到线：83 个用了 104.9 分钟，8,041 页合 76.7 页/分钟，是双实例上限的 65%。00:38 以后只剩云池一份在跑，33 分钟只用上 6 个槽里的 2 个。\n\n5. 完整性没到线，其中一条是 P1 缺陷：8,041 页里 7,876 页有块，97.95%。MAT-050 天津市建筑工人施工现场安全指导手册 122 页里只有 24 页有块，第 34 到 122 页共 89 页连着全空，却显示完成。你把这 98 页归成空白或纯图，我不同意：我把第 40 页和第 90 页渲染出来看了，每页都有标题和一条安全提示，约 60 字，例如「大模板在吊运前要认真检查吊绳和锁具，防止吊运过程中出现模板坠落」。这是 89 条安全注意事项全丢了。录禅道，P1：查清是 OXR 没返回文字还是后处理丢了，逐页给出结果并重跑；新路径里扫描件连续多页没有块要判异常，回退到 DP 级联。\n\n6. 文档详情的页覆盖字段不对：MAT-050 只有 24/122 页有块，page_coverage 却显示 1.0。录禅道，P2。\n\n7. 51 的解析卡我自己采到中位 93%，和你的一致；87 卡的 88% 是你的采样，我登不上那台机器，核不了。服务进程 CPU 中位 0.03 核，全程在等识别结果。\n\n【现在可以做的一件事】\n\n8. 用现在的版本，在正式应用里把原批 18 个失败件中能救的 14 个重跑：7 个 Visio、4 个音视频、MAT-004、MAT-041、云池。这 14 个今晚在压测应用里都过了。要求：只动这 14 个；带身份；跑完报每个的状态、页覆盖、切片数；旧的失败记录要变成完成或标成已被取代，列表里不许再显示那 4 个格式以外的失败；这一步不发版。哪条线接都行，接了在群里说一声。\n\n【方案要改的三处】\n\n9. OXR 兜底的耗时估错了。方案按 6 并发约 6 页/秒算（350 页 60 秒、573 页 95 秒），实测两台机器上限约 2 页/秒，今晚整批平均 1.3。350 到 573 页要 3 到 8 分钟，云池过不了 3 分钟线。按实测速率重算，稀疏页先试 DP 级联。\n\n10. 云池的页数口径和你对一下：我数的是没有文本层 0 页，30 字以下 271 页，100 字以下 424 页。你说的「350 空文本、573 低文本」请写明阈值。\n\n11. 准确性的验法要换。文本层通道的输出本来就来自文本层，拿文本层当基准打分天然接近满分。改成结构核对：抽不少于 30 页（多栏 15、表格 15），把页面图、文本层通道的输出、OXR 的输出三样放到 81 的 /root/dc_qa_20261122/report/ 下，我对照页面图独立核阅读顺序和表格，错的不超过 5%。这一步放在 M2 结束时做，不要等到发布以后。\n\n【其余】\n\n12. dwg 那 2 个文件以入库为终点。两个工具链都装不上就回来找我，不要自己降级成拒绝。\n\n13. 81 上 soso-format-convert 容器一直占 4 到 5 核，批次跑完也没降。查一下里面 4 个 dp_slave 是不是空转，是的话录禅道。\n\n14. 这一轮全量的结果继续留着做对照。新路径仍然合并成一次发布，发布前群里说一声。",
+   "message_id": "msg1zMWZXBYJx6w9n9Ra5Q7nA=="
+  },
+  {
+   "id": "G25",
+   "type": "群消息",
+   "locator": "2026-11-23 03:51:46 Audrey　msgKR5kraW1xu/4hMnyrx0wow==",
+   "excerpt": "「30 页结构核对不通过…b. 多级表头错位，9 页…c. 表格结构被打散，4 页…d. 页眉页脚没去…e. 抽样里还有 4 页本身是薄页」＋通过 4 项（dwg/薄文本层规则/ofd/rar）＋否决 2 项（薄页先走 OXR 不同意、抽样 15 页不合格）",
+   "usage": "一消息多缺陷（含通过项与否决项）TC-A2",
+   "full_text": "@小圈圈  03:19 的 M2 交付核完了：dwg、薄文本层规则、ofd、rar 通过；30 页结构核对不通过，表格这一类错误率远超 5%，发布前必须修；薄页先走 OXR 我不同意。这条请在你当前工作线处理，不要另开线程部署。\n\n【通过，我核过】\n\n1. dwg：两份都是 AC1024，LibreDWG 0.14 能读，文字和图块名都抽出来了。路线定为镜像里源码编译，不依赖 ODA。\n\n2. 薄文本层规则：页级和文件级都实现了。MAT-033、034、035 实测全部命中，改走 DP 后恢复 2.8 万、1.0 万、7 千字，和我用 OXR 量到的数一致。\n\n3. ofd 有文字层可以直接读；rar5 用 bsdtar 能解。禅道 15023、15024 记下。\n\n【不通过：30 页结构核对】\n\n4. 我对照页面图看了 4 页，30 页都用程序比过，问题如下：\n\na. 你抽的 15 页「多栏」全是表格页，一页多栏正文都没有，阅读顺序没验到。这批里真正的多栏正文在 MAT-040_Underground_Transportation_Systems_in_Europe 那份，67 页里有 25 页是双栏。重抽这 15 页：第 5、7、9、15、16、23、24、30、31、32、33、42、47、60、64 页。\n\nb. 多级表头错位，9 页：第 461、517、577、649、836、966、985、1021、1081 页都是清单计价表。「金额（元）」下面的子表头被拼成一格，数据落到错的列下。第 985 页合价的 49,442.10 落在「综合单价」列下，「本页小计」和「合计」的金额落在第 2 列。这种表在云池里有几百页。\n\nc. 表格结构被打散，4 页：第 637、1153、1201 页被压成 4 行 17 列，第 637 页我看了图，实际约 29 行 10 列；第 1417 页实际是 5 列 17 行的合并单元格表，被压成 2 行 18 列，整列文字粘成一格，25 个格子重复左边。\n\nd. 页眉页脚没去：每页开头的「第N页,共1779页」、章节流水号（34、104 这类）、表下的注释，都排在正文前面。\n\ne. 抽样里还有 4 页本身是薄页（第 22、25、28、31 页），文本层通道只出 25 到 28 个字。\n\n5. 修法方向：\n\na. 多级表头拼成完整列名（如「金额（元）/综合单价」），数据对到正确的列；合并的标签行把金额放回对应列；空行只留一行。\n\nb. 保留合并单元格的行列跨度。\n\nc. 每张表重建后自检行数、列数、重复格比例；拿不准的页整页回退 OXR，只限有文本层的页。\n\nd. 页眉页脚按位置去掉，表下的注释排在表后面。\n\n6. 修完重交：原来 30 页加上我指定的 15 页，每页写明自检结果；薄页那 4 页写明走了哪条通道。\n\n【薄页先走 OXR：不同意】\n\n7. 证据是第 28 页（税收完税证明，扫描件，整页约 400 字）：OXR 输出 6,406 个字，前半段对，后面是几十行重复的「3.8 | 3.9 | … | 4.7」和「未分配利润」，是模型幻觉。你说 OXR 每页 669 到 2,673 字，其中可能就有这种重复。\n\n8. 所以：扫描页和薄页一律先走 DP。OXR 的输出加一道重复检查，同一行或同一格重复 3 次以上，或去掉重复后字数掉一半，就判废回退 DP。OXR 处理有文本层的页时也过这道检查。\n\n【DP 现在慢，还有一处要核】\n\n9. 8 份并发 13 分钟，聚合每秒 0.9 到 1.5 页；21 到 31 页的小文件也要 420 秒左右，说明每份有一段固定开销。你走的是 87:8800 转远程 DP。查清时间花在上传、转图、识别还是轮询上；51 本机的 dp_unite 另测一次吞吐；批处理时并发开满。\n\n10. DP 重跑的字数有几份明显高于 OXR 和旧链路：MAT-041 39.7 万对 23.0 万，MAT-048 3.9 万对 1.5 万，答疑澄清说明文件 3.8 万对 2.2 万。要么是重复，要么是以前漏了。逐页对一下，报每页字数分布和重复行比例。\n\n【顺序】\n\n11. M3 接模型判断和页级混走，M4 一次发布前群里说。第 4 到 6 条修完之前不发。",
+   "message_id": "msgKR5kraW1xu/4hMnyrx0wow=="
+  },
+  {
+   "id": "G26",
+   "type": "群消息",
+   "locator": "2026-11-24 01:47:51 Audrey　msg44lR2Nrg5oqfYyfqYJgZ/A==",
+   "excerpt": "「四连发拆线：我这边拆不了——15:43、18:53、昨晚四连发都是别的线在发…数据小队群里看不到」；同条要求外发事故录禅道（模块 dc_route，P1）",
+   "usage": "证据缺口声明 TC-A6",
+   "full_text": "@小圈圈  一期开工简报收货，逐条批复。\n\n1. 核点3 影子实测：收货。VA/RSS ≤2.5×、距 4GiB 有 7× 余量——假 OOM 风险在本批语料上排除。guard=both（RSS 看门狗为主+AS 兜底）+ false_oom 指标的设计比单闸更稳，照此落。原始数据目录我在。\n\n2. 外发事故：如实报的处理正确，收货。三件跟进：a) 录禅道——模块 dc_route，级别 P1，性质=数据外发（标题分级出公司，与 11-23 早 P-73 同族），根因=影子容器漏配 DC_ROUTE_DP_DIRECT_URL 时 T2 静默回落 dgpe；修复=DC_ROUTE_DP_FORBID_DGPE 反向闸默认开。回号给我填问题表。b) FORBID_DGPE 闸的回归用例要覆盖「直连缺失→该段失败转 T3」路径，别只测正常路径。c) 18 份重跑用直连版数据作准，同意；被外发的 261 次上传里涉及其他租户流量的事实也写进禅道单。\n\n3. T2 直连新基准（云池 901s→252s、MAT-050 172s→95s、MAT-033 150s→21s）记台账——这说明此前 T2 慢的很大一块是 dgpe 回落造成的，直连 51 桥才是真实性能。发布后云池 3 分钟线重新量，可能直接达标。\n\n4. 核点6/7：收货。47+2 拆分断言合理；薄页 A 案（【第N页】前缀并入+merged_thin_pages+DC_THINPAGE_MERGE=0 回退）同意——比白名单通用，页号归属保住了。\n\n5. 四连发拆线：我这边拆不了——15:43、18:53、昨晚四连发都是别的线在发（大概率还是你在另一个群下的需求那条线），数据小队群里看不到。我已经把「昨晚 4 版未预告、现网 titlenoise 缺 15030 修复和 !176 隔离模块」这个事实报给温晓宇，由他确认归属和是否要拦。你们这边的动作：一期 MR 基于最新 develop 解冲突照做；另外在发布清单里加一条硬检查——发布前 diff 现网 server.py vs develop，确认 15030/!176 是否被别的线覆盖丢失，丢了就在我们这版一起补回。\n\n6. 明天回归日照计划：全链接线→monster 注入→87 全链影子对照 run8→calamine wheel 进镜像。影子跑之前先确认 FORBID_DGPE 在影子容器里默认生效——别再犯一次。这条在当前工作线处理，不要另开线程部署。",
+   "message_id": "msg44lR2Nrg5oqfYyfqYJgZ/A==",
+   "missing": [
+    {
+     "item": "外发事故明细（261 次上传的逐条记录）",
+     "reason": "转述内容，无本群原始数据；须由 GitLab/禅道证据建立"
+    }
+   ]
+  },
+  {
+   "id": "G27",
+   "type": "群消息",
+   "locator": "2026-11-24 10:56:32 Audrey　msgPkkSuxn+ge8mGsZ/jhVH5g==",
+   "excerpt": "「防护版发布验收：通过…你还欠两个数：a) 中断时长精确值 b) 87 文档快查」",
+   "usage": "验收回执（通过但欠 2 项）TC-A8",
+   "full_text": "@小圈圈  防护版发布验收：通过。我独立核过的：\n\n1. 容器 dev_20261124_23b7f5a5 10:54:39 起（预告窗口 10:50-11:20 内），healthy；内存限额已到 14GiB（119.6MiB/14GiB 实测）。\n2. DC_PARSE_POOL=0 实测在 env；embed-identity 200、51 内网口径没被动（url/model/dim/batch/concurrency 全对）。\n3. server.py 防护标记实核（_table_stream_applies/_mark_oversize/FORBID 等在位）；镜像内 calamine 可导入我发布前就验过。\n4. API 200、qa 任务表正常。\n\n你还欠两个数：a) 中断时长精确值（swarm 任务切换时间戳你能取到）；b) 87 文档快查（一次性成功+页覆盖+embedding 拆账）。发出来我核完把这版正式记台账。监视我这边跑着（health_flips+内存 1 小时窗口），异常我直接喊回滚。这条在当前工作线处理，不要另开线程部署。",
+   "message_id": "msgPkkSuxn+ge8mGsZ/jhVH5g=="
+  },
+  {
+   "id": "G28",
+   "type": "群消息",
+   "locator": "2026-11-24 11:49:26 Audrey　msguTRlaIiZ/DEBhK5xqhejqA==",
+   "excerpt": "「中断 149.8s：如实报收货——规格/镜像分两次 service update 是执行问题，下次合成一次」「健康误杀（11:00:54 那次）记 P-103，录禅道：模块 dc_server/healthcheck，级别 P1」「embedding 并发叠加记观察项」",
+   "usage": "执行问题/缺陷/观察项三分类 TC-A8",
+   "full_text": "@小圈圈  欠数验收通过，判定不回滚，两条建议都批。\n\n1. 中断 149.8s：如实报收货——规格/镜像分两次 service update 是执行问题，下次合成一次。记台账。\n\n2. 87 快查独立核过：qa 500 全 done；dmesg \"Killed process\" 计数 3 未动（无新 OOM，防护实证）；MAT-001 我在 ES 实数 128 chunks、36 个页码（1-35、37），和你报的逐位一致——**15032 生效，P-98 正式闭环**；页覆盖 99.96% 同 run8 三页；ES 31,748 对账一致。27 分 07 秒在 30 分线内，比 run8 慢的原因（6 并行×并发 4 打满 51）你的解释我接受——批内自竞争，云池单文档 3 分钟线不受影响。这版记台账，不回滚。\n\n3. 健康误杀（11:00:54 那次）记 P-103，录禅道：模块 dc_server/healthcheck，级别 P1。现象=高负载下 /health 连续超时（10×8-12s）+一次 101 秒 000→swarm 判死重建（exit 137），非 OOM（dmesg 未动）、非 service update；影响=批中在途中断重跑，无数据丢失。复现=87 快查批 10:57-11:24 窗口，1 秒采样 CSV 为证。修法两条都批：\n① healthcheck retries 3→6、timeout 5→10s——部署仓配置，随明天的二期回归版一起发（今天不再单独动现网）；\n② cleaning/chunking 挪出 API 进程——就是明天回归的那版一期池化，根治路径确认。\n\n4. embedding 并发叠加记观察项：二期池化时按在途文档数自适应调 DC_EMBED_CONCURRENCY（批内多文档并行时单片降并发），别让 51 被自己打满。这个随第二版一起定。\n\n这条在当前工作线处理，不要另开线程部署。",
+   "message_id": "msguTRlaIiZ/DEBhK5xqhejqA=="
+  },
+  {
+   "id": "G29",
+   "type": "群消息",
+   "locator": "2026-11-24 11:51:30 小圈圈　msgJueAW9ZAVbWMpuK80GsnxA==",
+   "excerpt": "「任务执行失败。原因：处理失败：员工返回的操作内容不完整或格式异常，本次任务未完成」",
+   "usage": "平台侧播报 TC-A6",
+   "full_text": "@温晓宇 \n 任务执行失败。 原因：处理失败：员工返回的操作内容不完整或格式异常，本次任务未完成。请查看执行记录并核查已执行的操作。 \n 在圈圈查看任务",
+   "message_id": "msgJueAW9ZAVbWMpuK80GsnxA=="
+  }
+ ],
+ "cases_chat": [
+  {
+   "case_id": "TC-A1",
+   "category": "群聊提取",
+   "goal": "验证同一现象跨 8 条群消息（含他人改环境、另一会话换镜像）时归并为 1 个缺陷，且旧根因被环境变化推翻后要按切片器拆成两个原因、不当作新缺陷或复发。",
+   "raw_input": "「数据小队」群（cidxs5TpPs34DWnKqMsf+WrEw==）2026-11-19 09:16–17:45：G12 陈昔报「原文有标题，切片无章节标题」+图片 → G13 小圈圈初判（table 切片器未写 title，server.py:6306/6353）→ G14/G15 Audrey「我在改 es，稍等」→「改完了」 → G16 陈昔「重新基于环境现在的情况，排查一下原因」 → G17 小圈圈「环境确实变了，旧结论不能直接搬…dc_server 现为 dev_20261119_filechain2（15:13 由其他会话部署）…旧文档 doc_c9991f55a0ea 已不存在…同一现象是两个不同原因，按切片器区分」 → G18 Audrey「回填+修代码」 → G19 回填 483 片 0 失败、3 篇 align_skipped → G20 陈昔「合并部署」 → G21 !128 合并 a1841997、部署 dev_20261119_filechain2_title128。",
+   "expected_defect_count": "1（切片标题字段未覆盖 table/image 切片器；按切片器拆为两条修法，仍属同一缺陷）",
+   "expected_filter": "全部消息保留入库；G14/G15/G16/G18/G20 为非候选记录（filter_decision 取 template/sync/evidence_only 之一，triage_reason=context_only），不进缺陷库；G13 的结论标记 superseded_by=G17 保留版本链。",
+   "expected_merge": "按 群ID+messageId 幂等合并为 1 缺陷；G13 初判与 G17 重判是同缺陷的两个诊断版本，不建第二条缺陷；483 片回填记为 remediation 证据，不是独立缺陷。",
+   "expected_attribution": "G12 role=report；G13 role=diagnosis(v1, superseded)；G17 role=diagnosis(v2, 权威)；!128 + G21 role=primary_fix；G19 role=remediation；3 篇 align_skipped 记为 known_limitation（有护栏理由，不记漏修）。",
+   "expected_recurrence": "不是复发：中途 ES 被他人改动、另一会话部署了新镜像、原样本文档已被删除，属环境漂移；无代码回退证据。",
+   "basis": "同一现象（切片无章节标题）在 09:16 与 16:48 指向同一类字段缺失；环境变更由 G14/G15/G17 明确记录；修复与上线在 G21 可回读。",
+   "negatives": "①不得把 G16「重新排查」当新缺陷；②不得把「改完 ES 后仍复现」判为复发；③不得只用 G13 的单一根因（table）而漏掉 image 切片器一路；④不得把 3 篇 align_skipped 记成漏修 Bug；⑤不得把 G14/G18/G20 等操作与指令当缺陷。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "evidence_refs": [
+    "G12",
+    "G13",
+    "G14",
+    "G15",
+    "G16",
+    "G17",
+    "G18",
+    "G19",
+    "G20",
+    "G21"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 10,
+    "fix_actions": 1,
+    "independent_occurrences": 1,
+    "recurrence_events": 0,
+    "known_limitations": 1,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 0,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-19（当日）；来源 dingtalk（G12~G21，10 条消息）；时间精度：秒级；未覆盖：ES 配置变更与复验证据；未知：环境身份（仅 raw_text）",
+    "context_only_records": 5
+   },
+   "assertions": [
+    {
+     "id": "TC-A1-1",
+     "stage": "intake",
+     "check": "输入 10 条消息（G12~G21）全部读取；group == 数据小队；partial == false",
+     "expected": true
+    },
+    {
+     "id": "TC-A1-2",
+     "stage": "filter",
+     "check": "非候选记录计数 == 5（G14/G15/G16/G18/G20），filter_decision 取 template/sync/evidence_only 之一且 triage_reason=context_only；不得用 excluded",
+     "expected": true,
+     "rule": "output-schema §10.2/§10.2.1；filtering-rules §3.1"
+    },
+    {
+     "id": "TC-A1-3",
+     "stage": "integrity",
+     "check": "G13 标 superseded_by == G17 且两条消息均保留（版本链完整）",
+     "expected": true
+    },
+    {
+     "id": "TC-A1-4",
+     "stage": "count",
+     "check": "confirmed_defects == 1",
+     "expected": 1
+    },
+    {
+     "id": "TC-A1-5",
+     "stage": "merge",
+     "check": "输出缺陷条数 == 1（两个切片器是两条修法，不是两个缺陷）",
+     "expected": true
+    },
+    {
+     "id": "TC-A1-6",
+     "stage": "attribution",
+     "check": "G12=report；G13=report（v1，superseded）；G17=report（v2，权威）；!128+G21=primary_fix；G19=status_evidence",
+     "expected": true,
+     "rule": "output-schema §4"
+    },
+    {
+     "id": "TC-A1-7",
+     "stage": "recurrence",
+     "check": "recurrence_events == 0（ES 改动/换镜像属环境漂移）",
+     "expected": true
+    },
+    {
+     "id": "TC-A1-8",
+     "stage": "integrity",
+     "check": "3 篇 align_skipped 记为 known_limitation 而非漏修",
+     "expected": true
+    },
+    {
+     "id": "TC-A1-9",
+     "stage": "negative",
+     "check": "『重新排查』指令未被登记为新缺陷",
+     "expected": true
+    },
+    {
+     "id": "TC-A1-10",
+     "stage": "recurrence",
+     "check": "environment 只按 raw_text 保留（ES 改动/换镜像），不编造 canonical_name，也不据此判复发",
+     "expected": true,
+     "rule": "output-schema §10.5；recurrence-rules §2.5"
+    }
+   ],
+   "entry_type": "real",
+   "rule_refs": [
+    "references/output-schema.md §4/§10.2.1/§10.5",
+    "references/recurrence-rules.md §2.5"
+   ]
+  },
+  {
+   "case_id": "TC-A2",
+   "category": "群聊提取",
+   "goal": "验证一条长消息内并列的多个独立缺陷被按粒度拆分，且『性能问题/能力边界/执行问题/统计口径差异/验收目标/追问』各走各的计数口径，不混入已确认缺陷数量。",
+   "raw_input": "G22 2026-11-22 16:18:55 Audrey（1,941 字）：【我独立取的现状】1) 原素材 87 个任务，失败里「音视频 4 个全是 ASR 超时」「大 PDF 写 ES 断管 2 个（2740 条和 5741 条切片全丢）」「1779 页超限 1 个」「不支持格式 11 个」，且「你之前报的 93 个文件、89 个任务、7 个重复，和 87 对不上」；2) 「排队第 50 位已等 5100 秒，预计等待却显示 1600 秒」；3) 「81 的 dc_server 只用 0.22 核（限额 8 核）」「51 的 GPU6 利用率 98%，GPU0 到 GPU5 全是 0%」；4) 「21 个失败任务的文案还停在『重新排队、排队中、解析中』；任务列表接口写死只回 200 行，分页参数无效」；另附【五个目标】验收口径与【四件事】追问。另 G25 2026-11-23 03:51 同类结构：通过 4 项 + 不通过 4 类（多级表头错位 9 页 / 表格结构被打散 4 页 / 页眉页脚未去 / 薄页）+ 否决 2 项。",
+   "expected_defect_count": "整体（本案例自身证据簇内）：已确认缺陷 8 条 = G22 侧 4 条（①写 ES 断管致 2740/5741 条切片全丢 ③队列预计等待时间与实际严重不符 ⑤失败任务状态文案卡死 ⑥任务列表接口写死 200 行、分页失效）+ G25 侧 4 类不通过（多级表头错位 9 页、表格结构被打散 4 页、页眉页脚未去、薄文本层页）；疑似缺陷 1 条 =「1779 页超限 1 个」（是产品页数上限的设计边界还是缺陷，证据不足，须人工定性，不得计 confirmed）；性能问题 1 项（GPU0–5 全 0/GPU6 98%、81 CPU 0.22 核 vs 限额 8 核）→ 登记 performance_issue 待人工定级，不计入 confirmed；执行问题 1 类（ASR 超时 4 个任务）→ 标 need_verify；能力边界 1 类（不支持格式 11 个）→ 不计缺陷；统计口径差异 1 项（93/89/7 与 87 对不上）→ reporting_discrepancy 不建号。",
+   "expected_filter": "G22 逐条拆分为独立候选：①③⑤⑥=defect(confirmed)；②=need_verify(定性待人工)；④=performance_issue；ASR 超时=execution_issue(need_verify)；不支持格式=capability_boundary；93/89/7 对不上=reporting_discrepancy；【五个目标】【四件事】不进缺陷库。G25：通过 4 项=background；不通过 4 类=defect(confirmed)；否决 2 项（薄页先走 OXR、抽样 15 页不合格）=技术路线决策，background。",
+   "expected_merge": "①②同属解析完整性但对象不同（写 ES 断管 vs 页数上限），不互相归并；③④⑤⑥互不归并；G25 的 4 类结构问题与 G22 的 6 条不归并（不同批次、不同现象）。",
+   "expected_attribution": "G22 同一 messageId下对不同缺陷 role 均为 report；G25 同理；性能/边界/执行问题各自的记录条目与缺陷记录分开存放，不共享缺陷编号。",
+   "expected_recurrence": "无（本批均为首次登记）。",
+   "basis": "每条现象都有独立对象与失败模式，可分别复现；「通过/不通过」在同条消息里显式标注。",
+   "negatives": "①不得整条只登记 1 个缺陷；②不得把【五个目标】的验收口径当缺陷；③不得把「不支持格式 11 个」当缺陷；④不得把 ASR 超时直接判为外部原因排除（须标待核）；⑤不得把「薄页先走 OXR 不同意」这类技术路线否决当缺陷；⑥不得把同一根因的连锁现象硬拆（如把「写 ES 断管」再拆成 2740 与 5741 两条）。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "evidence_refs": [
+    "G22",
+    "G25"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 8,
+    "suspect_defects": 1,
+    "evidence_items": 2,
+    "fix_actions": 0,
+    "independent_occurrences": 8,
+    "recurrence_events": 0,
+    "performance_issues": 1,
+    "execution_issues": 1,
+    "capability_boundaries": 1,
+    "reporting_discrepancies": 1,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 8,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-22~11-23；来源 dingtalk（G22、G25）；时间精度：秒级；未覆盖：8 条缺陷的当前闭环状态与复验；未知：1779 页定性、性能定级"
+   },
+   "assertions": [
+    {
+     "id": "TC-A2-1",
+     "stage": "count",
+     "check": "confirmed_defects == 8（G22 4 条 + G25 4 类）",
+     "expected": 8
+    },
+    {
+     "id": "TC-A2-2",
+     "stage": "count",
+     "check": "suspect_defects == 1（1779 页超限，定性待人工，不得计入 confirmed）",
+     "expected": 1
+    },
+    {
+     "id": "TC-A2-3",
+     "stage": "count",
+     "check": "performance_issue 登记数 == 1（GPU/CPU 调度），未计入 confirmed 也未被丢弃",
+     "expected": true
+    },
+    {
+     "id": "TC-A2-4",
+     "stage": "count",
+     "check": "execution_issue（ASR 超时 4 任务）== 1 类、标 need_verify；capability_boundary（不支持格式 11 个）未计缺陷；reporting_discrepancy（93/89/7）未建缺陷号",
+     "expected": true
+    },
+    {
+     "id": "TC-A2-5",
+     "stage": "count",
+     "check": "『写 ES 断管』未被拆成 2740 / 5741 两条（同一根因连锁现象 1 条）",
+     "expected": true
+    },
+    {
+     "id": "TC-A2-6",
+     "stage": "filter",
+     "check": "通过项与被否决项（薄页先走 OXR、抽样 15 页不合格）未登记为缺陷",
+     "expected": true
+    },
+    {
+     "id": "TC-A2-7",
+     "stage": "merge",
+     "check": "G22 与 G25 的缺陷互不归并（不同批次、不同现象）",
+     "expected": true
+    },
+    {
+     "id": "TC-A2-8",
+     "stage": "negative",
+     "check": "【五个目标】与【四件事】未进入缺陷库",
+     "expected": true
+    },
+    {
+     "id": "TC-A2-9",
+     "stage": "recurrence",
+     "check": "8 条 confirmed 的 occurrence.kind 全为 first；无 repeat_unresolved",
+     "expected": true,
+     "rule": "recurrence-rules §2.1"
+    },
+    {
+     "id": "TC-A2-10",
+     "stage": "integrity",
+     "check": "报告同时给出事件去重已合并组数、待复核数与 coverage（含时间精度与未覆盖项）",
+     "expected": true,
+     "rule": "recurrence-rules §3.8"
+    }
+   ],
+   "entry_type": "real",
+   "judge_notes": "子场景口径见 expected_defect_count；②1779 页超限与 ④GPU/CPU 调度的人工定级不同判分者可有差异，允许输出 performance_issue 且不扣分——错在把 ④ 直接计入或直接丢弃。",
+   "rule_refs": [
+    "references/recurrence-rules.md §2.1/§3.8",
+    "references/output-schema.md §9"
+   ]
+  },
+  {
+   "case_id": "TC-A3",
+   "category": "群聊提取",
+   "goal": "验证『需求 → 修复合并部署 → 仍复现』链条中：需求条目不计为缺陷，二次反馈是缺陷（修复未生效），且不与历史应用的一次性数据补齐混为一谈。",
+   "raw_input": "G1 2026-11-17 09:16 陈昔「新建的应用，需要有默认的内置类目、字段、索引、词典」（需求） → G2 10:05 小圈圈 MR !105 已提、类目播种走 !104 → G3 11:25 陈昔「合并 MR !104、MR !105，然后部署」 → G4 11:42 !104（e4f28f1）、!105（8ebc493）已合并并部署 → G5 15:44 陈昔「我刚刚创建了一个应用 ai_jian_zheng_quan，这个应用依旧没有内置的类目、字段、索引、词典」；旁支：10:38 陈昔另要求为 soso_guanyutest/testcx1/zhi_de_qian_fan/guo_dian_tou 四个存量应用按历史数据补齐。",
+   "expected_defect_count": "1（新建应用未自动播种内置类目/字段/索引/词典；!104 的通用播种未覆盖该创建路径）",
+   "expected_filter": "G1 = requirement（不进缺陷库）；G3 = operation_command；G2/G4 = execution_receipt；G5 = defect_report（含『依旧』= 修复未生效线索）；四个存量应用补齐 = remediation_request（一次性数据处理，不并入该缺陷）。",
+   "expected_merge": "G5 与 G1 同一主题但不是同一条目：缺陷由需求派生，记 derived_from=G1；不与存量应用补齐合并。",
+   "expected_attribution": "G1=background（需求背景，候选 category=requirement_related）；G5=report；!104=primary_fix（未覆盖该路径）；后续修复=related_fix；存量补齐=background（另一对象）。",
+   "expected_recurrence": "属「修复未生效」而非复发：无 resolved→reopen 记录，且 !104 的通用逻辑与四应用的既有别名口径不一致（G 系列回执已说明）。",
+   "basis": "「依旧没有」直接指向此前已部署的播种逻辑未覆盖新建路径；G4 可回读合并提交；G5 时间在新应用创建之后。",
+   "negatives": "①不得把 G1 直接记成 Bug；②不得把 G5 当新需求（『再加个功能』）；③不得因 !104 已合并就判已修复；④不得把四个存量应用的手工补齐当同一缺陷的证据主体；⑤不得把 G3「然后部署」当缺陷描述。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "evidence_refs": [
+    "G1",
+    "G2",
+    "G3",
+    "G4",
+    "G5"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 5,
+    "fix_actions": 1,
+    "independent_occurrences": 1,
+    "recurrence_events": 0,
+    "requirements": 1,
+    "remediation_requests": 1,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 1,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-17（当日）；来源 dingtalk（G1~G5）+gitlab（!104）；时间精度：秒级；未覆盖：部署与复验证据；未知：环境身份",
+    "reason_tag": "fix_not_live / fix_not_effective（描述标签，不在枚举字段）"
+   },
+   "assertions": [
+    {
+     "id": "TC-A3-1",
+     "stage": "filter",
+     "check": "G1 分类为 requirement，未创建缺陷号",
+     "expected": true
+    },
+    {
+     "id": "TC-A3-2",
+     "stage": "count",
+     "check": "confirmed_defects == 1（G5：修复未生效）",
+     "expected": 1
+    },
+    {
+     "id": "TC-A3-3",
+     "stage": "merge",
+     "check": "缺陷记录含 derived_from == G1；未与四个存量应用的手工补齐合并",
+     "expected": true
+    },
+    {
+     "id": "TC-A3-4",
+     "stage": "recurrence",
+     "check": "reason_tag 取 fix_not_live / fix_not_effective（只作标签）；occurrence.kind == first；recurrence_events == 0",
+     "expected": true,
+     "rule": "output-schema §10.2.1；recurrence-rules §2.4"
+    },
+    {
+     "id": "TC-A3-5",
+     "stage": "attribution",
+     "check": "!104 role == primary_fix（未覆盖新建路径）被记录",
+     "expected": true
+    },
+    {
+     "id": "TC-A3-6",
+     "stage": "negative",
+     "check": "!104 已合并未被判『已修复』；『然后部署』指令未被算缺陷描述",
+     "expected": true
+    },
+    {
+     "id": "TC-A3-7",
+     "stage": "recurrence",
+     "check": "验证结论未跨环境外推：未给出可归一环境时 verified_environments 报『未知』，不得写 0 或『所有环境已验证』",
+     "expected": true,
+     "rule": "recurrence-rules §2.6/§3.7"
+    }
+   ],
+   "entry_type": "real",
+   "rule_refs": [
+    "references/recurrence-rules.md §2.4/§2.6",
+    "references/output-schema.md §10.2.1/§10.5"
+   ]
+  },
+  {
+   "case_id": "TC-A4",
+   "category": "群聊提取",
+   "goal": "验证二次上报「依旧不行」时先核查部署形态：根因为部署 pin 未更新（部署漂移）时，记 1 个交付/部署缺陷，不判代码复发、不新建缺陷。",
+   "raw_input": "G6 2026-11-17 12:13 陈昔「查看原文时需要定位到对应切片的位置」 → G7 15:36 小圈圈「detail_url 已带切片锚点…Playwright 实测 ?chunk=42 时切片 #42 选中」 → G8 2026-11-18 10:37 陈昔「…查看原文时依旧没有定位到对应切片的位置」 → G9 11:29 小圈圈「不是代码问题，是部署被冲掉了…docker-compose.yml 里的 pin 一直停在修复前构建的 dev_20261115_multirepo（bundle 里没有 ?chunk= 解析代码）…已切回含修复镜像并实测定位正常」。",
+   "expected_defect_count": "1（修复只以临时镜像挂载、部署仓 pin 未更新，导致次日被自动部署冲回旧镜像）",
+   "expected_filter": "G6=category requirement_related（需求）；G8=report（同一现象的二次反馈）；G7=status_evidence（交付执行回执）；G9=background（根因说明）；不因『依旧』二字新建第二个缺陷。",
+   "expected_merge": "G6/G7/G8/G9 归并为 1 个条目（同一用户对象：切片定位）；现象层 1 条，根因层为部署漂移。",
+   "expected_attribution": "G6=background（需求背景）；G7=primary_fix（首次交付）；G8=report（二次反馈）；G9=background（根因说明）；修复镜像=related_fix 或 status_evidence（未落 pin）。",
+   "expected_recurrence": "不是复发：代码未回退、无 reopen；属部署形态漂移（临时 service update 未写回 compose pin）。",
+   "basis": "G9 明确指出 pin 停在 dev_20261115_multirepo 且 bundle 缺 ?chunk= 解析；G7 的验证在当时成立。",
+   "negatives": "①不得判为代码回归/复发；②不得把 G8 当独立新缺陷；③不得只信 G7「已验证通过」而不记录部署形态；④不得把 G9 的「已切回」当永久修复（pin 未落盘）；⑤不得把 G6 的需求属性丢掉。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "evidence_refs": [
+    "G6",
+    "G7",
+    "G8",
+    "G9"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 4,
+    "fix_actions": 1,
+    "independent_occurrences": 1,
+    "recurrence_events": 0,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 1,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-17~11-18；来源 dingtalk（G6~G9）+gitlab；时间精度：秒级；未覆盖：部署仓 pin 状态与复验；未知：环境身份（仅 raw_text）",
+    "reason_tag": "deployment_drift（描述标签，不在枚举字段）"
+   },
+   "assertions": [
+    {
+     "id": "TC-A4-1",
+     "stage": "count",
+     "check": "confirmed_defects == 1（归因部署漂移）",
+     "expected": 1
+    },
+    {
+     "id": "TC-A4-2",
+     "stage": "filter",
+     "check": "G8 二次反馈未新建第二个缺陷（candidates == 1）",
+     "expected": true
+    },
+    {
+     "id": "TC-A4-3",
+     "stage": "recurrence",
+     "check": "recurrence_events == 0；原因写 reason_tag=deployment_drift（不得写进 occurrence.kind）",
+     "expected": true,
+     "rule": "recurrence-rules §2.4；output-schema §10.2.1"
+    },
+    {
+     "id": "TC-A4-4",
+     "stage": "attribution",
+     "check": "G6=background（需求背景）、G7=primary_fix（首次交付）、G8=report（二次反馈）、G9=background（根因说明）、修复镜像=related_fix 或 status_evidence",
+     "expected": true,
+     "rule": "output-schema §4"
+    },
+    {
+     "id": "TC-A4-5",
+     "stage": "negative",
+     "check": "『已切回修复镜像』未被当作永久修复（pin 未落盘须记 follow_up）",
+     "expected": true
+    },
+    {
+     "id": "TC-A4-6",
+     "stage": "recurrence",
+     "check": "环境维度按 canonical_name 表述；无法归一则保留 raw_text 并进 recurrence_check/field_verify，不得以同属 test 分类视为同一环境",
+     "expected": true,
+     "rule": "recurrence-rules §2.6；output-schema §10.5"
+    }
+   ],
+   "entry_type": "real",
+   "rule_refs": [
+    "references/recurrence-rules.md §2.4/§2.6",
+    "references/output-schema.md §4/§10.2.1/§10.5"
+   ]
+  },
+  {
+   "case_id": "TC-A5",
+   "category": "群聊提取",
+   "goal": "验证环境/瞬时故障不被登记为产品缺陷，但由此暴露的『错误提示不区分 502』必须单独登记为改进项；不因现象描述像功能失效，就把匹配逻辑判为缺陷。",
+   "raw_input": "G10 2026-11-18 10:46:25 陈昔「soso-dev环境，数据归集-上传文件后，选择智能加工策略，但是匹配加工策略失败」+截图 → G11 11:23:42 小圈圈「匹配逻辑没有问题，是你测试的 10:38~10:49 那几分钟，soso_dc_frontend 正好被重新部署…返回 502（nginx 错误页而非 JSON），前端解析失败就把每个文件统一标成『匹配失败』」。",
+   "expected_defect_count": "1（前端把 502/非 JSON 响应统一显示为『匹配失败』，误导排查；对应 MR !113）",
+   "expected_filter": "G10 现象本身 environment_induced（部署闪断），不建『解析/匹配逻辑失效』缺陷；G11 从同一现象里拆出 1 个错误提示/可用性缺陷；部署闪断本身 = environment_event（记事件台账，不入缺陷库）。",
+   "expected_merge": "G10 与 G11 归并为同一事件链（现象→环境外因→提示缺陷）；!113 关联到该事件链；不与本群其他缺陷归并。",
+   "expected_attribution": "G10=report（环境诱因说明）；G11=report（诊断结论）；!113=primary_fix（改的是错误提示/异常处理，不是匹配逻辑）。",
+   "expected_recurrence": "无（单次部署窗口 10:38–10:49，无历史同类记录）。",
+   "basis": "G11 给出 10:35–10:38 全 200、10:38–10:49 502 的时间线，并明确「匹配逻辑没有问题」；G11 指出前端解析失败后把每个文件统一标『匹配失败』。",
+   "negatives": "①不得登记『智能加工策略匹配失败』为解析/匹配逻辑缺陷；②不得把部署闪断本身记为产品缺陷；③不得漏掉「错误提示不区分 502」这一改进项（它是本案例唯一的真实缺陷）；④不得把 !113 描述成『修了匹配逻辑』；⑤不得因已归因环境就把 G10 当噪声丢弃（它是现象原点，须保留为 environment_induced 报告）。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "evidence_refs": [
+    "G10",
+    "G11"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 2,
+    "fix_actions": 1,
+    "independent_occurrences": 1,
+    "recurrence_events": 0,
+    "environment_events": 1,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 0,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-18（当日）；来源 dingtalk（G10/G11）+gitlab（!113）；时间精度：秒级；未覆盖：G10 截图（missing）；未知：nginx 部署记录"
+   },
+   "assertions": [
+    {
+     "id": "TC-A5-1",
+     "stage": "filter",
+     "check": "『匹配加工策略失败』未被登记为解析/匹配逻辑缺陷",
+     "expected": true
+    },
+    {
+     "id": "TC-A5-2",
+     "stage": "count",
+     "check": "confirmed_defects == 1（错误提示不区分 502）",
+     "expected": 1
+    },
+    {
+     "id": "TC-A5-3",
+     "stage": "count",
+     "check": "environment_event 登记数 == 1 且未入缺陷库",
+     "expected": true
+    },
+    {
+     "id": "TC-A5-4",
+     "stage": "attribution",
+     "check": "G10 role == report(environment_induced)（现象原点被保留，未当噪声丢弃）",
+     "expected": true
+    },
+    {
+     "id": "TC-A5-5",
+     "stage": "integrity",
+     "check": "G10 截图附件缺失已标注 missing（未补造）",
+     "expected": true
+    },
+    {
+     "id": "TC-A5-6",
+     "stage": "negative",
+     "check": "!113 未被描述为『修了匹配逻辑』",
+     "expected": true
+    },
+    {
+     "id": "TC-A5-7",
+     "stage": "recurrence",
+     "check": "环境事件不写入缺陷库；occurrence.environment 不编造 canonical_name（无证据时写 raw_text 或 null）",
+     "expected": true,
+     "rule": "output-schema §10.5；recurrence-rules §2.5"
+    }
+   ],
+   "entry_type": "real",
+   "rule_refs": [
+    "references/output-schema.md §10.5",
+    "references/recurrence-rules.md §2.5"
+   ]
+  },
+  {
+   "case_id": "TC-A6",
+   "category": "群聊提取",
+   "goal": "验证群内证据缺口必须标 partial 且不得用别群内容补；机器人自报『任务执行失败』属平台侧事件，不能直接当产品缺陷。",
+   "raw_input": "G26 2026-11-24 01:47 Audrey：「四连发拆线：我这边拆不了——15:43、18:53、昨晚四连发都是别的线在发（大概率还是你在另一个群下的需求那条线），数据小队群里看不到」；同条要求把外发事故（模块 dc_route、P1、261 次上传）录禅道。G29 2026-11-24 11:51 小圈圈：「任务执行失败。原因：处理失败：员工返回的操作内容不完整或格式异常，本次任务未完成」。",
+   "expected_defect_count": "本群证据内 0 个可独立成立的缺陷；外发事故（#15049 同族）需 GitLab/禅道证据方可建号，本群只有转述",
+   "expected_filter": "G26 作为 evidence_gap 记录（partial=true，缺口原因=「别线操作、本群不可见」）；G29 filter_decision=template，triage_reason=platform_broadcast；不得因「群里看不到」断言四连发未发生或发生了 4 个缺陷。",
+   "expected_merge": "不外推、不跨群归并；外发事故与 #15049 的关联必须由代码/禅道证据建立。",
+   "expected_attribution": "G26 role=evidence_gap；G29 role=platform_incident（不进入业务缺陷库）；外发事故 role=external_reference（待补证据）。",
+   "expected_recurrence": "不适用（无足够证据判定发生/复发）。",
+   "basis": "G26 明确写出「数据小队群里看不到」；G29 文本是平台执行失败模板，无业务现象描述。",
+   "negatives": "①不得用其他群消息补本群证据；②不得把 G29 当产品 Bug；③不得把「看不到」当成「没有发生」或「发生 4 次」；④manifest 必须标 partial 与缺口原因；⑤不得据 G26 单独建缺陷号。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "evidence_refs": [
+    "G26",
+    "G29"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 0,
+    "suspect_defects": 0,
+    "evidence_items": 2,
+    "fix_actions": 0,
+    "independent_occurrences": 0,
+    "recurrence_events": 0,
+    "evidence_gaps": 1,
+    "cross_source_refs": "Z-15049（判分加分项，不计入本簇计数）",
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 0,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-24（当日）；来源 dingtalk（G26/G29）；时间精度：秒级；未覆盖：外发明细（G26 evidence_gap）；未知：外发是否发生"
+   },
+   "assertions": [
+    {
+     "id": "TC-A6-1",
+     "stage": "filter",
+     "check": "G26 记录为 evidence_gap（partial == true，缺口原因已写明）",
+     "expected": true
+    },
+    {
+     "id": "TC-A6-2",
+     "stage": "filter",
+     "check": "G29 filter_decision == template 且 triage_reason == platform_broadcast；不得用 excluded",
+     "expected": true,
+     "rule": "output-schema §10.2；filtering-rules §3.1"
+    },
+    {
+     "id": "TC-A6-3",
+     "stage": "count",
+     "check": "confirmed_defects == 0（本群证据内无独立成立的缺陷）",
+     "expected": 0
+    },
+    {
+     "id": "TC-A6-4",
+     "stage": "integrity",
+     "check": "『四连发』既未被判『未发生』、也未被判『发生 4 次』",
+     "expected": true
+    },
+    {
+     "id": "TC-A6-5",
+     "stage": "negative",
+     "check": "未用其他群的聊天内容补本群证据；未据 G26 单独创建缺陷号",
+     "expected": true
+    },
+    {
+     "id": "TC-A6-6",
+     "stage": "recurrence",
+     "check": "无 occurrence 时不虚增独立发生；说明未入库或 bugs_without_occurrence 口径",
+     "expected": true,
+     "rule": "recurrence-rules §3.1/§3.7"
+    },
+    {
+     "id": "TC-A6-7",
+     "stage": "filter",
+     "check": "外发事故 #15049 若被引用，标 mr_ref_unverified/未核实，不得写入 kind=mr 证据或作归并强证据",
+     "expected": true,
+     "rule": "output-schema §4/§10.2.1"
+    }
+   ],
+   "entry_type": "real",
+   "judge_notes": "跨源对账：独立核查确认外发事故已有禅道单 #15049（active/P1，2026-11-23 18:06 开，温晓宇）；它属于跨源证据，可作为输出关联的加分项，但不得计入本群证据簇的缺陷计数。",
+   "rule_refs": [
+    "references/recurrence-rules.md §3.1",
+    "references/output-schema.md §4/§10.2.1"
+   ]
+  },
+  {
+   "case_id": "TC-A7",
+   "category": "群聊提取",
+   "goal": "验证同一提问人后续主动更正前条数字时，以更正后版本为事实基础，保留版本链，不产生两条缺陷/两次事件。",
+   "raw_input": "G23 2026-11-23 00:04 Audrey：「速度：批量 76.5 页/分钟，单份大文件 48.9。这一批 99.9% 的页带文本层…」 → G24 2026-11-23 01:29 同人：「【先更正我的错】我 00:04 那条第 5 点说『这批 99.9% 的页带文本层』，错了…51 个 PDF 共 8,041 页，没有文本层的 842 页，占 10.5%；30 字以下 347 页；30 字以上 6,852 页，占 85.2%」，并列出 9 个整本扫描件约 800 页 → G25 2026-11-23 03:51 同批验收核对（X 允许引用）：『不通过：…薄页…』并给出抽样结论——检出 4 页走文本层通道、每页仅出 25~28 字。",
+   "expected_defect_count": "1（薄文本层/扫描页未按规则分流）；事实基础取更正后的 G24（8,041 页分母：无文本层 842 页占 10.5%；30 字以下 347 页；30 字以上 6,852 页占 85.2%），量化佐证引 G25（文本层通道抽样 4 页仅出 25~28 字）。",
+   "expected_filter": "G23 中该数字标 superseded_by=G24（保留原文，不删）；G24 为有效事实；不因两条消息建两条缺陷。",
+   "expected_merge": "归并为 1 个缺陷；两版本同为 report 证据的版本链。",
+   "expected_attribution": "G23=report（v1，superseded）；G24=report（v2，权威）；后续修复证据待补。",
+   "expected_recurrence": "不适用。",
+   "basis": "同人、同批次、明确「更正我的错」；更正后给出可核对的页级统计（8041 页 / 842 页 / 347 页 / 6852 页）。",
+   "negatives": "①不得把两条消息当两个缺陷/两次事件；②不得继续用 99.9% 作为证据；③不得因上游认错就删除原始消息（须保留更正链）；④不得把 10.5% 与 85.2% 混算（同一分母 8,041 页）；⑤不得把「批量 76.5 页/分钟」等指标当缺陷（属基线数据）。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "evidence_refs": [
+    "G23",
+    "G24",
+    "G25"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 3,
+    "fix_actions": 0,
+    "independent_occurrences": 1,
+    "recurrence_events": 0,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 1,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-23（当日）；来源 dingtalk（G23/G24/G25）；时间精度：秒级；未覆盖：样本外的页级统计；未知：无（同分母已核对）"
+   },
+   "assertions": [
+    {
+     "id": "TC-A7-1",
+     "stage": "integrity",
+     "check": "G23 保留且标 superseded_by == G24（更正链完整，未删原文）",
+     "expected": true
+    },
+    {
+     "id": "TC-A7-2",
+     "stage": "attribution",
+     "check": "G23 role == report(v1, superseded)；G24 role == report(v2, authoritative)",
+     "expected": true
+    },
+    {
+     "id": "TC-A7-3",
+     "stage": "count",
+     "check": "confirmed_defects == 1（薄文本层/扫描页未按规则分流）",
+     "expected": 1
+    },
+    {
+     "id": "TC-A7-4",
+     "stage": "count",
+     "check": "independent_occurrences == 1（上游更正未产生第二次发生）",
+     "expected": 1
+    },
+    {
+     "id": "TC-A7-5",
+     "stage": "integrity",
+     "check": "缺陷事实引用的统计与 G24 同分母（8,041 页：842 / 347 / 6,852）且未继续使用『99.9%』",
+     "expected": true
+    },
+    {
+     "id": "TC-A7-6",
+     "stage": "integrity",
+     "check": "G25 引用有输入支持（G25 已纳入本案例输入）",
+     "expected": true
+    },
+    {
+     "id": "TC-A7-7",
+     "stage": "negative",
+     "check": "批量 76.5 页/分钟等速度指标未被计为缺陷",
+     "expected": true
+    },
+    {
+     "id": "TC-A7-8",
+     "stage": "integrity",
+     "check": "G23/G24/G25 同日多消息按 §3.8 事件去重：共享 report 证据才算同一次；原始时间精度保留，不补时分秒",
+     "expected": true,
+     "rule": "recurrence-rules §3.8"
+    }
+   ],
+   "entry_type": "real",
+   "rule_refs": [
+    "references/recurrence-rules.md §3.8",
+    "references/output-schema.md §10.4"
+   ]
+  },
+  {
+   "case_id": "TC-A8",
+   "category": "群聊提取",
+   "goal": "验证『验收通过 ≠ 零遗留』：通过回执自身不产生缺陷，但其中未核完的欠项核完后暴露的缺陷必须单独登记；同一条消息里的执行问题、真实缺陷、观察项必须三分，不得合并成一条『发布事故』。",
+   "raw_input": "G27 2026-11-24 10:56:32 Audrey「防护版发布验收：通过…你还欠两个数：a) 中断时长精确值 b) 87 文档快查」→ G28 11:49:26 同人「欠数验收通过，判定不回滚，两条建议都批」：①「中断 149.8s：如实报收货——规格/镜像分两次 service update 是执行问题，下次合成一次。记台账」；②「健康误杀（11:00:54 那次）记 P-103，录禅道：模块 dc_server/healthcheck，级别 P1」（现象=高负载下 /health 连续超时 10×8-12s + 一次 101 秒 000→swarm 判死重建 exit 137，非 OOM、非 service update；影响=批中在途中断重跑、无数据丢失；修法=healthcheck retries 3→6、timeout 5→10s / cleaning·chunking 挪出 API 进程）；③「embedding 并发叠加记观察项」。",
+   "expected_defect_count": "1（P-103：dc_server/healthcheck 高负载下被判死重建，P1；尚未修复，只有获批的修法计划）",
+   "expected_filter": "G27 为通过回执但 partial=true（open_items=2：中断时长精确值、87 文档快查），本身 0 缺陷，且不得判『已验证闭环』；G28 必须三分：149.8s 中断 = execution_issue（记台账，不入缺陷库）；health 误杀 = 缺陷 P-103；embedding 并发叠加 = observation（不入缺陷库）。",
+   "expected_merge": "P-103 与 149.8s 中断互不归并（同窗口但因果不同：一次是发布动作拆两次，一次是 health 判死重建）；P-103 不与 G27 并成一条『发布事故』。",
+   "expected_attribution": "G27=status_evidence（通过回执，partial=true）；G28=report（诊断与分类说明）；P-103 为缺陷主记录（证据 kind=bug_record，role=report）；healthcheck 修复=primary_fix（计划，未发布）；149.8s 与 embedding 并发不作证据 role，分别登记 execution_issue / observation。",
+   "expected_recurrence": "不适用——P-103 为本发布窗口首次登记，无 resolved→reopen 轨迹，不得登记为复发。",
+   "basis": "G28 原文明确「记 P-103，录禅道：模块 dc_server/healthcheck，级别 P1」，并给出复现窗口（87 快查批 10:57–11:24，1 秒采样 CSV）；同条明确「149.8s…是执行问题，下次合成一次。记台账」「embedding 并发叠加记观察项」；两条修法『都批』但『随明天的二期回归版一起发（今天不再单独动现网）』→ 尚未修复。",
+   "negatives": "①不得把 G27『验收通过』当成零遗留/已验证闭环（还欠 2 个数）；②不得把 149.8s 中断登记为缺陷；③不得把 embedding 并发登记为缺陷（观察项）；④不得把 P-103 与 149.8s 合并成 1 条；⑤不得因『修法都批』或『判定不回滚』就判 P-103 已修复/已闭环；⑥不得把『不回滚』当成『无缺陷』。",
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "evidence_refs": [
+    "G27",
+    "G28"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 2,
+    "fix_actions": 0,
+    "independent_occurrences": 1,
+    "recurrence_events": 0,
+    "execution_issues": 1,
+    "observations": 1,
+    "cross_source_ref": "#15057（P-103，已核实 2026-11-25）",
+    "planned_fix": 1,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 1,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-11-24（当日）；来源 dingtalk（G27/G28）+zentao（#15057）；时间精度：秒级；未覆盖：P-103 修复与复验；未知：embedding 并发定级"
+   },
+   "assertions": [
+    {
+     "id": "TC-A8-1",
+     "stage": "filter",
+     "check": "G27 记录为 pass_receipt 且 partial == true、open_items == 2",
+     "expected": true
+    },
+    {
+     "id": "TC-A8-2",
+     "stage": "count",
+     "check": "三分正确：execution_issue == 1（149.8s）、defects == 1（P-103）、observation == 1（embedding 并发）",
+     "expected": true
+    },
+    {
+     "id": "TC-A8-3",
+     "stage": "count",
+     "check": "confirmed_defects == 1",
+     "expected": 1
+    },
+    {
+     "id": "TC-A8-4",
+     "stage": "merge",
+     "check": "P-103 与 149.8s 中断互不归并；未与 G27 并成一条『发布事故』",
+     "expected": true
+    },
+    {
+     "id": "TC-A8-5",
+     "stage": "recurrence",
+     "check": "recurrence_events == 0",
+     "expected": true
+    },
+    {
+     "id": "TC-A8-6",
+     "stage": "integrity",
+     "check": "P-103 与禅道单号建立关联（参考锚点 #15057）或显式标注『单号待核实』",
+     "expected": true
+    },
+    {
+     "id": "TC-A8-7",
+     "stage": "negative",
+     "check": "修法获批/判定不回滚未被当作『已修复/已闭环』",
+     "expected": true
+    },
+    {
+     "id": "TC-A8-8",
+     "stage": "attribution",
+     "check": "#15057 为已核实锚点；未核实时不得写成 kind=mr 或作强证据，应标 mr_ref_unverified",
+     "expected": true,
+     "rule": "output-schema §4/§10.2.1"
+    }
+   ],
+   "entry_type": "real",
+   "judge_notes": "跨源对账：P-103 已核实为禅道 #15057（active/P1/severity=1，2026-11-24 03:50Z 开，温晓宇，指派温晓宇；标题＝高负载下 /health 连续超时、Swarm 判死重建 101 秒不可用、非 OOM）。修法（retries/timeout 调整与进程拆分）获批但截至快照未发布。",
+   "rule_refs": [
+    "references/output-schema.md §4/§10.2.1",
+    "references/recurrence-rules.md §2.5"
+   ]
+  }
+ ],
+ "cases_synthetic": [
+  {
+   "case_id": "TC-R1",
+   "category": "复发识别（正向）",
+   "synthetic": true,
+   "synthetic_note": "本条为构造的边界案例：现有真实证据中没有『已修复、验证通过后再次发生』的完整 reopen 链（#14686 已 resolved 但无 reopen）；为补齐复发正向判定能力而构造，与真实案例区分使用。",
+   "goal": "验证『已修复并经验证通过后再次发生』被正确判为复发：resolved→closed→reopened 轨迹 + 新现象 + 新时间 + 新版本三要素齐备，输出 recurrence==1 且归并原单，不因两轮修复拆成两条缺陷。",
+   "raw_input": "S1（构造）禅道单 X1：2026-09-10 打开『列表导出 CSV 中文乱码』；2026-09-15 resolved(fixed)，修复 MR 于 09-16 发布；2026-09-18 验收通过、closed。S2（构造）2026-11-20 上线『导出 Excel』新入口后，Excel 导出再次出现乱码（CSV 入口正常）——时间 11-20、版本 dev_20261120、复现步骤齐全；X1 被 reopened，activatedCount==1。S3（构造）2026-11-21 提交第二轮 MR 修复（Excel 出口编码处理）。",
+   "expected_defect_count": "1（X1 同一条缺陷贯穿两轮）",
+   "expected_filter": "S1=closed 历史；S2=reopen 报告（复发候选）；S3=第二轮修复（related_fix）。",
+   "expected_merge": "S2 的复发归并到 X1 原单（同一缺陷），不得新建第二条缺陷。",
+   "expected_attribution": "S1=report（首报）；修复 09-16=primary_fix；S2=report（reopen 复现）；S3=related_fix（第二轮修复，不作为复发依据）。",
+   "expected_recurrence": "狭义复发：S1 到 verified_fixed 并有 dev-1 环境验证证据，S2 在 dev-1 以新时间/新版本/新现象再次出现且无回退证据 → kind=repeat_after_fix，计入广义复发；S3 第二轮修复不作为复发依据（role=related_fix）。recurrence_events=1，recurrence_by_subtype={repeat_after_fix:1, rollback_regress:0}。",
+   "basis": "构造链含完整状态流转与三要素；用于与 TC-008（持续未解决）构成正负对照。",
+   "negatives": "①不得因出现第二轮修复就把复发拆成两条缺陷；②不得把 S3 当作复发的『证据来源』（复发的证据是 S2）；③不得漏核三要素（缺任一须降级为疑似）。",
+   "evidence_refs": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "assertions": [
+    {
+     "id": "TC-R1-1",
+     "stage": "recurrence",
+     "check": "recurrence_events == 1 且存在 occurrence.kind == repeat_after_fix；不得使用 reopen_recurrence",
+     "expected": true,
+     "rule": "recurrence-rules §2/§2.3"
+    },
+    {
+     "id": "TC-R1-2",
+     "stage": "recurrence",
+     "check": "resolved→closed→reopened 流转记录被引用 == true",
+     "expected": true,
+     "rule": "references/recurrence-rules.md §2.3/§2.6/§3.2"
+    },
+    {
+     "id": "TC-R1-3",
+     "stage": "count",
+     "check": "independent_occurrences == 2 且 confirmed_defects == 1",
+     "expected": true,
+     "rule": "references/recurrence-rules.md §2.3/§2.6/§3.2"
+    },
+    {
+     "id": "TC-R1-4",
+     "stage": "integrity",
+     "check": "三要素（新现象/新时间/新版本）均被核对；任一缺失即降级疑似",
+     "expected": true,
+     "rule": "references/recurrence-rules.md §2.3/§2.6/§3.2"
+    },
+    {
+     "id": "TC-R1-5",
+     "stage": "attribution",
+     "check": "S3 role == related_fix（第二轮修复不作为复发依据）",
+     "expected": true,
+     "rule": "output-schema §4；recurrence-rules §2.3"
+    },
+    {
+     "id": "TC-R1-6",
+     "stage": "negative",
+     "check": "未因两轮修复输出两条缺陷",
+     "expected": true,
+     "rule": "references/recurrence-rules.md §2.3/§2.6/§3.2"
+    },
+    {
+     "id": "TC-R1-7",
+     "stage": "recurrence",
+     "check": "判复发前核对本次环境 dev-1 落在 S1 verified_fixed 证据覆盖的环境范围内（按 canonical_name，不按分类）",
+     "expected": true,
+     "rule": "recurrence-rules §2.6/§4 步骤 2"
+    },
+    {
+     "id": "TC-R1-8",
+     "stage": "integrity",
+     "check": "S1 的 verified_fixed 流转行带 environment.canonical_name == dev-1",
+     "expected": true,
+     "rule": "output-schema §8/§10.5"
+    }
+   ],
+   "entry_type": "synthetic",
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 3,
+    "fix_actions": 2,
+    "independent_occurrences": 2,
+    "recurrence_events": 1,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 1,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 1,
+     "rollback_regress": 0
+    },
+    "verified_environments": [
+     "dev-1"
+    ],
+    "coverage": "时间窗 2026-09-10~11-21；来源 synthetic；时间精度：日级/秒级混合；未覆盖：跨环境验证；未知：无（dev-1 已明确）"
+   },
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "rule_refs": [
+    "references/recurrence-rules.md §2.3/§2.6/§3.2",
+    "references/output-schema.md §4/§8/§10.5"
+   ]
+  },
+  {
+   "case_id": "TC-R2",
+   "category": "复发识别（正向）",
+   "synthetic": true,
+   "synthetic_note": "构造边界案例：真实验证 counterpart = TC-A4（pin 漂移）。此处测『修复发布后被回滚/未部署到位导致的重现』不得判复发。",
+   "goal": "验证现象重现先核查发布形态：当发布仓已回滚到旧镜像（修复从未在线上生效）时，重现不判复发、不产生 recurrence==1，而是登记一条发布/部署问题。",
+   "raw_input": "S1（构造）禅道单 X2：『导出超时』09-20 打开，09-25 resolved(fixed)（MR 已合并，验收记录写『测试环境复验通过』）。S2（构造）11-22 线上同一现象重现；用户侧报『又复现了』。S3（构造）发布记录：11-21 发布仓对 X2 修复所在服务执行了 rollback，回到 09-10 的旧镜像；测试环境仍在修复版。",
+   "expected_defect_count": "1（X2 仍是同一条缺陷；release 回滚另记 1 条过程问题）",
+   "expected_filter": "S2 在核查发布形态前不定性；核查后定性 fix_not_live（修复未在线上生效）；发布回滚登记 process_release_issue 1 条（非产品缺陷）。",
+   "expected_merge": "重现并入 X2；rollback 事件与 X2 记录关联但不合并为同一条缺陷。",
+   "expected_attribution": "S1=report（首报）；09-25 MR=primary_fix（仅 test-1 验证）；S2=report（prod 重现）；S3=status_evidence（回滚记录）。",
+   "expected_recurrence": "不判复发：S1 只在 test-1 环境复验通过（verified_fixed 覆盖 test-1），S3 的回滚发生在 soso-prod，而 soso-prod 从未有过验证通过证据，不满足 §2.4『曾 verified_fixed + 有回退证据』双条件 → 不得判 rollback_regress。S2 是 prod 上一次新的独立发生（独立时间/环境/现象），按 §2.4 第三行登记 repeat_unresolved（计入独立发生、不计复发）；fix_not_live 只作描述标签。recurrence_events=0，repeat_unresolved_events=1，verified_environments=[test-1]。",
+   "basis": "构造链把『验证通过』限定在测试环境、生产被回滚，测判分方是否先查发布形态。",
+   "negatives": "①不得跳过发布形态核查直接判复发；②不得把回滚事件记成产品缺陷；③不得因『测试环境复验通过』判生产无问题。",
+   "evidence_refs": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "assertions": [
+    {
+     "id": "TC-R2-1",
+     "stage": "recurrence",
+     "check": "recurrence_events == 0；不得输出 rollback_regress（回滚发生在从未验证过的环境）",
+     "expected": true,
+     "rule": "recurrence-rules §2.4/§2.6"
+    },
+    {
+     "id": "TC-R2-2",
+     "stage": "recurrence",
+     "check": "定性前核对 verified_fixed 证据只覆盖 test-1；soso-prod 不在覆盖范围",
+     "expected": true,
+     "rule": "recurrence-rules §2.6"
+    },
+    {
+     "id": "TC-R2-3",
+     "stage": "recurrence",
+     "check": "prod 的新发生按 repeat_unresolved 登记（有独立时间/环境/现象证据）；repeat_unresolved_events == 1",
+     "expected": true,
+     "rule": "recurrence-rules §2.4 第三行/§2.2"
+    },
+    {
+     "id": "TC-R2-4",
+     "stage": "schema",
+     "check": "fix_not_live 只出现在 reason/basis；occurrence.kind 仍为 repeat_unresolved",
+     "expected": true,
+     "rule": "output-schema §10.2.1"
+    },
+    {
+     "id": "TC-R2-5",
+     "stage": "count",
+     "check": "process_release_issue 登记数 == 1（非缺陷库条目，不进缺陷库）",
+     "expected": true,
+     "rule": "output-schema §9"
+    },
+    {
+     "id": "TC-R2-6",
+     "stage": "recurrence",
+     "check": "verified_environments == ['test-1']，不得含 soso-prod，也不得用『测试环境』泛称外推",
+     "expected": true,
+     "rule": "recurrence-rules §2.6；output-schema §10.5"
+    },
+    {
+     "id": "TC-R2-7",
+     "stage": "negative",
+     "check": "未把『测试环境复验通过』当作生产已验证；回滚未被记为产品缺陷；未据回滚字样判 rollback_regress",
+     "expected": true,
+     "rule": "recurrence-rules §2.4/§2.5"
+    }
+   ],
+   "entry_type": "synthetic",
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 3,
+    "fix_actions": 1,
+    "independent_occurrences": 2,
+    "recurrence_events": 0,
+    "process_release_issues": 1,
+    "repeat_unresolved_events": 1,
+    "unresolved_open_bugs": 1,
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": [
+     "test-1"
+    ],
+    "coverage": "时间窗 2026-09-20~11-22；来源 synthetic；时间精度：日级；未覆盖：prod 验证证据（不存在）；未知：无",
+    "reason_tag": "fix_not_live（描述标签，不在枚举字段）"
+   },
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "rule_refs": [
+    "references/recurrence-rules.md §2.2/§2.4/§2.6",
+    "references/output-schema.md §10.2.1/§10.5"
+   ]
+  },
+  {
+   "case_id": "TC-R3",
+   "category": "复发识别（正向）",
+   "synthetic": true,
+   "synthetic_note": "构造边界案例：测『相似现象 ≠ 同一缺陷』。真实证据库中 TC-001~009 均不含成对的相似-但-不同缺陷样本。",
+   "goal": "验证同类相似现象但根因不同时：拆分为 2 条独立缺陷、不自动归并到已闭环的旧单、不计复发。",
+   "raw_input": "S1（构造）禅道单 X3：『表格切片表头丢失』2026-08-12 打开，08-20 resolved(fixed)（A 切片器获取表头的 bug，已闭环）。S2（构造）2026-11-24 『Word 文档表格首列被凭空拼出表头』禅道单 X4 新开——现象相似（都涉及表头），但根因是无表头表格的兜底拼接逻辑（B 分支）、复现条件（无表头结构文档）与模块均不同于 X3。S3（构造）X4 于 11-25 获独立修复 MR。",
+   "expected_defect_count": "2（X3、X4 各一条）",
+   "expected_filter": "S2/S3 → X4 新缺陷（confirmed）；S1 → X3 历史闭环单；两单相似度语义判为 medium（共享关键词），不自动归并。",
+   "expected_merge": "不归并：X4 ≠ X3（根因/复现条件/模块不同）；若归并置信度为 high 即判错误——歧义应进人工复核。",
+   "expected_attribution": "S1=report（X3 首报）；S2=report（X4 首报）；S3=primary_fix（X4）；两条缺陷共享的『表头』关键词只是背景相似，不构成证据角色。",
+   "expected_recurrence": "无复发：X3 已闭环且未 reopened，X4 是同类但根因/复现条件/模块不同的独立缺陷，以 bugs.related[].kind=similar_class 关联，双方 recurrence_events 均为 0、互不生成 occurrence，X3 的 verified_environments 不被 X4 借用。",
+   "basis": "构造链给出可对比的两组根因/条件，测『相似≠同一』边界。",
+   "negatives": "①不得把 X4 自动并入 X3（已闭环单）；②不得因相似判 X3 复发；③不得把共享关键词当归并依据（置信等级不得为 high）。",
+   "evidence_refs": [
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "assertions": [
+    {
+     "id": "TC-R3-1",
+     "stage": "count",
+     "check": "confirmed_defects == 2",
+     "expected": 2,
+     "rule": "references/recurrence-rules.md §3.4/§2.6"
+    },
+    {
+     "id": "TC-R3-2",
+     "stage": "merge",
+     "check": "X4 未被归并进已闭环的 X3",
+     "expected": true,
+     "rule": "references/recurrence-rules.md §3.4/§2.6"
+    },
+    {
+     "id": "TC-R3-3",
+     "stage": "merge",
+     "check": "若给出归并置信度，则 != high（medium/歧义须进人工复核）",
+     "expected": true,
+     "rule": "references/recurrence-rules.md §3.4/§2.6"
+    },
+    {
+     "id": "TC-R3-4",
+     "stage": "recurrence",
+     "check": "recurrence_events == 0（X3 未 reopened，X4 只是相似）",
+     "expected": true,
+     "rule": "references/recurrence-rules.md §3.4/§2.6"
+    },
+    {
+     "id": "TC-R3-5",
+     "stage": "integrity",
+     "check": "输出引用了至少两条区分依据（根因/复现条件/模块）",
+     "expected": true,
+     "rule": "references/recurrence-rules.md §3.4/§2.6"
+    },
+    {
+     "id": "TC-R3-6",
+     "stage": "merge",
+     "check": "关联登记为 bugs.related[].kind=similar_class，且含 similar_points 与 differences；不新建 related_case occurrence",
+     "expected": true,
+     "rule": "recurrence-rules §3.4；output-schema §3"
+    },
+    {
+     "id": "TC-R3-7",
+     "stage": "recurrence",
+     "check": "X3 的 verified_environments 不被 X4 借用；X4 的首次发生环境独立登记（first）",
+     "expected": true,
+     "rule": "recurrence-rules §2.6/§3.4"
+    }
+   ],
+   "entry_type": "synthetic",
+   "expected_counts": {
+    "confirmed_defects": 2,
+    "suspect_defects": 0,
+    "evidence_items": 3,
+    "fix_actions": 1,
+    "independent_occurrences": 2,
+    "recurrence_events": 0,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 1,
+    "related_cases": 1,
+    "bugs_without_occurrence": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "verified_environments": [
+     "soso-prod"
+    ],
+    "coverage": "时间窗 2026-08-12~11-25；来源 synthetic；时间精度：日级；未覆盖：X4 的验证；未知：无"
+   },
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "rule_refs": [
+    "references/recurrence-rules.md §3.4/§2.6",
+    "references/output-schema.md §3/§10.5"
+   ]
+  },
+  {
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "entry_type": "synthetic",
+   "synthetic": true,
+   "case_id": "TC-R4",
+   "category": "复发识别（分环境）",
+   "goal": "验证分环境验证的适用范围按 canonical_name 判定：test-a 的验证通过不外推到同分类的 test-b；未覆盖环境的再次出现不判复发，进 recurrence_check。",
+   "raw_input": "S0 环境注册表：test-a（别名『测试环境A』/test-a，category=test）、test-b（别名『测试环境B』/test-b，category=test）、soso-prod（production）。S1 X5『导出文件标题被截断』2026-09-01 首报，09-05 修复 MR 合并，09-07 部署 test-a 复测通过（verified_fixed，environment=test-a）。S2 2026-11-20 test-b 出现同一现象（新时间/新环境/新截图；test-b 此前无任何验证记录，无回退证据）。",
+   "expected_defect_count": "1（X5，同一缺陷）",
+   "expected_filter": "S1 首报=candidate；S2 是同一缺陷的新现象报告，作为 evidence（role=report）挂到 X5，不新建缺陷候选；不因『测试环境』泛称并入其他环境。",
+   "expected_merge": "S2 关联到 X5（同一缺陷），不与其他环境记录合并。",
+   "expected_attribution": "S1 修复=primary_fix；S1 复测回执=status_evidence 且 transition.environment=test-a；S2=report。",
+   "expected_recurrence": "不判复发：verified_fixed 只覆盖 test-a，test-b 同属 test 分类但不是同一环境（§2.6 分类≠身份）。S2 有独立时间/环境/现象证据，但本次出现环境不在验证覆盖范围 → 按 §2.4『已部署但相关场景从未验证通过』与 §2.6 环境门槛，不直接认定复发、也不强行建 occurrence，进 review_queue（type=recurrence_check，missing_evidence 写明 test-b 验证/部署证据缺失）。recurrence_events=0，verified_environments=[test-a]。",
+   "basis": "注册表明确 test-a/test-b 两个 canonical_name 且 category 同为 test；S1 的 verified_fixed 流转只登记 test-a；S2 无回退证据。",
+   "negatives": "①不得因同属 test 分类把 test-b 当作已验证；②不得判 repeat_after_fix/rollback_regress；③不得把 S2 判成『未发生』；④不得把别名『测试环境A』直接当 canonical_name 而不归一；⑤不得编造 test-b 的验证记录。",
+   "evidence_refs": [
+    "S0",
+    "S1",
+    "S2"
+   ],
+   "rule_refs": [
+    "references/recurrence-rules.md §2.4/§2.6/§3.7",
+    "references/output-schema.md §8/§10.5",
+    "config/default.json recurrence.environment_registry"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 3,
+    "fix_actions": 1,
+    "independent_occurrences": 1,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 1,
+    "recurrence_events": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "verified_environments": [
+     "test-a"
+    ],
+    "coverage": "时间窗 2026-09-01~11-20；来源 synthetic；时间精度：日级；未覆盖：test-b 的验证与部署证据（不存在）；未知：test-b 缺陷是否成立",
+    "occurrences_pending_review": 1
+   },
+   "assertions": [
+    {
+     "id": "TC-R4-1",
+     "stage": "recurrence",
+     "check": "verified_environments == ['test-a']，不含 test-b（同分类不算同一环境）",
+     "expected": true,
+     "rule": "recurrence-rules §2.6/§3.7"
+    },
+    {
+     "id": "TC-R4-2",
+     "stage": "recurrence",
+     "check": "不输出 repeat_after_fix / rollback_regress；recurrence_events == 0",
+     "expected": true,
+     "rule": "recurrence-rules §2.6/§4 步骤 3"
+    },
+    {
+     "id": "TC-R4-3",
+     "stage": "recurrence",
+     "check": "S2 进 review_queue（type=recurrence_check），missing_evidence 写明 test-b 验证/部署证据缺失",
+     "expected": true,
+     "rule": "recurrence-rules §2.6；output-schema §7"
+    },
+    {
+     "id": "TC-R4-4",
+     "stage": "attribution",
+     "check": "S1 的 verified_fixed 流转行 environment.canonical_name == test-a（不是分类 'test'）",
+     "expected": true,
+     "rule": "output-schema §8/§10.5"
+    },
+    {
+     "id": "TC-R4-5",
+     "stage": "integrity",
+     "check": "别名『测试环境A』/『测试环境B』归一为各自 canonical_name；无法归一时保留 raw_text 并标待归一",
+     "expected": true,
+     "rule": "output-schema §10.5"
+    },
+    {
+     "id": "TC-R4-6",
+     "stage": "count",
+     "check": "independent_occurrences == 1（S2 未建 occurrence，待复核单列 occurrences_pending_review=1）",
+     "expected": true,
+     "rule": "recurrence-rules §3.1/§3.8"
+    },
+    {
+     "id": "TC-R4-7",
+     "stage": "negative",
+     "check": "未把『测试环境』泛称同时归给 test-a/test-b；未据 S2 判『复发』或『已解决』",
+     "expected": true,
+     "rule": "recurrence-rules §2.6"
+    },
+    {
+     "id": "TC-R4-8",
+     "stage": "integrity",
+     "check": "coverage 披露已验证环境范围与未覆盖环境，不得写 0",
+     "expected": true,
+     "rule": "recurrence-rules §3.7"
+    }
+   ]
+  },
+  {
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "entry_type": "synthetic",
+   "synthetic": true,
+   "case_id": "TC-R5",
+   "category": "复发识别（回滚重现）",
+   "goal": "验证回滚重现（rollback_regress）正向判定：曾 verified_fixed + 明确回退证据 + 同一环境再次出现。",
+   "raw_input": "S0 注册表：soso-prod（production）。S1 X6『登录页验证码不显示』2026-09-02 首报，09-08 修复 MR 合并，09-10 部署 soso-prod，09-11 现场复测通过（verified_fixed，environment=soso-prod）。S2 2026-11-18 soso-prod 同一现象再次出现（新时间/复现步骤/截图）。S3 2026-11-17 发布仓 revert：镜像 tag 由 release-20261110 回滚为 release-20260901，并附回滚操作记录。",
+   "expected_defect_count": "1（X6，同一缺陷）",
+   "expected_filter": "S1 首报=candidate；S2=candidate 且归并到 X6（同一现象、同一环境、同根因）；S3=evidence（回退证据，role=status_evidence）。",
+   "expected_merge": "S2 归并到 X6（merge_confidence=high：同现象+同环境+时间连续），不新建第二个缺陷。",
+   "expected_attribution": "S1 修复=primary_fix；S1 复测回执=status_evidence（environment=soso-prod）；S2=report；S3=status_evidence（回退证据）。",
+   "expected_recurrence": "回滚重现：S1 曾到 verified_fixed 且验证覆盖 soso-prod，S2 在同一 canonical_name 再次独立出现，S3 提供镜像 tag 回退证据 → kind=rollback_regress，计入广义复发。recurrence_events=1，recurrence_by_subtype={repeat_after_fix:0, rollback_regress:1}，independent_occurrences=2（first + rollback_regress）。",
+   "basis": "S1 有现场复测通过的验证证据且登记 soso-prod；S2 时间/现象独立；S3 有明确回退证据（镜像 tag 变更 + revert 记录）。",
+   "negatives": "①不得仅凭『旧镜像』字样判回滚（必须同时有曾 verified_fixed 与回退证据）；②不得把回滚动作记成产品缺陷或 fix_action；③不得因回滚把 kind 改判为 repeat_after_fix；④不得新建重复缺陷。",
+   "evidence_refs": [
+    "S0",
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "rule_refs": [
+    "references/recurrence-rules.md §2.4/§2.6/§3.2/§3.6",
+    "references/output-schema.md §5/§8/§10.5"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 3,
+    "fix_actions": 1,
+    "independent_occurrences": 2,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 1,
+    "recurrence_events": 1,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 1
+    },
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "verified_environments": [
+     "soso-prod"
+    ],
+    "coverage": "时间窗 2026-09-02~11-18；来源 synthetic；时间精度：日级；未覆盖：无（回退与验证证据齐备）；未知：无"
+   },
+   "assertions": [
+    {
+     "id": "TC-R5-1",
+     "stage": "recurrence",
+     "check": "判定前核对 verified_fixed 证据覆盖 soso-prod（按 canonical_name）",
+     "expected": true,
+     "rule": "recurrence-rules §2.6/§4 步骤 2"
+    },
+    {
+     "id": "TC-R5-2",
+     "stage": "recurrence",
+     "check": "occurrence.kind == rollback_regress，且 basis 引用回退证据（镜像 tag 变更 + revert 记录）",
+     "expected": true,
+     "rule": "recurrence-rules §2.4"
+    },
+    {
+     "id": "TC-R5-3",
+     "stage": "count",
+     "check": "recurrence_events == 1 且 recurrence_by_subtype == {repeat_after_fix:0, rollback_regress:1}（总数与子类型同报）",
+     "expected": true,
+     "rule": "recurrence-rules §3.2"
+    },
+    {
+     "id": "TC-R5-4",
+     "stage": "count",
+     "check": "independent_occurrences == 2（first + rollback_regress）",
+     "expected": true,
+     "rule": "recurrence-rules §3.1"
+    },
+    {
+     "id": "TC-R5-5",
+     "stage": "filter",
+     "check": "不得仅凭『部署漂移/旧镜像』字样定性；必须同时具备『曾 verified_fixed』与『回退证据』",
+     "expected": true,
+     "rule": "recurrence-rules §2.4"
+    },
+    {
+     "id": "TC-R5-6",
+     "stage": "count",
+     "check": "回滚动作不计入 fix_actions（fix_actions == 1，只有 09-08 修复）",
+     "expected": true,
+     "rule": "recurrence-rules §3.6"
+    },
+    {
+     "id": "TC-R5-7",
+     "stage": "negative",
+     "check": "未新建重复缺陷；未把回滚记为产品缺陷",
+     "expected": true,
+     "rule": "recurrence-rules §2.4/§2.5"
+    }
+   ]
+  },
+  {
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "entry_type": "synthetic",
+   "synthetic": true,
+   "case_id": "TC-R6",
+   "category": "事件去重（精度混合）",
+   "goal": "验证事件去重细则：日期精度与精确时间混合、仅 report 证据计入交集、反证阻断、原始精度保留、歧义进复核。",
+   "raw_input": "S0 主记录 DC-9001（历史库已存在，项目时区 Asia/Shanghai）。S1 OC-alt-1 observed_at='2026-10-12'（仅日期），evidence=E1（群报障原文+截图，role=report）。S2 OC-alt-2 observed_at='2026-10-12T09:14:00+08:00'，evidence=E1（同一截图）+E2（MR-700，primary_fix）。S3 OC-alt-3 observed_at='2026-10-12'（仅日期），evidence 仅 E2（MR-700，primary_fix）。S4 OC-alt-4 observed_at='2026-10-13T10:05:00+08:00'，evidence=E3（新的报障原文+不同复现操作，环境 raw_text='客户现场'），与 E1 无交集。",
+   "expected_defect_count": "1（DC-9001）",
+   "expected_filter": "4 条 occurrence 均属 DC-9001；E1 计入 report 交集资格，E2 为 primary_fix、E3 为新的 report。",
+   "expected_merge": "不涉及缺陷归并；S1/S2 合并为同一事件，S4 保持独立，S2/S3 进复核。",
+   "expected_attribution": "E1=report；E2=primary_fix；E3=report。",
+   "expected_recurrence": "先按主记录 DC-9001 聚合，再在缺陷内做事件去重：S1/S2 同自然日且共享 role=report 的 E1 → 合并为 1 次（已确认合并 1 组）；S2/S3 只共享 E2（primary_fix，修复证据）→ 不构成交集、不得自动合并，也说不清是两次 → 进 recurrence_check（待复核 1 条）；S4 有独立触发证据（新报障原文/不同复现/不同环境）→ 反证阻断，保持独立 1 次。已确认独立发生 2 次，另有 1 条待复核不并入确定性计数。",
+   "basis": "S1/S2 同自然日（Asia/Shanghai）+ 共享 E1（现象首报类）；S2/S3 仅共享 MR；S4 有独立报障与不同复现条件。",
+   "negatives": "①不得仅因同日就合并；②不得把只共享 MR/Commit 的记录当作交集；③不得仅因交集缺失就判两次独立发生；④不得补造缺失的时分秒；⑤不得物理删除原始 occurrence 记录。",
+   "evidence_refs": [
+    "S0",
+    "S1",
+    "S2",
+    "S3",
+    "S4"
+   ],
+   "rule_refs": [
+    "references/recurrence-rules.md §3.8（判定顺序 1–6）",
+    "config/default.json recurrence.event_dedupe",
+    "references/output-schema.md §5/§10.4"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 4,
+    "fix_actions": null,
+    "independent_occurrences": 2,
+    "independent_occurrences_pending_review": 1,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 1,
+    "recurrence_events": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-10-12~10-13；来源 synthetic；时间精度：2 条仅日期 + 2 条秒级（混合）；已合并 1 组、待复核 1 条；无 observed_at 的记录 0 条；未知：环境身份（仅 raw_text）"
+   },
+   "assertions": [
+    {
+     "id": "TC-R6-1",
+     "stage": "integrity",
+     "check": "先去重前按主记录聚合、再在缺陷内去重（顺序不跳步）",
+     "expected": true,
+     "rule": "recurrence-rules §3.8 步骤 1"
+    },
+    {
+     "id": "TC-R6-2",
+     "stage": "count",
+     "check": "S1/S2 合并为 1 次；已确认合并组数 == 1",
+     "expected": true,
+     "rule": "recurrence-rules §3.8 步骤 2/3"
+    },
+    {
+     "id": "TC-R6-3",
+     "stage": "recurrence",
+     "check": "S2/S3 仅共享 primary_fix 证据 → 不得自动合并，进 recurrence_check（待复核 1 条）",
+     "expected": true,
+     "rule": "recurrence-rules §3.8 步骤 3/5"
+    },
+    {
+     "id": "TC-R6-4",
+     "stage": "recurrence",
+     "check": "S4 有独立触发证据（新报障原文/不同复现/不同环境）→ 反证阻断，不与 S1/S2 合并",
+     "expected": true,
+     "rule": "recurrence-rules §3.8 步骤 4"
+    },
+    {
+     "id": "TC-R6-5",
+     "stage": "integrity",
+     "check": "原始 observed_at 精度保留（S1/S3 仍为日期，不补时分秒）",
+     "expected": true,
+     "rule": "recurrence-rules §3.8 步骤 2/6"
+    },
+    {
+     "id": "TC-R6-6",
+     "stage": "integrity",
+     "check": "同时披露已确认合并数、待复核数、coverage（混合精度条数/无日期条数）",
+     "expected": true,
+     "rule": "recurrence-rules §3.8"
+    },
+    {
+     "id": "TC-R6-7",
+     "stage": "negative",
+     "check": "未仅因同日合并；未仅因交集缺失判两次独立发生；未删除原始 occurrence",
+     "expected": true,
+     "rule": "recurrence-rules §3.8 步骤 5/6"
+    }
+   ]
+  },
+  {
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "entry_type": "synthetic",
+   "synthetic": true,
+   "case_id": "TC-R7",
+   "category": "归并迁移（occurrence）",
+   "goal": "验证归并时 occurrence 只迁移不重判、别名不重复计数、审计信息不丢失。",
+   "raw_input": "S0 主记录 DC-9001（已存在，含 OC-0001 first 2026-10-12T09:14）。S1 别名记录 DC-9002（同一缺陷『导出乱码』，2026-10-20 登记，merge.merged_into=DC-9001，confidence=high），别名下有 OC-0007 kind=repeat_unresolved observed_at=2026-10-19T11:00，证据 E9（新截图+新时间，与原次无交集）。S2 归并审计：原编号、证据映射、merged_at 保留。",
+   "expected_defect_count": "1（DC-9001，DC-9002 为别名）",
+   "expected_filter": "DC-9002 及其 occurrence 不新建候选，按归并迁移处理。",
+   "expected_merge": "DC-9002 → DC-9001（merge_confidence=high），occurrence 全部迁移，别名冻结、只追加证据归档。",
+   "expected_attribution": "E9 迁移后在主记录上 role=report；不新增修复类 role。",
+   "expected_recurrence": "迁移后主记录 occurrences = OC-0001(first) + OC-0007(repeat_unresolved，kind 保持原样)；归并动作不重判、不补记复发；independent_occurrences=2（不是 3/4）；recurrence_events=0（该缺陷从未 verified_fixed，repeat_unresolved 不计复发）。",
+   "basis": "dedup §4.3 规定归并时 occurrence 只迁移不重判；OC-0007 与原次时间不同、证据无交集，不构成同一事件。",
+   "negatives": "①不得在归并动作内把 kind 改判为 repeat_after_fix/复发；②不得删除别名记录或重排 occurrence 编号；③不得主记录与别名各自计数（2 而非 3/4）；④不得把归并本身当复发。",
+   "evidence_refs": [
+    "S0",
+    "S1",
+    "S2"
+   ],
+   "rule_refs": [
+    "references/dedup-rules.md §4.3",
+    "references/recurrence-rules.md §2/§3.1",
+    "references/output-schema.md §3（merge）"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 2,
+    "fix_actions": 1,
+    "independent_occurrences": 2,
+    "repeat_unresolved_events": 1,
+    "unresolved_open_bugs": 1,
+    "recurrence_events": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "时间窗 2026-10-12~10-20；来源 synthetic；时间精度：秒级；未覆盖：验证证据；未知：环境身份；别名 1 条"
+   },
+   "assertions": [
+    {
+     "id": "TC-R7-1",
+     "stage": "merge",
+     "check": "别名 occurrence 全部迁移到主记录，无孤儿 occurrence",
+     "expected": true,
+     "rule": "dedup-rules §4.3"
+    },
+    {
+     "id": "TC-R7-2",
+     "stage": "merge",
+     "check": "迁移后 OC-0007.kind 仍为 repeat_unresolved，未在归并动作内改判",
+     "expected": true,
+     "rule": "dedup-rules §4.3"
+    },
+    {
+     "id": "TC-R7-3",
+     "stage": "recurrence",
+     "check": "归并未补记任何一方复发；recurrence_events == 0",
+     "expected": true,
+     "rule": "recurrence-rules §3.4；dedup §4.3"
+    },
+    {
+     "id": "TC-R7-4",
+     "stage": "count",
+     "check": "按主记录聚合，independent_occurrences == 2（别名不重复计数）",
+     "expected": true,
+     "rule": "recurrence-rules §3.1；dedup §4.3"
+    },
+    {
+     "id": "TC-R7-5",
+     "stage": "integrity",
+     "check": "别名编号、证据映射、发生记录审计保留，报告列出别名与归属",
+     "expected": true,
+     "rule": "dedup-rules §4.3"
+    },
+    {
+     "id": "TC-R7-6",
+     "stage": "negative",
+     "check": "未删除别名记录、未重排 occurrence 编号、未把归并当复发",
+     "expected": true,
+     "rule": "dedup-rules §4.3"
+    },
+    {
+     "id": "TC-R7-7",
+     "stage": "integrity",
+     "check": "如需重判，只能用主记录全量证据按 §2/§3.8 单独判定，不在归并内顺手改判",
+     "expected": true,
+     "rule": "dedup-rules §4.3；recurrence-rules §3.8"
+    }
+   ]
+  },
+  {
+   "actual_output": "待执行",
+   "test_result": "待执行",
+   "fail_reason": "待执行",
+   "entry_type": "synthetic",
+   "synthetic": true,
+   "case_id": "TC-R8",
+   "category": "运行边界（offline）",
+   "goal": "验证 offline 模式写入隔离、临时编号纪律、配置降级与版本一致性。",
+   "raw_input": "S0 config/default.json（meta.skill_version=V0.1.3，storage.storage_root=null，mode_default=offline）。S1 项目配置 soso_data_center.json 含 5 处 __TBD__（仓库 ID、群 ID、环境名、编号前缀、时区）。S2 离线输入包：1 条修复类 commit（正文含现象+修复）、1 条 test commit（body 空）、1 条禅道 active 快照（模拟输入，非正式库）。S3 运行参数：mode=offline，offline_root=/tmp/offline-root，run_id 由运行方指定。",
+   "expected_defect_count": "1（修复类 commit 描述的现象）",
+   "expected_filter": "修复类 commit=candidate（role=primary_fix）；test commit=template（triage_reason=template_noise）；禅道快照=status_evidence。",
+   "expected_merge": "仅 1 个缺陷，无归并。",
+   "expected_attribution": "修复类 commit=primary_fix；禅道快照=status_evidence；test commit 不入缺陷。",
+   "expected_recurrence": "无复发（仅一次首次发生）；occurrence.kind=first；不复核。",
+   "basis": "offline 模式按 SKILL §2 第 5 条加载全部核心文件；写入边界见 output-schema §1.2/§1.3；编号纪律见 execution-rules §5。",
+   "negatives": "①不得写正式 data/<project>/ 或 state.json；②不得分配任何正式编号；③不得把 __TBD__ 当真实参数；④不得因 storage_root=null 仍启动正式采集/入库；⑤不得把本地目录当跨任务持久化。",
+   "evidence_refs": [
+    "S0",
+    "S1",
+    "S2",
+    "S3"
+   ],
+   "rule_refs": [
+    "references/output-schema.md §1.2/§1.3/§2",
+    "references/execution-rules.md §4/§5/§9/§10",
+    "SKILL.md §2/§3",
+    "config/default.json meta/storage"
+   ],
+   "expected_counts": {
+    "confirmed_defects": 1,
+    "suspect_defects": 0,
+    "evidence_items": 3,
+    "fix_actions": 0,
+    "independent_occurrences": 1,
+    "repeat_unresolved_events": 0,
+    "unresolved_open_bugs": 0,
+    "recurrence_events": 0,
+    "recurrence_by_subtype": {
+     "repeat_after_fix": 0,
+     "rollback_regress": 0
+    },
+    "related_cases": 0,
+    "bugs_without_occurrence": 0,
+    "verified_environments": "未知（输入未给出可归一环境；按 §3.7 报未知，不写 0）",
+    "coverage": "offline 试验；时间精度：秒级；未覆盖：正式模式（collect/process/analyze）行为；未知：项目参数（__TBD__）",
+    "formal_numbering_attempts": 0
+   },
+   "assertions": [
+    {
+     "id": "TC-R8-1",
+     "stage": "integrity",
+     "check": "正式 state.json/library/raw 与编号计数器在运行前后字节不变（不存在写入）",
+     "expected": true,
+     "rule": "output-schema §1.2/§1.3"
+    },
+    {
+     "id": "TC-R8-2",
+     "stage": "integrity",
+     "check": "输出中无 DC-/EV-/OC-/RV-/TR- 正式编号，所有对象为 offline-<run_id>- 临时键",
+     "expected": true,
+     "rule": "output-schema §1.2；execution-rules §5"
+    },
+    {
+     "id": "TC-R8-3",
+     "stage": "integrity",
+     "check": "产物只落 <offline_root>/<run_id>/，含 runs/<run_id>.json、reports/ 与自检报告",
+     "expected": true,
+     "rule": "output-schema §1.3"
+    },
+    {
+     "id": "TC-R8-4",
+     "stage": "integrity",
+     "check": "运行声明 skill_version == V0.1.3，与 SKILL/规则文件版本头一致",
+     "expected": true,
+     "rule": "SKILL.md §2；config/default.json meta"
+    },
+    {
+     "id": "TC-R8-5",
+     "stage": "filter",
+     "check": "项目配置含 __TBD__ → 按不完整配置处理（只按通用默认值跑，报告列缺失项），不把 TBD 当真实参数",
+     "expected": true,
+     "rule": "SKILL.md §2/§7"
+    },
+    {
+     "id": "TC-R8-6",
+     "stage": "integrity",
+     "check": "storage.storage_root=null → 仅 offline，不启动正式采集/入库/编号分配",
+     "expected": true,
+     "rule": "execution-rules §4"
+    },
+    {
+     "id": "TC-R8-7",
+     "stage": "integrity",
+     "check": "quality-checklist 按 offline 模式执行并出结论，不自称完成正式测试或独立测试通过",
+     "expected": true,
+     "rule": "SKILL.md §6；quality-checklist"
+    },
+    {
+     "id": "TC-R8-8",
+     "stage": "negative",
+     "check": "未读写正式水位、未改案例库、未把本地目录当跨任务持久化",
+     "expected": true,
+     "rule": "execution-rules §4/§10"
+    }
+   ]
+  }
+ ]
+}
