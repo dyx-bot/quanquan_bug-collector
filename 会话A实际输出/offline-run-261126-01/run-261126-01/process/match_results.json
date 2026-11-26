@@ -1,0 +1,655 @@
+{
+  "batch_id": "offline-run-261126-01-real-inputs-17",
+  "generated_at": "2026-11-26T10:00:00+08:00",
+  "items": [
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-002-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-002-B01",
+      "match_basis": [
+        "fix 描述完整",
+        "项目/模块可判定"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-002"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-003-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-003-B01",
+      "match_basis": [
+        "正文明确 actual/expected",
+        "模块可判定"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-003"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-004-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-004-B01",
+      "match_basis": [
+        "fix 描述完整",
+        "含禅道号 #14686"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-004"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-004-02",
+      "match_result": "merge_into",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-004-B01",
+      "match_basis": [
+        "同一禅道号 #14686 且修复内容吻合（标识+内容双核验）",
+        "模块一致"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-004"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-005-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-005-B01",
+      "match_basis": [
+        "禅道默认候选",
+        "首次出现"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-005"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-005-02",
+      "match_result": "merge_into",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-005-B01",
+      "match_basis": [
+        "同 #14686 且内容吻合"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-005"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-005-03",
+      "match_result": "merge_into",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-005-B01",
+      "match_basis": [
+        "标题明示 #14686 复测反馈，同缺陷跟进补修"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-005"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-005-04",
+      "match_result": "merge_into",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-005-B01",
+      "match_basis": [
+        "标题明示禅道 #14686，同一修复目标"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-005"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-006-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-006-B01",
+      "match_basis": [
+        "禅道默认候选"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-006"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-006-02",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-006-B02",
+      "match_basis": [
+        "禅道默认候选"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-006"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-006-03",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-006-B03",
+      "match_basis": [
+        "禅道默认候选"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-006"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-006-04",
+      "match_result": "merge_into",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-006-B01",
+      "match_basis": [
+        "正文明示 15030，修复内容吻合"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-006"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-006-05",
+      "match_result": "merge_into",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-006-B02",
+      "match_basis": [
+        "正文明示 15032，修复内容吻合"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-006"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-006-06",
+      "match_result": "duplicate_record",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-006-B02",
+      "match_basis": [
+        "与 E10:merge 同 subject 且为其次父提交，同一改动"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-006"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-006-07",
+      "match_result": "merge_into",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-006-B03",
+      "match_basis": [
+        "正文明示 #15036，同一 OOM 防护目标"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-006"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-006-08",
+      "match_result": "merge_into",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-006-B03",
+      "match_basis": [
+        "正文明示 #15036"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-006"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-006-09",
+      "match_result": "merge_into",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-006-B03",
+      "match_basis": [
+        "正文明示 #15036"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-006"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-006-10",
+      "match_result": "merge_into",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-006-B03",
+      "match_basis": [
+        "Merge !176 正文 #15036，OOM 防护四层"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-006"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-007-01",
+      "match_result": "new",
+      "confidence": "medium",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-007-B01",
+      "match_basis": [
+        "Merge 提交含业务描述但为批次级摘要，模块/现象不具体"
+      ],
+      "differences": [],
+      "missing_evidence": [
+        "逐项缺陷的触发/现象/预期",
+        "MR !163 描述与 diff"
+      ],
+      "case_id": "TC-007"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-007-02",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-007-B02",
+      "match_basis": [
+        "正文明示 15030"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-007"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-008-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-008-B01",
+      "match_basis": [
+        "禅道默认候选"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-008"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-008-02",
+      "match_result": "merge_into",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-008-B01",
+      "match_basis": [
+        "标题明示 #15048 跟进，同缺陷"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-008"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-008-03",
+      "match_result": "merge_into",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-008-B01",
+      "match_basis": [
+        "标题明示 #15048 跟进（二轮），同缺陷"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-008"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A1-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A1-B01",
+      "match_basis": [
+        "现象/根因/影响面明确，table 切片器代码缺陷"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A1"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A1-02",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A1-B02",
+      "match_basis": [
+        "G17 明确第二类根因为存量未回填，修复手段（回填）与代码修复独立"
+      ],
+      "differences": [
+        "根因不同：数据未回填 vs 代码缺标题栈"
+      ],
+      "missing_evidence": [],
+      "case_id": "TC-A1"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A1-03",
+      "match_result": "new",
+      "confidence": "medium",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A1-B03",
+      "match_basis": [
+        "G21 明示页脚被识别为标题块，属另一改动"
+      ],
+      "differences": [],
+      "missing_evidence": [
+        "页脚块样例与解析端证据"
+      ],
+      "case_id": "TC-A1"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A2-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A2-B01",
+      "match_basis": [
+        "现象/触发明确，独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A2"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A2-02",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A2-B02",
+      "match_basis": [
+        "现象/触发明确，独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A2"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A2-03",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A2-B03",
+      "match_basis": [
+        "现象/触发明确，独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A2"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A2-04",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A2-B04",
+      "match_basis": [
+        "现象/触发明确，独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A2"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A2-05",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A2-B05",
+      "match_basis": [
+        "现象/触发明确，独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A2"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A2-06",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A2-B06",
+      "match_basis": [
+        "现象/触发明确，独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A2"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A2-07",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A2-B07",
+      "match_basis": [
+        "现象/触发明确，独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A2"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A2-08",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A2-B08",
+      "match_basis": [
+        "现象/触发明确，独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A2"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A2-09",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A2-B09",
+      "match_basis": [
+        "现象/触发明确，独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A2"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A2-10",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A2-B10",
+      "match_basis": [
+        "现象/触发明确，独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A2"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A3-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A3-B01",
+      "match_basis": [
+        "现象/预期明确；G5 为同缺陷新触发"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A3"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A3-02",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A3-B02",
+      "match_basis": [
+        "G2 描述独立缺陷（非默认应用 404），模块与根因均不同于内置配置"
+      ],
+      "differences": [
+        "模块/根因不同：详情读写 app 解析 vs 内置配置播种"
+      ],
+      "missing_evidence": [],
+      "case_id": "TC-A3"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A4-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A4-B01",
+      "match_basis": [
+        "现象/触发/环境明确"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A4"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A4-02",
+      "match_result": "new",
+      "confidence": "medium",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A4-B02",
+      "match_basis": [
+        "G9 明示兜底链路未带锚点，属另一独立缺口"
+      ],
+      "differences": [],
+      "missing_evidence": [
+        "兜底链路请求与返回样例"
+      ],
+      "case_id": "TC-A4"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A5-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A5-B01",
+      "match_basis": [
+        "G11 明示前端吞 502/401 为真实缺陷"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A5"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A5-02",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A5-B02",
+      "match_basis": [
+        "G11 明示 mp4 误匹配 FAQ 策略"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A5"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A6-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A6-B01",
+      "match_basis": [
+        "现象/根因/影响面明确"
+      ],
+      "differences": [],
+      "missing_evidence": [
+        "环境身份（原文无已登记别名）"
+      ],
+      "case_id": "TC-A6"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A6-02",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A6-B02",
+      "match_basis": [
+        "现象明确：部署缺已合并修复"
+      ],
+      "differences": [],
+      "missing_evidence": [
+        "发布流水线与镜像 tag 快照",
+        "环境身份（原文无已登记别名）"
+      ],
+      "case_id": "TC-A6"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A7-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A7-B01",
+      "match_basis": [
+        "现象明确、独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A7"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A7-02",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A7-B02",
+      "match_basis": [
+        "现象明确、独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A7"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A7-03",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A7-B03",
+      "match_basis": [
+        "现象明确、独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A7"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A7-04",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A7-B04",
+      "match_basis": [
+        "现象明确、独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A7"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A7-05",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A7-B05",
+      "match_basis": [
+        "现象明确、独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A7"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A7-06",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A7-B06",
+      "match_basis": [
+        "现象明确、独立可修可验"
+      ],
+      "differences": [],
+      "missing_evidence": [],
+      "case_id": "TC-A7"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A7-07",
+      "match_result": "review",
+      "confidence": "low",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A7-B07",
+      "match_basis": [
+        "字符数口径异常缺预期依据与样本"
+      ],
+      "differences": [],
+      "missing_evidence": [
+        "DP 字符数统计口径说明与样本文档"
+      ],
+      "case_id": "TC-A7"
+    },
+    {
+      "candidate_id": "offline-run-261126-01-CANDIDATE-TC-A8-01",
+      "match_result": "new",
+      "confidence": "high",
+      "target_bug_id": "offline-run-261126-01-BUG-TC-A8-B01",
+      "match_basis": [
+        "现象/根因/影响/复现窗口明确"
+      ],
+      "differences": [],
+      "missing_evidence": [
+        "环境身份（原文无已登记别名）"
+      ],
+      "case_id": "TC-A8"
+    }
+  ]
+}

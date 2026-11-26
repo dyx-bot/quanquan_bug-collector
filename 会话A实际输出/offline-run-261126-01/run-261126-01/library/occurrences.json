@@ -1,0 +1,707 @@
+[
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-002-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-002-B01",
+    "kind": "first",
+    "observed_at": "2026-11-24T09:59:19+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-001"
+    ],
+    "basis": "Merge commit 正文首次描述该修复，历史库无对应缺陷（offline 无基线）",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-002",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-003-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-003-B01",
+    "kind": "first",
+    "observed_at": "2026-11-07T22:31:50+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-002"
+    ],
+    "basis": "提交正文首次描述该存量缺陷并修复",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-003",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-004-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-004-B01",
+    "kind": "first",
+    "observed_at": "2026-11-17T16:38:07+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-004",
+      "offline-run-261126-01-EVIDENCE-003"
+    ],
+    "basis": "禅道开单时间最早；commit 为同单修复",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-004",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-005-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-005-B01",
+    "kind": "first",
+    "observed_at": "2026-11-17T16:38:07+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-004",
+      "offline-run-261126-01-EVIDENCE-003"
+    ],
+    "basis": "禅道开单为首次可核验出现；后续 E7/E8 为同缺陷补修，无新独立发生证据",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-005",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-006-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-006-B01",
+    "kind": "first",
+    "observed_at": "2026-11-23T14:45:19+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-008"
+    ],
+    "basis": "禅道开单为首次可核验出现",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-006",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-006-O02",
+    "bug_id": "offline-run-261126-01-BUG-TC-006-B02",
+    "kind": "first",
+    "observed_at": "2026-11-23T14:45:27+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-010"
+    ],
+    "basis": "禅道开单为首次可核验出现",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-006",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-006-O03",
+    "bug_id": "offline-run-261126-01-BUG-TC-006-B03",
+    "kind": "first",
+    "observed_at": "2026-11-23T21:15:45+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-013"
+    ],
+    "basis": "禅道开单为首次可核验出现",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-006",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-007-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-007-B01",
+    "kind": "first",
+    "observed_at": "2026-11-23T13:48:56+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-018"
+    ],
+    "basis": "Merge 提交首次描述该批整改",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-007",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-007-O02",
+    "bug_id": "offline-run-261126-01-BUG-TC-007-B02",
+    "kind": "first",
+    "observed_at": "2026-11-23T14:45:19+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-009"
+    ],
+    "basis": "首次可核验出现（提交时间）",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-007",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-008-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-008-B01",
+    "kind": "first",
+    "observed_at": "2026-11-23T23:40:59+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-019"
+    ],
+    "basis": "禅道开单为首次可核验出现；两轮跟进 Merge 无新独立发生证据",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-008",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A1-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-A1-B01",
+    "kind": "first",
+    "observed_at": "2026-11-19T09:16:19+08:00",
+    "environment": "soso-dev",
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-022"
+    ],
+    "basis": "用户首报+截图，首次可核验出现",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A1",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A1-O02",
+    "bug_id": "offline-run-261126-01-BUG-TC-A1-B02",
+    "kind": "first",
+    "observed_at": "2026-11-19T09:16:19+08:00",
+    "environment": "soso-dev",
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-022",
+      "offline-run-261126-01-EVIDENCE-024"
+    ],
+    "basis": "同一现象的另一根因（存量未回填），G17 明确区分后为该缺陷首次登记",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A1",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A1-O03",
+    "bug_id": "offline-run-261126-01-BUG-TC-A1-B03",
+    "kind": "first",
+    "observed_at": "2026-11-19T17:45:36+08:00",
+    "environment": "soso-dev",
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-026"
+    ],
+    "basis": "部署复验时发现并记录的数据质量缺陷",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A1",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A2-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-A2-B01",
+    "kind": "first",
+    "observed_at": "2026-11-22T16:18:55+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-029"
+    ],
+    "basis": "验收方消息首次记录该缺陷",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A2",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A2-O02",
+    "bug_id": "offline-run-261126-01-BUG-TC-A2-B02",
+    "kind": "first",
+    "observed_at": "2026-11-22T16:18:55+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-029"
+    ],
+    "basis": "首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A2",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A2-O03",
+    "bug_id": "offline-run-261126-01-BUG-TC-A2-B03",
+    "kind": "first",
+    "observed_at": "2026-11-22T16:18:55+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-029"
+    ],
+    "basis": "首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A2",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A2-O04",
+    "bug_id": "offline-run-261126-01-BUG-TC-A2-B04",
+    "kind": "first",
+    "observed_at": "2026-11-22T16:18:55+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-029"
+    ],
+    "basis": "首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A2",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A2-O05",
+    "bug_id": "offline-run-261126-01-BUG-TC-A2-B05",
+    "kind": "first",
+    "observed_at": "2026-11-22T16:18:55+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-029"
+    ],
+    "basis": "首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A2",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A2-O06",
+    "bug_id": "offline-run-261126-01-BUG-TC-A2-B06",
+    "kind": "first",
+    "observed_at": "2026-11-22T16:18:55+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-029"
+    ],
+    "basis": "首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A2",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A2-O07",
+    "bug_id": "offline-run-261126-01-BUG-TC-A2-B07",
+    "kind": "first",
+    "observed_at": "2026-11-23T03:51:46+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-030"
+    ],
+    "basis": "M2 质检首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A2",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A2-O08",
+    "bug_id": "offline-run-261126-01-BUG-TC-A2-B08",
+    "kind": "first",
+    "observed_at": "2026-11-23T03:51:46+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-030"
+    ],
+    "basis": "M2 质检首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A2",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A2-O09",
+    "bug_id": "offline-run-261126-01-BUG-TC-A2-B09",
+    "kind": "first",
+    "observed_at": "2026-11-23T03:51:46+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-030"
+    ],
+    "basis": "M2 质检首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A2",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A2-O10",
+    "bug_id": "offline-run-261126-01-BUG-TC-A2-B10",
+    "kind": "first",
+    "observed_at": "2026-11-23T03:51:46+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-030"
+    ],
+    "basis": "M2 质检首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A2",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A3-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-A3-B01",
+    "kind": "first",
+    "observed_at": "2026-11-17T09:16:53+08:00",
+    "environment": "soso-dev",
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-031"
+    ],
+    "basis": "用户首报，首次可核验出现",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A3",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A3-O02",
+    "bug_id": "offline-run-261126-01-BUG-TC-A3-B01",
+    "kind": "repeat_unresolved",
+    "observed_at": "2026-11-17T15:44:06+08:00",
+    "environment": "soso-dev",
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-034"
+    ],
+    "basis": "同一缺陷；soso-dev 新建应用场景从未验证通过；G5 为新建应用 ai_jian_zheng_quan 的新独立触发（新时间/新应用），不复用原次证据",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A3",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A3-O03",
+    "bug_id": "offline-run-261126-01-BUG-TC-A3-B02",
+    "kind": "first",
+    "observed_at": "2026-11-17T10:05:14+08:00",
+    "environment": "soso-dev",
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-035"
+    ],
+    "basis": "机器人回执首次描述该缺陷",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A3",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A4-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-A4-B01",
+    "kind": "first",
+    "observed_at": "2026-11-17T12:13:02+08:00",
+    "environment": "soso-dev",
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-036"
+    ],
+    "basis": "用户首报，首次可核验出现",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A4",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A4-O02",
+    "bug_id": "offline-run-261126-01-BUG-TC-A4-B01",
+    "kind": "rollback_regress",
+    "observed_at": "2026-11-18T10:37:03+08:00",
+    "environment": "soso-dev",
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-038",
+      "offline-run-261126-01-EVIDENCE-039"
+    ],
+    "basis": "G7 曾在 soso-dev 验证通过；G9 证实 compose pin 停在修复前镜像、develop 部署把前端冲回旧镜像（镜像/配置回退证据），同缺陷重现",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A4",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A4-O03",
+    "bug_id": "offline-run-261126-01-BUG-TC-A4-B02",
+    "kind": "first",
+    "observed_at": "2026-11-18T11:29:21+08:00",
+    "environment": "soso-dev",
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-039"
+    ],
+    "basis": "G9 首次记录兜底链路缺锚点",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A4",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A5-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-A5-B01",
+    "kind": "first",
+    "observed_at": "2026-11-17T14:02:11+08:00",
+    "environment": "soso-dev",
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-040",
+      "offline-run-261126-01-EVIDENCE-041"
+    ],
+    "basis": "首次记录（前端吞错为真实产品问题）",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A5",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A5-O02",
+    "bug_id": "offline-run-261126-01-BUG-TC-A5-B02",
+    "kind": "first",
+    "observed_at": "2026-11-17T14:02:11+08:00",
+    "environment": "soso-dev",
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-041"
+    ],
+    "basis": "首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A5",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A6-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-A6-B01",
+    "kind": "first",
+    "observed_at": "2026-11-24T01:47:51+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-042"
+    ],
+    "basis": "首次记录（P1 安全事件）",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A6",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A6-O02",
+    "bug_id": "offline-run-261126-01-BUG-TC-A6-B02",
+    "kind": "first",
+    "observed_at": "2026-11-24T01:47:51+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-042"
+    ],
+    "basis": "首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A6",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A7-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-A7-B01",
+    "kind": "first",
+    "observed_at": "2026-11-23T03:51:46+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-043"
+    ],
+    "basis": "MAT-050 质检首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A7",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A7-O02",
+    "bug_id": "offline-run-261126-01-BUG-TC-A7-B02",
+    "kind": "first",
+    "observed_at": "2026-11-23T03:51:46+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-043"
+    ],
+    "basis": "首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A7",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A7-O03",
+    "bug_id": "offline-run-261126-01-BUG-TC-A7-B03",
+    "kind": "first",
+    "observed_at": "2026-11-23T03:51:46+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-043"
+    ],
+    "basis": "首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A7",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A7-O04",
+    "bug_id": "offline-run-261126-01-BUG-TC-A7-B04",
+    "kind": "first",
+    "observed_at": "2026-11-23T03:51:46+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-043",
+      "offline-run-261126-01-EVIDENCE-030"
+    ],
+    "basis": "首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A7",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A7-O05",
+    "bug_id": "offline-run-261126-01-BUG-TC-A7-B05",
+    "kind": "first",
+    "observed_at": "2026-11-23T03:51:46+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-043",
+      "offline-run-261126-01-EVIDENCE-030"
+    ],
+    "basis": "首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A7",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A7-O06",
+    "bug_id": "offline-run-261126-01-BUG-TC-A7-B06",
+    "kind": "first",
+    "observed_at": "2026-11-23T03:51:46+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-043",
+      "offline-run-261126-01-EVIDENCE-030"
+    ],
+    "basis": "首次记录",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A7",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A7-O07",
+    "bug_id": "offline-run-261126-01-BUG-TC-A7-B07",
+    "kind": "first",
+    "observed_at": "2026-11-23T03:51:46+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-044"
+    ],
+    "basis": "首次记录（疑似，待核口径）",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A7",
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "occurrence_id": "offline-run-261126-01-OCCURRENCE-TC-A8-O01",
+    "bug_id": "offline-run-261126-01-BUG-TC-A8-B01",
+    "kind": "first",
+    "observed_at": "2026-11-24T11:00:54+08:00",
+    "environment": null,
+    "reported_by": null,
+    "evidence_ids": [
+      "offline-run-261126-01-EVIDENCE-045"
+    ],
+    "basis": "首次记录（P1，复现窗口 10:57-11:24）",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "verified": false,
+    "case_id": "TC-A8",
+    "id_note": "offline 临时键，非正式编号"
+  }
+]

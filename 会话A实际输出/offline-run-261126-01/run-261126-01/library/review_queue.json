@@ -1,0 +1,206 @@
+[
+  {
+    "review_id": "offline-run-261126-01-REVIEW-001",
+    "type": "field_verify",
+    "bug_id": "offline-run-261126-01-BUG-TC-002-B01",
+    "candidate_snapshot": {
+      "case_id": "TC-002",
+      "reason": "mr_ref_unverified：commit 引用 MR !188，本批未独立采集 MR 快照，不得作为已核实强证据"
+    },
+    "similar_points": [],
+    "differences": [],
+    "missing_evidence": [
+      "MR !188 独立快照与 diff"
+    ],
+    "reason": "mr_ref_unverified：commit 引用 MR !188，本批未独立采集 MR 快照，不得作为已核实强证据",
+    "confidence": "medium",
+    "added_at": "2026-11-26T10:00:00+08:00",
+    "added_by_run": "run-261126-01",
+    "resolution": null,
+    "resolved_by": null,
+    "resolved_at": null,
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "review_id": "offline-run-261126-01-REVIEW-002",
+    "type": "suspect_bug",
+    "bug_id": "offline-run-261126-01-BUG-TC-007-B01",
+    "candidate_snapshot": {
+      "case_id": "TC-007",
+      "reason": "批次级修复摘要无法拆分到独立断点，按 suspect 建单并待复核拆分"
+    },
+    "similar_points": [],
+    "differences": [],
+    "missing_evidence": [
+      "各子项的现象/触发/验证方式",
+      "MR !163 快照"
+    ],
+    "reason": "批次级修复摘要无法拆分到独立断点，按 suspect 建单并待复核拆分",
+    "confidence": "medium",
+    "added_at": "2026-11-26T10:00:00+08:00",
+    "added_by_run": "run-261126-01",
+    "resolution": null,
+    "resolved_by": null,
+    "resolved_at": null,
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "review_id": "offline-run-261126-01-REVIEW-003",
+    "type": "field_verify",
+    "bug_id": "offline-run-261126-01-BUG-TC-A1-B02",
+    "candidate_snapshot": {
+      "case_id": "TC-A1",
+      "reason": "G19 报回填 483 片、G21 报回填 2505 片，数量口径不一致，需核实是否为两轮不同批次"
+    },
+    "similar_points": [],
+    "differences": [
+      "483 vs 2505"
+    ],
+    "missing_evidence": [
+      "两轮回填的任务记录与目标文档清单"
+    ],
+    "reason": "G19 报回填 483 片、G21 报回填 2505 片，数量口径不一致，需核实是否为两轮不同批次",
+    "confidence": "medium",
+    "added_at": "2026-11-26T10:00:00+08:00",
+    "added_by_run": "run-261126-01",
+    "resolution": null,
+    "resolved_by": null,
+    "resolved_at": null,
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "review_id": "offline-run-261126-01-REVIEW-004",
+    "type": "field_verify",
+    "bug_id": null,
+    "candidate_snapshot": {
+      "case_id": "TC-A1",
+      "reason": "钉钉消息字段异常：本案例 10 条消息的 sender 均等于 messageId，time 末尾混入发送人姓名（如『2026-11-19 09:16:19 陈昔』），无法从字段直接取可信发送人；已按原文姓名作展示，未把 messageId 当发送人"
+    },
+    "similar_points": [],
+    "differences": [],
+    "missing_evidence": [
+      "钉钉原始会话中 sender 的稳定用户标识",
+      "纯时间字段（不含姓名）"
+    ],
+    "reason": "钉钉消息字段异常：本案例 10 条消息的 sender 均等于 messageId，time 末尾混入发送人姓名（如『2026-11-19 09:16:19 陈昔』），无法从字段直接取可信发送人；已按原文姓名作展示，未把 messageId 当发送人",
+    "confidence": "high",
+    "added_at": "2026-11-26T10:00:00+08:00",
+    "added_by_run": "run-261126-01",
+    "resolution": null,
+    "resolved_by": null,
+    "resolved_at": null,
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "review_id": "offline-run-261126-01-REVIEW-005",
+    "type": "field_verify",
+    "bug_id": "offline-run-261126-01-BUG-TC-A3-B02",
+    "candidate_snapshot": {
+      "case_id": "TC-A3",
+      "reason": "非默认租户验证需门户登录态；G4 仅验证默认租户与跨租户 404 隔离，非默认应用未人眼回归"
+    },
+    "similar_points": [],
+    "differences": [],
+    "missing_evidence": [
+      "soso_guanyutest 等非默认应用文档详情页回归结果"
+    ],
+    "reason": "非默认租户验证需门户登录态；G4 仅验证默认租户与跨租户 404 隔离，非默认应用未人眼回归",
+    "confidence": "medium",
+    "added_at": "2026-11-26T10:00:00+08:00",
+    "added_by_run": "run-261126-01",
+    "resolution": null,
+    "resolved_by": null,
+    "resolved_at": null,
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "review_id": "offline-run-261126-01-REVIEW-006",
+    "type": "field_verify",
+    "bug_id": "offline-run-261126-01-BUG-TC-A6-B01",
+    "candidate_snapshot": {
+      "case_id": "TC-A6",
+      "reason": "环境名『影子实测/外发事故』未命中 canonical_name 或别名，登记原文待核，不猜归"
+    },
+    "similar_points": [],
+    "differences": [],
+    "missing_evidence": [
+      "该次外发所在环境名（原文）"
+    ],
+    "reason": "环境名『影子实测/外发事故』未命中 canonical_name 或别名，登记原文待核，不猜归",
+    "confidence": "low",
+    "added_at": "2026-11-26T10:00:00+08:00",
+    "added_by_run": "run-261126-01",
+    "resolution": null,
+    "resolved_by": null,
+    "resolved_at": null,
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "review_id": "offline-run-261126-01-REVIEW-007",
+    "type": "field_verify",
+    "bug_id": "offline-run-261126-01-BUG-TC-A6-B02",
+    "candidate_snapshot": {
+      "case_id": "TC-A6",
+      "reason": "环境名『现网 titlenoise』未命中 canonical_name 或别名（『现网』在本项目既用于 81 也用于正式环境），登记原文待核"
+    },
+    "similar_points": [],
+    "differences": [],
+    "missing_evidence": [
+      "现网所指实际环境名",
+      "发布流水线与镜像 tag 快照"
+    ],
+    "reason": "环境名『现网 titlenoise』未命中 canonical_name 或别名（『现网』在本项目既用于 81 也用于正式环境），登记原文待核",
+    "confidence": "medium",
+    "added_at": "2026-11-26T10:00:00+08:00",
+    "added_by_run": "run-261126-01",
+    "resolution": null,
+    "resolved_by": null,
+    "resolved_at": null,
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "review_id": "offline-run-261126-01-REVIEW-008",
+    "type": "suspect_bug",
+    "bug_id": "offline-run-261126-01-BUG-TC-A7-B07",
+    "candidate_snapshot": {
+      "case_id": "TC-A7",
+      "reason": "DP 字符数异常缺预期依据与样本，需人工确认统计口径"
+    },
+    "similar_points": [],
+    "differences": [],
+    "missing_evidence": [
+      "口径说明",
+      "样本文档字符数对比"
+    ],
+    "reason": "DP 字符数异常缺预期依据与样本，需人工确认统计口径",
+    "confidence": "low",
+    "added_at": "2026-11-26T10:00:00+08:00",
+    "added_by_run": "run-261126-01",
+    "resolution": null,
+    "resolved_by": null,
+    "resolved_at": null,
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "review_id": "offline-run-261126-01-REVIEW-009",
+    "type": "field_verify",
+    "bug_id": "offline-run-261126-01-BUG-TC-A8-B01",
+    "candidate_snapshot": {
+      "case_id": "TC-A8",
+      "reason": "环境名『87 快查批』未命中 canonical_name 或别名，登记原文待核，不猜归"
+    },
+    "similar_points": [],
+    "differences": [],
+    "missing_evidence": [
+      "该批所在环境名（原文）"
+    ],
+    "reason": "环境名『87 快查批』未命中 canonical_name 或别名，登记原文待核，不猜归",
+    "confidence": "medium",
+    "added_at": "2026-11-26T10:00:00+08:00",
+    "added_by_run": "run-261126-01",
+    "resolution": null,
+    "resolved_by": null,
+    "resolved_at": null,
+    "id_note": "offline 临时键，非正式编号"
+  }
+]

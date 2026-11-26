@@ -1,0 +1,1576 @@
+[
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-001",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:27da39f3cefd65a4bbf51ecb05d3af80d4b283e5",
+    "kind": "commit",
+    "collected_at": "2026-11-24T09:59:19+08:00",
+    "summary": "fix(dc): 本体 token 过期自动重登，修复 /api/dc/onto/scenes 502（HTTP 401）；MR !188",
+    "quote": "Merge branch 'fix/dc-onto-token-refresh-20261124' into 'develop'\nfix(dc): 本体 token 过期自动重登，修复 /api/dc/onto/scenes 502（HTTP 401）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_pr",
+    "snapshot": {
+      "snapshot_at": "2026-11-24T09:59:19+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-002-B01",
+        "role": "primary_fix",
+        "basis": "fix(dc): 本体 token 过期自动重登，修复 /api/dc/onto/scenes 502（HTTP 401）；MR !188",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-002/E3",
+      "batch_id": "offline-run-261126-01-TC-002"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-002",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:da00120fcc61be20fc1dae572a66da921b08c6e2",
+    "kind": "commit",
+    "collected_at": "2026-11-07T22:31:50+08:00",
+    "summary": "feat 正文：修复存量 bug，--muted-foreground 由 18% 深灰改回 46%",
+    "quote": "feat(dc): 全站视觉美化·澄蓝精工方向（方向A选定，qiaomu-design 试衣间）\n- styles.css 设计令牌重铸：暖中性画布 + 白卡 + 发丝线，品牌蓝 #2f5fd0\n  收敛为点缀；语义色 success/warning/info 重调；chart 序列对齐\n- 修复存量 bug：--muted-foreground 原为 18% 深灰（近黑），改回 46%\n- ki",
+    "snapshot": {
+      "snapshot_at": "2026-11-07T22:31:50+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-003-B01",
+        "role": "primary_fix",
+        "basis": "feat 正文：修复存量 bug，--muted-foreground 由 18% 深灰改回 46%",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-003/E4",
+      "batch_id": "offline-run-261126-01-TC-003"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-003",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:2c70dbdb5d8589ca53701656dd3965806af625a8",
+    "kind": "commit",
+    "collected_at": "2026-11-18T15:48:09+08:00",
+    "summary": "表格切片修复：分隔行识别、真实表头继承、空壳行与<br>清理、禁表格上下文拼接（禅道 #14686）",
+    "quote": "表格切片修复：分隔行识别、真实表头继承、空壳行与<br>清理、禁表格上下文拼接（禅道 #14686）\n- normalize_table_md：识别「分隔行在首行」的 OXR 形态，移位为真实表头在前、分隔行随后；单元格内 <br> 变体替换为空格；全空壳行继续丢弃\n- split_table_md：按位置定位表头+分隔行，超长拆段时每段重复真实表头+分隔行，段内不残留多余分隔行\n- normal",
+    "snapshot": {
+      "snapshot_at": "2026-11-18T15:48:09+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-004-B01",
+        "role": "primary_fix",
+        "basis": "表格切片修复：分隔行识别、真实表头继承、空壳行与<br>清理、禁表格上下文拼接（禅道 #14686）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-005-B01",
+        "role": "primary_fix",
+        "basis": "主修复：分隔行识别/真实表头继承/禁上下文拼接（#14686）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-004/E5",
+      "batch_id": "offline-run-261126-01-TC-004"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-004",
+    "source": "zentao",
+    "source_key": "zentao:zentao-main:14686",
+    "kind": "bug_record",
+    "collected_at": "2026-11-25T15:55:00+08:00",
+    "summary": "禅道 #14686 status=resolved resolution=fixed（2026-11-18 20:06 解决），未关闭",
+    "quote": "{\"id\": 14686, \"status\": \"resolved\", \"pri\": 2, \"activatedCount\": 0, \"openedBy\": \"zhuangyanwen 庄艳雯\", \"openedDate\": \"2026-11-17T08:38:07Z\", \"resolvedBy\": \"chenxi2 陈昔\", \"resolution\": \"fixed\", \"resolvedDat",
+    "snapshot": {
+      "snapshot_at": "2026-11-25T15:55:00+08:00",
+      "state": "resolved"
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-004-B01",
+        "role": "status_evidence",
+        "basis": "禅道 #14686 status=resolved resolution=fixed（2026-11-18 20:06 解决），未关闭",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-005-B01",
+        "role": "status_evidence",
+        "basis": "禅道 #14686 resolved/fixed 快照",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-004/Z-14686",
+      "batch_id": "offline-run-261126-01-TC-004"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-005",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:1388d788f0fbcf670e1eaf45b6f1ec40d36acda7",
+    "kind": "commit",
+    "collected_at": "2026-11-18T15:48:16+08:00",
+    "summary": "补表格切片回归测试（#14686）",
+    "quote": "补表格切片回归测试（禅道 #14686）：首行分隔行/跨块表头/无表头/合并单元格/多形态/<br>清理/上下文禁拼\nCo-Authored-By: Claude Code <noreply@anthropic.com>",
+    "snapshot": {
+      "snapshot_at": "2026-11-18T15:48:16+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-005-B01",
+        "role": "related_fix",
+        "basis": "补表格切片回归测试（#14686）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-005/E6",
+      "batch_id": "offline-run-261126-01-TC-005"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-006",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:fd011006a3ba67d84a971c3e6c2da3747b4378ca",
+    "kind": "commit",
+    "collected_at": "2026-11-18T16:52:47+08:00",
+    "summary": "表头继承被非表格块打断时重置（#14686 复测反馈）",
+    "quote": "fix(dc): 表格表头继承被非表格块打断时重置（#14686 复测反馈）\nnormalize_table_blocks 遇到非 table 块时重置 prev_head_prefix：\n中间隔了正文/标题后，下一张无表头的表是另一张表，不再继承\n上一张表的表头；紧邻续块的继承行为不变。\n\n补回归用例 test_header_inheritance_broken_by_non_table_blo",
+    "snapshot": {
+      "snapshot_at": "2026-11-18T16:52:47+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-005-B01",
+        "role": "related_fix",
+        "basis": "表头继承被非表格块打断时重置（#14686 复测反馈）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-005/E7",
+      "batch_id": "offline-run-261126-01-TC-005"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-007",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:2ac5f64a500d8f1222ebb0c49ed5217759893e07",
+    "kind": "commit",
+    "collected_at": "2026-11-18T19:21:35+08:00",
+    "summary": "dg 口径同步到 md/naive/table/image 四个切片器（#14686）",
+    "quote": "fix(dc): 表格切片在 naive/md/table/image 切片器同样不拼前文上下文（禅道 #14686）\nxlsx 默认类目走 naive 切片器，此前只改了 dg：长表切片仍以「【前文上下文】上一段尾行」开头，\n同批行在切片里重复出现，命中行被顶出首屏。本次把 dg 的口径同步到会处理表格块的\nmd / naive / table / image 四个切片器：表格切片只保留（标题）",
+    "snapshot": {
+      "snapshot_at": "2026-11-18T19:21:35+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-005-B01",
+        "role": "related_fix",
+        "basis": "dg 口径同步到 md/naive/table/image 四个切片器（#14686）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-005/E8",
+      "batch_id": "offline-run-261126-01-TC-005"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-008",
+    "source": "zentao",
+    "source_key": "zentao:zentao-main:15030",
+    "kind": "bug_record",
+    "collected_at": "2026-11-25T15:55:00+08:00",
+    "summary": "禅道 #15030 active（pri=1）快照",
+    "quote": "{\"id\": 15030, \"status\": \"active\", \"pri\": 1, \"activatedCount\": 0, \"openedBy\": \"wenxiaoyu 温晓宇\", \"openedDate\": \"2026-11-23T06:45:19Z\", \"resolvedBy\": null, \"resolution\": \"\", \"resolvedDate\": null, \"closedD",
+    "snapshot": {
+      "snapshot_at": "2026-11-25T15:55:00+08:00",
+      "state": "active"
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-006-B01",
+        "role": "status_evidence",
+        "basis": "禅道 #15030 active（pri=1）快照",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-006/Z-15030",
+      "batch_id": "offline-run-261126-01-TC-006"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-009",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:534ac0ce23f820ed2ab4d5e5e7ee76fa6701e510",
+    "kind": "commit",
+    "collected_at": "2026-11-23T16:55:21+08:00",
+    "summary": "fix(dc): 15030 乱码误判四条修法 + 覆盖率分母（MR !167）",
+    "quote": "Merge branch 'fix/dc-15030-skip-recover-20261123' into 'develop'\nfix(dc): 15030 乱码误判四条修法 + 覆盖率分母（基于 shared 切片索引分支）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_d",
+    "snapshot": {
+      "snapshot_at": "2026-11-23T16:55:21+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-006-B01",
+        "role": "primary_fix",
+        "basis": "fix(dc): 15030 乱码误判四条修法 + 覆盖率分母（MR !167）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-007-B02",
+        "role": "primary_fix",
+        "basis": "fix(dc): 15030 乱码误判四条修法 + 覆盖率分母（MR !167）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-006/E9:merge",
+      "batch_id": "offline-run-261126-01-TC-006"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-010",
+    "source": "zentao",
+    "source_key": "zentao:zentao-main:15032",
+    "kind": "bug_record",
+    "collected_at": "2026-11-25T15:55:00+08:00",
+    "summary": "禅道 #15032 active（pri=2）快照",
+    "quote": "{\"id\": 15032, \"status\": \"active\", \"pri\": 2, \"activatedCount\": 0, \"openedBy\": \"wenxiaoyu 温晓宇\", \"openedDate\": \"2026-11-23T06:45:27Z\", \"resolvedBy\": null, \"resolution\": \"\", \"resolvedDate\": null, \"closedD",
+    "snapshot": {
+      "snapshot_at": "2026-11-25T15:55:00+08:00",
+      "state": "active"
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-006-B02",
+        "role": "status_evidence",
+        "basis": "禅道 #15032 active（pri=2）快照",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-006/Z-15032",
+      "batch_id": "offline-run-261126-01-TC-006"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-011",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:b9ead6f4aac3f6d34d54d9db8b791c86c8597050",
+    "kind": "commit",
+    "collected_at": "2026-11-23T19:14:55+08:00",
+    "summary": "fix(dc): 15032 重新解析按新正文重匹配切片器（MR !174）",
+    "quote": "Merge branch 'fix/dc-15032-reparse-rematch-20261123' into 'develop'\nfix(dc): 15032 重新解析按新正文重匹配切片器（full 模式回落 auto）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_da",
+    "snapshot": {
+      "snapshot_at": "2026-11-23T19:14:55+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-006-B02",
+        "role": "primary_fix",
+        "basis": "fix(dc): 15032 重新解析按新正文重匹配切片器（MR !174）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-006/E10:merge",
+      "batch_id": "offline-run-261126-01-TC-006"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-012",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:db5252848473e81aeca667274b605677285b5b5d",
+    "kind": "commit",
+    "collected_at": "2026-11-23T19:04:43+08:00",
+    "summary": "E10:merge 的源提交（同一改动）",
+    "quote": "fix(dc): 15032 重新解析按新正文重匹配切片器（full 模式回落 auto）\nCo-Authored-By: Claude Code <noreply@anthropic.com>",
+    "snapshot": {
+      "snapshot_at": "2026-11-23T19:04:43+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-006-B02",
+        "role": "related_fix",
+        "basis": "E10:merge 的源提交（同一改动）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-006/E10:c1",
+      "batch_id": "offline-run-261126-01-TC-006"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-013",
+    "source": "zentao",
+    "source_key": "zentao:zentao-main:15036",
+    "kind": "bug_record",
+    "collected_at": "2026-11-25T15:55:00+08:00",
+    "summary": "禅道 #15036 active（pri=1，files_empty）快照",
+    "quote": "{\"id\": 15036, \"status\": \"active\", \"pri\": 1, \"activatedCount\": 0, \"openedBy\": \"wenxiaoyu 温晓宇\", \"openedDate\": \"2026-11-23T13:15:45Z\", \"resolvedBy\": null, \"resolution\": \"\", \"resolvedDate\": null, \"closedD",
+    "snapshot": {
+      "snapshot_at": "2026-11-25T15:55:00+08:00",
+      "state": "active"
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-006-B03",
+        "role": "status_evidence",
+        "basis": "禅道 #15036 active（pri=1，files_empty）快照",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-006/Z-15036",
+      "batch_id": "offline-run-261126-01-TC-006"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-014",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:0f77e11c2815951a8d78499c0e31e0429141e195",
+    "kind": "commit",
+    "collected_at": "2026-11-23T21:41:23+08:00",
+    "summary": "#15036 OOM 防护：解析子进程隔离/流式表格/oversize 分流/背压分片",
+    "quote": "feat(dc): #15036 OOM 防护——解析子进程隔离/流式表格/oversize 分流/背压分片\n四层口径：②解析在独立子进程（RLIMIT_AS）；③大表格本地流式解析（不整表物化）+ oversize 车道与禁续跑；④内存水位背压 + blocks_raw 分片留档。新增回归 tests/test_oom_guard_20261123.py。\n\nCo-Authored-By: Cl",
+    "snapshot": {
+      "snapshot_at": "2026-11-23T21:41:23+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-006-B03",
+        "role": "related_fix",
+        "basis": "#15036 OOM 防护：解析子进程隔离/流式表格/oversize 分流/背压分片",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-006/E11:c1",
+      "batch_id": "offline-run-261126-01-TC-006"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-015",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:b5d6bdb86b197c0819b88ab49fd05e68a0879519",
+    "kind": "commit",
+    "collected_at": "2026-11-23T21:41:28+08:00",
+    "summary": "server 接入 #15036 四层 OOM 防护",
+    "quote": "feat(dc): server 接入 #15036 四层 OOM 防护（解析隔离/流式表格/oversize 车道/背压与分片留档）\n- 本地重解析（流式表格、路由 PDF/图片）跑独立子进程，RLIMIT_AS 限制，OOM 只死子进程、任务可重试\n- 大 xlsx（≥8MB）走本地流式解析，按行窗口出块；oversize（≥40MB 或 >2000 万字）独立车道并发 1、禁止复用断点留档\n",
+    "snapshot": {
+      "snapshot_at": "2026-11-23T21:41:28+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-006-B03",
+        "role": "related_fix",
+        "basis": "server 接入 #15036 四层 OOM 防护",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-006/E11:c2",
+      "batch_id": "offline-run-261126-01-TC-006"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-016",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:045234d12c6219c55ea2f6dd7dd0b6dfe23181c5",
+    "kind": "commit",
+    "collected_at": "2026-11-24T00:37:06+08:00",
+    "summary": "解析 worker 池一期（#15036）",
+    "quote": "feat(dc): 解析 worker 池一期——API 只调度、重解析在 worker 子进程（#15036）\n- 新增 parse_pool：worker 队列 + 在途上限(2×worker) + 内存水位背压 + OOM/超时/异常自动重试(≤2，台账持久化)\n- 解析子进程 RLIMIT_AS 之外加 RSS 看门狗（超限 kill，避免虚拟地址预留造成假 OOM）\n- server 接",
+    "snapshot": {
+      "snapshot_at": "2026-11-24T00:37:06+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-006-B03",
+        "role": "related_fix",
+        "basis": "解析 worker 池一期（#15036）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-006/E11:c3",
+      "batch_id": "offline-run-261126-01-TC-006"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-017",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:d988394d6c3e747e9724a4a25abe52b4a03c861e",
+    "kind": "commit",
+    "collected_at": "2026-11-24T10:28:36+08:00",
+    "summary": "Merge !176：#15036 OOM 防护四层",
+    "quote": "Merge branch 'fix/dc-oom-guard-15036-20261123' into 'develop'\n#15036 OOM 防护四层：解析子进程隔离 + 流式表格 + oversize 分流 + 背压/分片留档\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso",
+    "snapshot": {
+      "snapshot_at": "2026-11-24T10:28:36+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-006-B03",
+        "role": "primary_fix",
+        "basis": "Merge !176：#15036 OOM 防护四层",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-006/E11:c4",
+      "batch_id": "offline-run-261126-01-TC-006"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-018",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:71bc6835100118a62a4784dbd0b0f381122aeb36",
+    "kind": "commit",
+    "collected_at": "2026-11-23T13:48:56+08:00",
+    "summary": "fix(dc): 解析路由质检整改一批（MR !163）",
+    "quote": "Merge branch 'fix/dc-route-qc-batch-20261123' into 'develop'\nfix(dc): 解析路由质检整改一批（文本层兜底/乱码探测/表格结构/切片页码/入库拆账）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_cen",
+    "snapshot": {
+      "snapshot_at": "2026-11-23T13:48:56+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-007-B01",
+        "role": "primary_fix",
+        "basis": "fix(dc): 解析路由质检整改一批（MR !163）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-007/E12:merge",
+      "batch_id": "offline-run-261126-01-TC-007"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-019",
+    "source": "zentao",
+    "source_key": "zentao:zentao-main:15048",
+    "kind": "bug_record",
+    "collected_at": "2026-11-25T15:55:00+08:00",
+    "summary": "禅道 #15048 active（pri=1）快照",
+    "quote": "{\"id\": 15048, \"status\": \"active\", \"pri\": 1, \"activatedCount\": 0, \"openedBy\": \"wenxiaoyu 温晓宇\", \"openedDate\": \"2026-11-23T15:40:59Z\", \"resolvedBy\": null, \"resolution\": \"\", \"resolvedDate\": null, \"closedD",
+    "snapshot": {
+      "snapshot_at": "2026-11-25T15:55:00+08:00",
+      "state": "active"
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-008-B01",
+        "role": "status_evidence",
+        "basis": "禅道 #15048 active（pri=1）快照",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-008/Z-15048",
+      "batch_id": "offline-run-261126-01-TC-008"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-020",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:bc489ee82bbbf5b571cbe0e6e87e675fdb20a0de",
+    "kind": "commit",
+    "collected_at": "2026-11-24T00:22:48+08:00",
+    "summary": "标题噪声收紧：说明行/长句/无编号标题不进标题栈（MR !185，#15048 跟进）",
+    "quote": "Merge branch 'fix/dc-title-noise-20261124' into 'develop'\nfix(dc): 标题噪声收紧——说明行/长句/无编号标题不进标题栈（#15048 跟进）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!",
+    "snapshot": {
+      "snapshot_at": "2026-11-24T00:22:48+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-008-B01",
+        "role": "related_fix",
+        "basis": "标题噪声收紧：说明行/长句/无编号标题不进标题栈（MR !185，#15048 跟进）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-008/E13:merge1",
+      "batch_id": "offline-run-261126-01-TC-008"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-021",
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:50942b414dd49209eafc00d2dec9cafe27b2d11d",
+    "kind": "commit",
+    "collected_at": "2026-11-24T00:29:55+08:00",
+    "summary": "标题噪声收紧二轮：running header 降级 + 无编号标题保留（MR !186，#15048 跟进）",
+    "quote": "Merge branch 'fix/dc-title-noise2-20261124' into 'develop'\nfix(dc): 标题噪声收紧二轮——running header 降级 + 无编号标题保留（#15048 跟进）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso",
+    "snapshot": {
+      "snapshot_at": "2026-11-24T00:29:55+08:00",
+      "state": null
+    },
+    "reachability": {
+      "object_exists": "unknown",
+      "ref_reachable": "unknown",
+      "internal_ref_reachable": "unknown",
+      "dangling": "unknown",
+      "dangling_reason": null,
+      "checked_at": null
+    },
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-008-B01",
+        "role": "related_fix",
+        "basis": "标题噪声收紧二轮：running header 降级 + 无编号标题保留（MR !186，#15048 跟进）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-008/E13:merge2",
+      "batch_id": "offline-run-261126-01-TC-008"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-022",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgEXrRIY1FPcuTcdis5lV+JQ==",
+    "kind": "message",
+    "collected_at": "2026-11-19T09:16:19+08:00",
+    "summary": "用户首报：原文有标题，切片显示无章节标题 + 截图",
+    "quote": "@小圈圈 原文有标题，对应切片却显示无章节标题，看看是什么原因[图片消息](mediaId=@lQLPJwnt4uH3MGXNAtbNBmiwairdaAWIPXkKzfZQzrYiAA)",
+    "snapshot": {
+      "snapshot_at": "2026-11-19T09:16:19+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A1-B01",
+        "role": "report",
+        "basis": "用户首报：原文有标题，切片显示无章节标题 + 截图",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A1-B02",
+        "role": "report",
+        "basis": "同一『无章节标题』现象首报（截图）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A1/G12",
+      "batch_id": "offline-run-261126-01-TC-A1"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-023",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msg2voV9yw1h7IZgCL4XxZ33Q==",
+    "kind": "message",
+    "collected_at": "2026-11-19T09:25:51+08:00",
+    "summary": "机器人定位：table 切片器未写 title 字段（server.py:6306/6353）",
+    "quote": "@陈昔 \n 任务：白皮书切片显示「无章节标题」原因排查，已定位（不是解析丢标题，是 table 切片器没写 title 字段） \n 根因（代码 + 数据都核实过） ： \n 1. 这篇文档入库时 智能解析按内容自动选中了 table 表格切片器 （ 表格行 68 行，占正文 27%  → 智能切片：table），不是 dg 通用切片器。\n2. !124 的标题统一 没有覆盖  build_chunk",
+    "snapshot": {
+      "snapshot_at": "2026-11-19T09:25:51+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A1-B01",
+        "role": "background",
+        "basis": "机器人定位：table 切片器未写 title 字段（server.py:6306/6353）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A1/G13",
+      "batch_id": "offline-run-261126-01-TC-A1"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-024",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgravRolNpYHJJizPJSro8pA==",
+    "kind": "message",
+    "collected_at": "2026-11-19T16:48:18+08:00",
+    "summary": "重查确认 table 切片器仍是代码缺陷，现网 16 篇 table 文档受影响",
+    "quote": "@陈昔 \n 任务：按现网最新情况重查白皮书切片「无章节标题」原因 \n 环境确实变了，旧结论不能直接搬： soso_dc_server  现在是  dev_20261119_filechain2 （今天 15:13 由其他会话部署）， soso_dc_frontend  是  dev_20261118_5d79f9c ，默认应用为  soso_search_dvp ，库内 213 篇文档 / 324",
+    "snapshot": {
+      "snapshot_at": "2026-11-19T16:48:18+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A1-B01",
+        "role": "report",
+        "basis": "重查确认 table 切片器仍是代码缺陷，现网 16 篇 table 文档受影响",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A1-B02",
+        "role": "report",
+        "basis": "重查：dg 等 43 篇 289 片为 !124 前切片，dry_run changed=38",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A1/G17",
+      "batch_id": "offline-run-261126-01-TC-A1"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-025",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgNfoDMIbb1oGD8NAg623SQw==",
+    "kind": "message",
+    "collected_at": "2026-11-19T16:59:39+08:00",
+    "summary": "MR !128 补 table/image 标题栈（未合并未部署）",
+    "quote": "@温晓宇 \n 任务：切片标题「存量回填」+ 补 table/image 切片器代码，这两件事都已完成 \n 1) 存量回填：已写入 483 片，0 失败  在 81 的现网环境（ soso_dc_server=dev_20261119_filechain2 ）上先跑了一次 dry_run（试运行）：共 171 篇文档，有 483 片需要修改；再用  dry_run=false  正式执行，实际更新 ",
+    "snapshot": {
+      "snapshot_at": "2026-11-19T16:59:39+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A1-B01",
+        "role": "related_fix",
+        "basis": "MR !128 补 table/image 标题栈（未合并未部署）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A1-B02",
+        "role": "status_evidence",
+        "basis": "存量回填 483 片 0 失败",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A1/G19",
+      "batch_id": "offline-run-261126-01-TC-A1"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-026",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msg5yDduaZ0p61PYcc6F8ffow==",
+    "kind": "message",
+    "collected_at": "2026-11-19T17:45:36+08:00",
+    "summary": "!128 合并、部署 81、现场复验 chunk-preview 标题正确",
+    "quote": "@陈昔 \n 任务：MR !128 合并、部署 81、table/image 文档存量回填，已完成并现场复验 \n 合并 ：!128 已合入  develop ，merge commit  a1841997 ，合并时间 2026-11-19 17:34（本轮经 GitLab API 回读确认  state=merged ）。 \n 部署 81 （旧→新）： \n •soso_dc_server ： dev",
+    "snapshot": {
+      "snapshot_at": "2026-11-19T17:45:36+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A1-B01",
+        "role": "status_evidence",
+        "basis": "!128 合并、部署 81、现场复验 chunk-preview 标题正确",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A1-B02",
+        "role": "status_evidence",
+        "basis": "二次回填 2505 片 0 失败，dry 探针 changed=0 已收敛",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A1-B03",
+        "role": "report",
+        "basis": "数据质量提醒：灵石县 PDF 页脚被识别为标题块，本次未改",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A1/G21",
+      "batch_id": "offline-run-261126-01-TC-A1"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-027",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgD9Y1wLdli3DXDmd+Zql+5A==",
+    "kind": "message",
+    "collected_at": "2026-11-19T09:29:01+08:00",
+    "summary": "Audrey：我在改 es，稍等",
+    "quote": "@陈昔 我在改 es，稍等，等我改完",
+    "snapshot": {
+      "snapshot_at": "2026-11-19T09:29:01+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A1-B02",
+        "role": "status_evidence",
+        "basis": "Audrey：我在改 es，稍等",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A1/G14",
+      "batch_id": "offline-run-261126-01-TC-A1"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-028",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgC/L1dLFp8mWpB8PZWH3MJA==",
+    "kind": "message",
+    "collected_at": "2026-11-19T16:04:12+08:00",
+    "summary": "Audrey：改完了",
+    "quote": "@陈昔 改完了，",
+    "snapshot": {
+      "snapshot_at": "2026-11-19T16:04:12+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A1-B02",
+        "role": "status_evidence",
+        "basis": "Audrey：改完了",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A1/G15",
+      "batch_id": "offline-run-261126-01-TC-A1"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-029",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msg667v8MDLaXiGQ1o1oiUB4g==",
+    "kind": "message",
+    "collected_at": "2026-11-22T16:18:55+08:00",
+    "summary": "音视频 4 个全败：600 秒一段、超时也是 600 秒",
+    "quote": "@小圈圈  直连 OXR 上线了就接着往下推，不用停。这件事从现在起由我按质检口径逐项复测，你做完在群里报结果和证据路径，不用等我问。\n\n【我独立取的现状，16:12 实测】\n\n1. 原素材那批共 87 个任务，69 完成、18 失败、0 在跑。失败里音视频 4 个全是 ASR 超时，大 PDF 写 ES 断管 2 个（2740 条和 5741 条切片全丢），1779 页超限 1 个，不支持格式 ",
+    "snapshot": {
+      "snapshot_at": "2026-11-22T16:18:55+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A2-B01",
+        "role": "report",
+        "basis": "音视频 4 个全败：600 秒一段、超时也是 600 秒",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A2-B02",
+        "role": "report",
+        "basis": "大 PDF 写 ES 断管 2 个（2740/5741 条切片全丢），用 MAT-041/MAT-004 复测",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A2-B03",
+        "role": "report",
+        "basis": "21 个失败任务文案仍停在进行中",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A2-B04",
+        "role": "report",
+        "basis": "任务列表接口写死只回 200 行，分页参数无效",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A2-B05",
+        "role": "report",
+        "basis": "排队第 50 位已等 5100 秒，预计等待显示 1600 秒",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A2-B06",
+        "role": "report",
+        "basis": "82 个压测文件混在 soso_search_dvp 正式应用资产目录和 ES",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A2/G22",
+      "batch_id": "offline-run-261126-01-TC-A2"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-030",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgKR5kraW1xu/4hMnyrx0wow==",
+    "kind": "message",
+    "collected_at": "2026-11-23T03:51:46+08:00",
+    "summary": "9 页多级表头错位，第985页 49,442.10 落到综合单价列",
+    "quote": "@小圈圈  03:19 的 M2 交付核完了：dwg、薄文本层规则、ofd、rar 通过；30 页结构核对不通过，表格这一类错误率远超 5%，发布前必须修；薄页先走 OXR 我不同意。这条请在你当前工作线处理，不要另开线程部署。\n\n【通过，我核过】\n\n1. dwg：两份都是 AC1024，LibreDWG 0.14 能读，文字和图块名都抽出来了。路线定为镜像里源码编译，不依赖 ODA。\n\n2. 薄",
+    "snapshot": {
+      "snapshot_at": "2026-11-23T03:51:46+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A2-B07",
+        "role": "report",
+        "basis": "9 页多级表头错位，第985页 49,442.10 落到综合单价列",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A2-B08",
+        "role": "report",
+        "basis": "第637/1153/1201页结构被打散，第1417页合并表被压成2x18",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A2-B09",
+        "role": "report",
+        "basis": "页眉页脚没去：第N页,共1779页、章节流水号、表下注释排在正文前",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A2-B10",
+        "role": "report",
+        "basis": "第28页 OXR 输出6406字，后半段几十行重复 3.8|3.9 与未分配利润，属模型幻觉",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A7-B04",
+        "role": "report",
+        "basis": "第985页 49,442.10 落到综合单价列等 9 页",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A7-B05",
+        "role": "report",
+        "basis": "第637/1153/1201/1417 页结构打散",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A7-B06",
+        "role": "report",
+        "basis": "页眉页脚/流水号/表下注释排在正文前",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A2/G25",
+      "batch_id": "offline-run-261126-01-TC-A2"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-031",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgJbsX7MvSYKkjbA5UkSsYVw==",
+    "kind": "message",
+    "collected_at": "2026-11-17T09:16:53+08:00",
+    "summary": "首报：soso-dev 新建应用需要有默认内置类目/字段/索引/词典",
+    "quote": "@小圈圈 soso-dev环境，新建的应用，需要有默认的内置类目、字段、索引、词典",
+    "snapshot": {
+      "snapshot_at": "2026-11-17T09:16:53+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A3-B01",
+        "role": "report",
+        "basis": "首报：soso-dev 新建应用需要有默认内置类目/字段/索引/词典",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A3/G1",
+      "batch_id": "offline-run-261126-01-TC-A3"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-032",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgtFl4rfb9DVW0b1pJNp0DAA==",
+    "kind": "message",
+    "collected_at": "2026-11-17T11:25:38+08:00",
+    "summary": "合并 MR !104/!105 并部署",
+    "quote": "@小圈圈 合并 MR !104 、 MR !105 ，然后部署",
+    "snapshot": {
+      "snapshot_at": "2026-11-17T11:25:38+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A3-B01",
+        "role": "status_evidence",
+        "basis": "合并 MR !104/!105 并部署",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A3-B02",
+        "role": "status_evidence",
+        "basis": "合并 MR !105 并部署",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A3/G3",
+      "batch_id": "offline-run-261126-01-TC-A3"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-033",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgr0AHNLGrbFV8vd9yOTyNsg==",
+    "kind": "message",
+    "collected_at": "2026-11-17T11:42:45+08:00",
+    "summary": "!104 已合并部署，soso_search_dvp 启动日志补齐内置字段",
+    "quote": "@陈昔 \n 任务：合并 MR !104 / !105 并部署到 soso-dev（81） \n 两个 MR 已经合并，并已用合并后的代码部署完成。 \n 合并 \n •MR !104  feat(dc): 新建应用自动播种内置类目/字段/索引/词典  → merged，merge commit  e4f28f1\n•MR !105  fix(dc): 资产详情按文档所属应用读写切片与原文件  → merg",
+    "snapshot": {
+      "snapshot_at": "2026-11-17T11:42:45+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A3-B01",
+        "role": "status_evidence",
+        "basis": "!104 已合并部署，soso_search_dvp 启动日志补齐内置字段",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A3-B02",
+        "role": "status_evidence",
+        "basis": "!105 已合并部署；非默认租户需门户账号人眼确认",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A3/G4",
+      "batch_id": "offline-run-261126-01-TC-A3"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-034",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgm7pTOHsAfGiJoCD7UdLjHg==",
+    "kind": "message",
+    "collected_at": "2026-11-17T15:44:06+08:00",
+    "summary": "新建应用 ai_jian_zheng_quan 依旧没有内置类目/字段/索引/词典",
+    "quote": "@小圈圈 我刚刚创建了一个应用 ai_jian_zheng_quan ，这个应用依旧没有内置的类目、字段、索引、词典",
+    "snapshot": {
+      "snapshot_at": "2026-11-17T15:44:06+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A3-B01",
+        "role": "report",
+        "basis": "新建应用 ai_jian_zheng_quan 依旧没有内置类目/字段/索引/词典",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A3/G5",
+      "batch_id": "offline-run-261126-01-TC-A3"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-035",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msg/oPLunyutDj3WQ0IpdlB1Q==",
+    "kind": "message",
+    "collected_at": "2026-11-17T10:05:14+08:00",
+    "summary": "根因：固定读 soso_dc_chunks；MR !105 修复",
+    "quote": "@陈昔 \n 任务：soso-dev 非默认应用详情页切片为空、原文件预览和下载返回 404，已修改并提交 MR \n 已按上一轮的定位完成改动，并提交了 MR !105（状态 opened，author=陈昔 chenxi2， fix/dc-tenant-detail-20261117  →  develop ）： https://git.datagrand.com/Search_Recommend",
+    "snapshot": {
+      "snapshot_at": "2026-11-17T10:05:14+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A3-B02",
+        "role": "report",
+        "basis": "根因：固定读 soso_dc_chunks；MR !105 修复",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A3/G2",
+      "batch_id": "offline-run-261126-01-TC-A3"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-036",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgu3iq+y95AT8oZxxZWtvxlg==",
+    "kind": "message",
+    "collected_at": "2026-11-17T12:13:02+08:00",
+    "summary": "首报：查看原文需定位到对应切片",
+    "quote": "@小圈圈 soso-dev环境，首页搜索命中数据中心的切片，点击搜索结果列表的切片，查看原文时需要定位到对应切片的位置",
+    "snapshot": {
+      "snapshot_at": "2026-11-17T12:13:02+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A4-B01",
+        "role": "report",
+        "basis": "首报：查看原文需定位到对应切片",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A4/G6",
+      "batch_id": "offline-run-261126-01-TC-A4"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-037",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgD2ngRZ5VVVZFEls6Bt3Mmg==",
+    "kind": "message",
+    "collected_at": "2026-11-17T15:36:18+08:00",
+    "summary": "已上线 soso-dev，Playwright 验证 ?chunk=42 定位高亮正常（MR !4/!108）",
+    "quote": "@陈昔 \n 任务：首页搜索命中数据中心切片后「查看原文」定位原文 \n 已完成，改动已上线 soso-dev 并做了端到端验证： \n 实际效果 ：hybrid-search 返回的切片结果里  detail_url  已带切片锚点，例如  /dc/#/files/detail/doc_ddbd337a5d1d?chunk=10 ；打开详情页后右侧切片列表自动选中第 #N 片并滚动高亮，左侧预览（文本",
+    "snapshot": {
+      "snapshot_at": "2026-11-17T15:36:18+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A4-B01",
+        "role": "status_evidence",
+        "basis": "已上线 soso-dev，Playwright 验证 ?chunk=42 定位高亮正常（MR !4/!108）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A4/G7",
+      "batch_id": "offline-run-261126-01-TC-A4"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-038",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgtiQ1Rcq/j+ZyVSiW1R4vCw==",
+    "kind": "message",
+    "collected_at": "2026-11-18T10:37:03+08:00",
+    "summary": "『依旧没有定位到对应切片』，验证后再次出现",
+    "quote": "@小圈圈 soso-dev环境，首页搜索命中数据中心的切片，点击搜索结果列表的切片，查看原文时依旧没有定位到对应切片的位置，看看是什么原因",
+    "snapshot": {
+      "snapshot_at": "2026-11-18T10:37:03+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A4-B01",
+        "role": "report",
+        "basis": "『依旧没有定位到对应切片』，验证后再次出现",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A4/G8",
+      "batch_id": "offline-run-261126-01-TC-A4"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-039",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msg+EZ5mZcyku25sxY6sJOPXQ==",
+    "kind": "message",
+    "collected_at": "2026-11-18T11:29:21+08:00",
+    "summary": "根因：compose pin 停在修复前 dev_20261115_multirepo，部署冲回旧镜像；已切回 mr109 并复测正常",
+    "quote": "@陈昔 \n 任务：排查 soso-dev「查看原文」不定位切片——部署被冲回旧镜像，已切回含修复镜像并实测定位正常 \n 原因 ：不是代码问题，是部署被冲掉了。11-17 的定位修复当时只拿临时镜像  dc_frontend:dev_20261117_chunkfix2  用  docker service update  挂上去， soso_deploy/docker-compose.yml  里",
+    "snapshot": {
+      "snapshot_at": "2026-11-18T11:29:21+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A4-B01",
+        "role": "status_evidence",
+        "basis": "根因：compose pin 停在修复前 dev_20261115_multirepo，部署冲回旧镜像；已切回 mr109 并复测正常",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A4-B02",
+        "role": "report",
+        "basis": "附注：仅混合检索链路带锚点，兜底旧链路结果不带，是下一个要补的点",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A4/G9",
+      "batch_id": "offline-run-261126-01-TC-A4"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-040",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgW9fWvN0jvW0mZk8c1pWZ5w==",
+    "kind": "message",
+    "collected_at": "2026-11-17T14:02:11+08:00",
+    "summary": "用户反馈『匹配失败』",
+    "quote": "@小圈圈 soso-dev环境，数据归集-上传文件后，选择智能加工策略，但是匹配加工策略失败，具体见截图如下[图片消息](mediaId=@lQLPJxY4vNGyiFnNAkrNB2iwzUDcy6d2UGkKzMFY8fLTAA)",
+    "snapshot": {
+      "snapshot_at": "2026-11-17T14:02:11+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A5-B01",
+        "role": "report",
+        "basis": "用户反馈『匹配失败』",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A5/G10",
+      "batch_id": "offline-run-261126-01-TC-A5"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-041",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgQuW9hWF3J4W2eG0oQyZ1Qw==",
+    "kind": "message",
+    "collected_at": "2026-11-17T14:07:44+08:00",
+    "summary": "根因：重新部署窗口期请求打到重启中后端 502；前端把 502/401 吞成统一文案",
+    "quote": "@陈昔 \n 任务：排查数据归集选智能加工策略后全部显示「匹配失败」的原因 \n 结论：匹配逻辑没有问题，是你测试的 10:38~10:49 那几分钟，soso_dc_frontend 正好被重新部署（multirepo→mr109），服务闪断，匹配接口 /api/dc/processing-strategies/match 返回 502（nginx 错误页而非 JSON），前端解析失败就把每个文件统",
+    "snapshot": {
+      "snapshot_at": "2026-11-17T14:07:44+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A5-B01",
+        "role": "report",
+        "basis": "根因：重新部署窗口期请求打到重启中后端 502；前端把 502/401 吞成统一文案",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A5-B02",
+        "role": "report",
+        "basis": "附注：mp4 走 FAQ 匹配策略，因文件名含关键词被误选",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A5/G11",
+      "batch_id": "offline-run-261126-01-TC-A5"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-042",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgV3f8aQ0mXk7Tn2wLpR9bJg==",
+    "kind": "message",
+    "collected_at": "2026-11-24T01:47:51+08:00",
+    "summary": "外发事故：影子容器漏配 DC_ROUTE_DP_DIRECT_URL 时 T2 静默回落 dgpe；261 次上传涉及其他租户流量；修复=DC_ROUTE_DP_FORBID_DGPE 反向闸默认开",
+    "quote": "@小圈圈  一期开工简报收货，逐条批复。\n\n1. 核点3 影子实测：收货。VA/RSS ≤2.5×、距 4GiB 有 7× 余量——假 OOM 风险在本批语料上排除。guard=both（RSS 看门狗为主+AS 兜底）+ false_oom 指标的设计比单闸更稳，照此落。原始数据目录我在。\n\n2. 外发事故：如实报的处理正确，收货。三件跟进：a) 录禅道——模块 dc_route，级别 P1，性",
+    "snapshot": {
+      "snapshot_at": "2026-11-24T01:47:51+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A6-B01",
+        "role": "report",
+        "basis": "外发事故：影子容器漏配 DC_ROUTE_DP_DIRECT_URL 时 T2 静默回落 dgpe；261 次上传涉及其他租户流量；修复=DC_ROUTE_DP_FORBID_DGPE 反向闸默认开",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A6-B02",
+        "role": "report",
+        "basis": "昨晚四连发未预告，现网 titlenoise 缺 15030 修复和 !176 隔离模块；要求发布清单加 diff 硬检查",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A6/G26",
+      "batch_id": "offline-run-261126-01-TC-A6"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-043",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgH7kR2sW9dQ4fY6nB1xT8mCg==",
+    "kind": "message",
+    "collected_at": "2026-11-23T03:51:46+08:00",
+    "summary": "MAT-050 大文件解析丢 89 页",
+    "quote": "@小圈圈  温晓宇刚定了方向：目标只有一个，把他这批素材解析得又快又好又准。没达到的要求由你改到位，不再只报「未达标」。这条请在当前工作线处理，不要另开线程部署。\n\n【边界，先说死】\n\n1. 23:32 起跑的 93 文件全量还在跑。跑完并且我复核之前：不合并部署仓、不发布、不清库、不往 soso_dc_qa 传文件、不占用两个解析实例。开发和自测在现网之外做，用独立目录和独立进程，不经过 dc_",
+    "snapshot": {
+      "snapshot_at": "2026-11-23T03:51:46+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A7-B01",
+        "role": "report",
+        "basis": "MAT-050 大文件解析丢 89 页",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A7-B02",
+        "role": "report",
+        "basis": "丢 89 页 page_coverage 仍为 1.0",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A7-B03",
+        "role": "report",
+        "basis": "soso-format-convert dp_slave 长期空闲不消费",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A7-B04",
+        "role": "report",
+        "basis": "多级表头错位",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A7-B05",
+        "role": "report",
+        "basis": "表格结构被打散",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      },
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A7-B06",
+        "role": "report",
+        "basis": "页眉页脚未去除",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A7/G23",
+      "batch_id": "offline-run-261126-01-TC-A7"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-044",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgK3nV8bX2cT6hJ9rQ4yW1pDg==",
+    "kind": "message",
+    "collected_at": "2026-11-23T03:51:46+08:00",
+    "summary": "DP 字符数统计疑似异常（口径待核）",
+    "quote": "@小圈圈  93 文件全量 01:16 跑完了，我核完了，结论和下一步一起给你。方案我看过，有三处要改，另外我有一个数报错了，先更正。这条请在你当前工作线处理，不要另开线程部署。\n\n【先更正我的错】\n\n1. 我 00:04 那条第 5 点说「这批 99.9% 的页带文本层」，错了。我在 81 上逐页数过：51 个 PDF 共 8,041 页，没有文本层的 842 页，占 10.5%；30 字以下的",
+    "snapshot": {
+      "snapshot_at": "2026-11-23T03:51:46+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A7-B07",
+        "role": "report",
+        "basis": "DP 字符数统计疑似异常（口径待核）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A7/G24",
+      "batch_id": "offline-run-261126-01-TC-A7"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-045",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msguTRlaIiZ/DEBhK5xqhejqA==",
+    "kind": "message",
+    "collected_at": "2026-11-24T11:49:26+08:00",
+    "summary": "健康误杀（11:00:54）记 P-103：/health 连续超时，101 秒 000→swarm 判死重建（exit 137），非 OOM；修法 retries 3→6/timeout 5→10s + 池化",
+    "quote": "@小圈圈  欠数验收通过，判定不回滚，两条建议都批。\n\n1. 中断 149.8s：如实报收货——规格/镜像分两次 service update 是执行问题，下次合成一次。记台账。\n\n2. 87 快查独立核过：qa 500 全 done；dmesg \"Killed process\" 计数 3 未动（无新 OOM，防护实证）；MAT-001 我在 ES 实数 128 chunks、36 个页码（1-3",
+    "snapshot": {
+      "snapshot_at": "2026-11-24T11:49:26+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A8-B01",
+        "role": "report",
+        "basis": "健康误杀（11:00:54）记 P-103：/health 连续超时，101 秒 000→swarm 判死重建（exit 137），非 OOM；修法 retries 3→6/timeout 5→10s + 池化",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A8/G28",
+      "batch_id": "offline-run-261126-01-TC-A8"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  },
+  {
+    "evidence_id": "offline-run-261126-01-EVIDENCE-046",
+    "source": "dingtalk",
+    "source_key": "dingtalk:数据小队:msgPkkSuxn+ge8mGsZ/jhVH5g==",
+    "kind": "message",
+    "collected_at": "2026-11-24T10:56:32+08:00",
+    "summary": "防护版发布验收与 1 小时监控窗口（P-103 发生时的背景上下文）",
+    "quote": "@小圈圈  防护版发布验收：通过。我独立核过的：\n\n1. 容器 dev_20261124_23b7f5a5 10:54:39 起（预告窗口 10:50-11:20 内），healthy；内存限额已到 14GiB（119.6MiB/14GiB 实测）。\n2. DC_PARSE_POOL=0 实测在 env；embed-identity 200、51 内网口径没被动（url/model/dim/bat",
+    "snapshot": {
+      "snapshot_at": "2026-11-24T10:56:32+08:00",
+      "state": null
+    },
+    "reachability": null,
+    "equivalent_refs": [],
+    "bug_links": [
+      {
+        "bug_id": "offline-run-261126-01-BUG-TC-A8-B01",
+        "role": "background",
+        "basis": "防护版发布验收与 1 小时监控窗口（P-103 发生时的背景上下文）",
+        "linked_at": "2026-11-26T10:00:00+08:00"
+      }
+    ],
+    "raw_pointer": {
+      "path": "test-inputs-V1.4.json#TC-A8/G27",
+      "batch_id": "offline-run-261126-01-TC-A8"
+    },
+    "id_note": "offline 临时键，非正式编号"
+  }
+]
