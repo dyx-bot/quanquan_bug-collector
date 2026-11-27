@@ -1,1 +1,0 @@
-{"case_id": "TC-001", "created_at": "2026-11-26T18:00:00+08:00", "event_id": "CE-TC-001-01", "event_type": "background", "evidence_ids": [], "reason": "纯合并/整理类改动，不含缺陷描述，按上下文保留，不生成候选", "source_key": "gitlab:soso_data_center:84cf120b47af7d69cd2b56505b742d4d019f6247", "summary": "提交只调整 runtime/storage 导入与 Dockerfile COPY 落点，文件内容与上一提交一致"}
