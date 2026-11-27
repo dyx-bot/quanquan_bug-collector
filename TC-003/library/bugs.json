@@ -1,0 +1,52 @@
+[
+  {
+    "actual_behavior": "令牌值为 18% 深灰（近黑），次要文字层级与设计预期不符",
+    "bug_id": "B01",
+    "category": "defect",
+    "created_at": "2026-11-26T18:00:00+08:00",
+    "created_by_run": "run-20261126-02",
+    "environment": null,
+    "evidence_ids": [
+      "EV01"
+    ],
+    "expected_behavior": "令牌改回 46%，保持次要文字层级",
+    "fact_anchors": [
+      {
+        "evidence_id": "EV01",
+        "fact": "--muted-foreground 原为 18% 深灰（近黑），应改回 46%",
+        "quote": "--muted-foreground 原为 18% 深灰（近黑），改回 46%"
+      }
+    ],
+    "first_observed_at": "2026-11-07T22:31:50+08:00",
+    "impact": null,
+    "lifecycle": "fixed_unverified",
+    "merge": {
+      "merged_at": null,
+      "merged_into": null,
+      "reason": null
+    },
+    "module": {
+      "confidence": "confirmed",
+      "name": "dc 前端设计令牌"
+    },
+    "occurrence_ids": [],
+    "project": "offline-test",
+    "recurrence_signals": [],
+    "related": [],
+    "review": {
+      "fields_unverified": [
+        "environment"
+      ],
+      "needed": false,
+      "reason": null
+    },
+    "root_cause": {
+      "status": "confirmed",
+      "summary": "设计令牌取值错误"
+    },
+    "source_status": {},
+    "title": "[前端样式] --muted-foreground 令牌取值为 18% 深灰，次要文字接近黑色",
+    "trigger_conditions": "页面使用 --muted-foreground 渲染次要文字",
+    "updated_at": "2026-11-26T18:00:00+08:00"
+  }
+]

@@ -1,0 +1,69 @@
+[
+  {
+    "actual_behavior": "表头继承被非表格块打断后错误继承、长表切片重复拼前文上下文",
+    "bug_id": "B01",
+    "category": "defect",
+    "created_at": "2026-11-26T18:00:00+08:00",
+    "created_by_run": "run-20261126-02",
+    "environment": null,
+    "evidence_ids": [
+      "EV01",
+      "EV02",
+      "EV03",
+      "EV04",
+      "EV05"
+    ],
+    "expected_behavior": "仅在紧邻续块继承表头，表格切片不拼上下文，各切片器口径一致",
+    "fact_anchors": [
+      {
+        "evidence_id": "EV01",
+        "fact": "禅道单 14686 状态为 resolved、解决方式 fixed",
+        "quote": "\"status\": \"resolved\""
+      },
+      {
+        "evidence_id": "EV02",
+        "fact": "主修复覆盖分隔行、表头继承、空壳行与上下文拼接",
+        "quote": "分隔行识别、真实表头继承、空壳行与<br>清理、禁表格上下文拼接"
+      },
+      {
+        "evidence_id": "EV04",
+        "fact": "复测反馈后补修「表头继承被非表格块打断时重置」",
+        "quote": "表格表头继承被非表格块打断时重置（#14686 复测反馈）"
+      }
+    ],
+    "first_observed_at": "2026-11-17T16:38:07+08:00",
+    "impact": null,
+    "lifecycle": "fixed_unverified",
+    "merge": {
+      "merged_at": null,
+      "merged_into": null,
+      "reason": null
+    },
+    "module": {
+      "confidence": "confirmed",
+      "name": "dc-server 文档解析/表格切片"
+    },
+    "occurrence_ids": [
+      "OC01"
+    ],
+    "project": "offline-test",
+    "recurrence_signals": [],
+    "related": [],
+    "review": {
+      "fields_unverified": [
+        "environment",
+        "deployment_status"
+      ],
+      "needed": false,
+      "reason": null
+    },
+    "root_cause": {
+      "status": "confirmed",
+      "summary": "表头继承状态未在非表格块处重置，切片器口径不统一"
+    },
+    "source_status": {},
+    "title": "[文档解析] 表格切片表头继承与上下文拼接异常（禅道 #14686）",
+    "trigger_conditions": "表格存在首行分隔行、跨块续表或长表拆段",
+    "updated_at": "2026-11-26T18:00:00+08:00"
+  }
+]

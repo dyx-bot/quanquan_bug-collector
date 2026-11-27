@@ -1,0 +1,18 @@
+{
+  "batch_id": "TC-005-offline-01",
+  "generated_at": "2026-11-26T18:00:00+08:00",
+  "items": [
+    {
+      "candidate_id": "CAND-TC-005-01",
+      "confidence": "high",
+      "differences": [],
+      "match_basis": [
+        "离线独立案例，无历史库基线",
+        "候选与缺陷一一对应"
+      ],
+      "match_result": "new",
+      "missing_evidence": [],
+      "target_bug_id": null
+    }
+  ]
+}

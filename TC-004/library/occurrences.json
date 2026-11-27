@@ -1,0 +1,17 @@
+[
+  {
+    "basis": "禅道单 14686 于 2026-11-17 登记，为当前输入中最早可核验出现",
+    "bug_id": "B01",
+    "confirmed_by": "run",
+    "diff_note": null,
+    "environment": null,
+    "evidence_ids": [
+      "EV01"
+    ],
+    "kind": "first",
+    "observed_at": "2026-11-17T16:38:07+08:00",
+    "occurrence_id": "OC01",
+    "reported_by": null,
+    "verified": false
+  }
+]

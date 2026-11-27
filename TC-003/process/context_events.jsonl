@@ -1,0 +1,1 @@
+{"case_id": "TC-003", "created_at": "2026-11-26T18:00:00+08:00", "event_id": "CE-TC-003-01", "event_type": "requirement", "evidence_ids": ["EV01"], "reason": "设计改版属需求侧变更，不并入缺陷；缺陷仅取其中存量 bug 条目", "source_key": "gitlab:soso_data_center:da00120fcc61be20fc1dae572a66da921b08c6e2", "summary": "提交主体为全站视觉美化与设计令牌重铸（方向 A 选定）"}

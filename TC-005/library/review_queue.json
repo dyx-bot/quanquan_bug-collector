@@ -1,0 +1,23 @@
+[
+  {
+    "added_at": "2026-11-26T18:00:00+08:00",
+    "added_by_run": "run-20261126-02",
+    "bug_id": "B01",
+    "candidate_snapshot": {
+      "title": "[文档解析] 表格切片表头继承与上下文拼接异常（禅道 #14686）"
+    },
+    "confidence": "medium",
+    "differences": [],
+    "missing_evidence": [
+      "部署记录",
+      "现场复测记录"
+    ],
+    "reason": "多轮补修均已合并但无部署/复测证据，不能推进 verified_fixed；补修轮数不计发生",
+    "resolution": null,
+    "resolved_at": null,
+    "resolved_by": null,
+    "review_id": "RV-TC-005-01",
+    "similar_points": [],
+    "type": "field_verify"
+  }
+]

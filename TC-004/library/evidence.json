@@ -1,0 +1,68 @@
+[
+  {
+    "bug_links": [
+      {
+        "basis": "禅道单是该缺陷的登记锚点",
+        "bug_id": "B01",
+        "linked_at": "2026-11-26T18:00:00+08:00",
+        "role": "report"
+      }
+    ],
+    "collected_at": "2026-11-26T17:50:00+08:00",
+    "content_sha256": "14d87904b7aeac85ccc5d8c84082d23baffa4783aad805660bd235dd465d7c75",
+    "equivalent_refs": [],
+    "evidence_id": "EV01",
+    "kind": "bug_record",
+    "quote": "\"status\": \"resolved\"",
+    "raw_pointer": {
+      "content_sha256": "14d87904b7aeac85ccc5d8c84082d23baffa4783aad805660bd235dd465d7c75",
+      "locator": "/real_inputs/TC-004/inputs/Z-14686",
+      "path": "test-inputs-V1.4.json",
+      "source_key": "zentao:zentao-main:14686"
+    },
+    "reachability": null,
+    "snapshot": {
+      "snapshot_at": "2026-11-26T17:50:00+08:00",
+      "state": null
+    },
+    "source": "zentao",
+    "source_key": "zentao:zentao-main:14686",
+    "source_time": "2026-11-17T16:38:07+08:00",
+    "summary": "禅道单 14686 快照：resolved / fixed，openedBy 庄艳雯",
+    "superseded_by": null,
+    "supersedes": null
+  },
+  {
+    "bug_links": [
+      {
+        "basis": "提交正文即 #14686 的修复说明",
+        "bug_id": "B01",
+        "linked_at": "2026-11-26T18:00:00+08:00",
+        "role": "primary_fix"
+      }
+    ],
+    "collected_at": "2026-11-26T17:50:00+08:00",
+    "content_sha256": "af6ab55a9aef4bb66ee375f948055c5a4cca36cdd76c33bcca4c3900e2dc0bea",
+    "equivalent_refs": [],
+    "evidence_id": "EV02",
+    "kind": "commit",
+    "quote": "表格切片修复：分隔行识别、真实表头继承、空壳行与<br>清理、禁表格上下文拼接（禅道 #14686）",
+    "raw_pointer": {
+      "content_sha256": "af6ab55a9aef4bb66ee375f948055c5a4cca36cdd76c33bcca4c3900e2dc0bea",
+      "locator": "/real_inputs/TC-004/inputs/E5",
+      "path": "test-inputs-V1.4.json",
+      "source_key": "gitlab:soso_data_center:2c70dbdb5d8589ca53701656dd3965806af625a8"
+    },
+    "reachability": null,
+    "snapshot": {
+      "snapshot_at": "2026-11-26T17:50:00+08:00",
+      "state": null
+    },
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:2c70dbdb5d8589ca53701656dd3965806af625a8",
+    "source_time": "2026-11-18T15:48:09+08:00",
+    "summary": "修复表格切片分隔行/表头继承/上下文拼接问题",
+    "superseded_by": null,
+    "supersedes": null
+  }
+]

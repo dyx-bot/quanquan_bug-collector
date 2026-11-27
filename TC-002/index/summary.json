@@ -1,0 +1,19 @@
+{
+  "by_precision": {
+    "seconds": 1
+  },
+  "by_source": {
+    "gitlab": 1
+  },
+  "case_count": 1,
+  "generated_at": "2026-11-26T18:16:09.047048+08:00",
+  "notes": {
+    "project_scope_is_repo_name": 1
+  },
+  "record_count": 1,
+  "sender_quality": {
+    "missing": 1
+  },
+  "unresolved_identity_count": 0,
+  "unresolved_keys": []
+}

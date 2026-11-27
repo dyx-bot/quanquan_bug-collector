@@ -1,0 +1,167 @@
+[
+  {
+    "bug_links": [
+      {
+        "basis": "禅道单是该缺陷的登记锚点",
+        "bug_id": "B01",
+        "linked_at": "2026-11-26T18:00:00+08:00",
+        "role": "report"
+      }
+    ],
+    "collected_at": "2026-11-26T17:50:00+08:00",
+    "content_sha256": "14d87904b7aeac85ccc5d8c84082d23baffa4783aad805660bd235dd465d7c75",
+    "equivalent_refs": [],
+    "evidence_id": "EV01",
+    "kind": "bug_record",
+    "quote": "\"status\": \"resolved\"",
+    "raw_pointer": {
+      "content_sha256": "14d87904b7aeac85ccc5d8c84082d23baffa4783aad805660bd235dd465d7c75",
+      "locator": "/real_inputs/TC-005/inputs/Z-14686",
+      "path": "test-inputs-V1.4.json",
+      "source_key": "zentao:zentao-main:14686"
+    },
+    "reachability": null,
+    "snapshot": {
+      "snapshot_at": "2026-11-26T17:50:00+08:00",
+      "state": null
+    },
+    "source": "zentao",
+    "source_key": "zentao:zentao-main:14686",
+    "source_time": "2026-11-17T16:38:07+08:00",
+    "summary": "禅道单 14686 快照：resolved / fixed",
+    "superseded_by": null,
+    "supersedes": null
+  },
+  {
+    "bug_links": [
+      {
+        "basis": "直接修复 #14686 的表格切片问题",
+        "bug_id": "B01",
+        "linked_at": "2026-11-26T18:00:00+08:00",
+        "role": "primary_fix"
+      }
+    ],
+    "collected_at": "2026-11-26T17:50:00+08:00",
+    "content_sha256": "af6ab55a9aef4bb66ee375f948055c5a4cca36cdd76c33bcca4c3900e2dc0bea",
+    "equivalent_refs": [],
+    "evidence_id": "EV02",
+    "kind": "commit",
+    "quote": "表格切片修复：分隔行识别、真实表头继承、空壳行与<br>清理、禁表格上下文拼接（禅道 #14686）",
+    "raw_pointer": {
+      "content_sha256": "af6ab55a9aef4bb66ee375f948055c5a4cca36cdd76c33bcca4c3900e2dc0bea",
+      "locator": "/real_inputs/TC-005/inputs/E5",
+      "path": "test-inputs-V1.4.json",
+      "source_key": "gitlab:soso_data_center:2c70dbdb5d8589ca53701656dd3965806af625a8"
+    },
+    "reachability": null,
+    "snapshot": {
+      "snapshot_at": "2026-11-26T17:50:00+08:00",
+      "state": null
+    },
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:2c70dbdb5d8589ca53701656dd3965806af625a8",
+    "source_time": "2026-11-18T15:48:09+08:00",
+    "summary": "主修复提交",
+    "superseded_by": null,
+    "supersedes": null
+  },
+  {
+    "bug_links": [
+      {
+        "basis": "同缺陷的回归测试补交",
+        "bug_id": "B01",
+        "linked_at": "2026-11-26T18:00:00+08:00",
+        "role": "related_fix"
+      }
+    ],
+    "collected_at": "2026-11-26T17:50:00+08:00",
+    "content_sha256": "d80c07b430de29fe97cb2003025b6884c938ae48ebc67d131a58834a2d51429c",
+    "equivalent_refs": [],
+    "evidence_id": "EV03",
+    "kind": "commit",
+    "quote": "补表格切片回归测试（禅道 #14686）",
+    "raw_pointer": {
+      "content_sha256": "d80c07b430de29fe97cb2003025b6884c938ae48ebc67d131a58834a2d51429c",
+      "locator": "/real_inputs/TC-005/inputs/E6",
+      "path": "test-inputs-V1.4.json",
+      "source_key": "gitlab:soso_data_center:1388d788f0fbcf670e1eaf45b6f1ec40d36acda7"
+    },
+    "reachability": null,
+    "snapshot": {
+      "snapshot_at": "2026-11-26T17:50:00+08:00",
+      "state": null
+    },
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:1388d788f0fbcf670e1eaf45b6f1ec40d36acda7",
+    "source_time": "2026-11-18T15:48:16+08:00",
+    "summary": "补 17 例表格切片回归测试",
+    "superseded_by": null,
+    "supersedes": null
+  },
+  {
+    "bug_links": [
+      {
+        "basis": "同缺陷复测后的跟进修复，非新发生",
+        "bug_id": "B01",
+        "linked_at": "2026-11-26T18:00:00+08:00",
+        "role": "related_fix"
+      }
+    ],
+    "collected_at": "2026-11-26T17:50:00+08:00",
+    "content_sha256": "47a7d6bfc7bcb2dbed7dfc61d107dd49254f3a934f386de23a2bd66b72cbdc7e",
+    "equivalent_refs": [],
+    "evidence_id": "EV04",
+    "kind": "commit",
+    "quote": "fix(dc): 表格表头继承被非表格块打断时重置（#14686 复测反馈）",
+    "raw_pointer": {
+      "content_sha256": "47a7d6bfc7bcb2dbed7dfc61d107dd49254f3a934f386de23a2bd66b72cbdc7e",
+      "locator": "/real_inputs/TC-005/inputs/E7",
+      "path": "test-inputs-V1.4.json",
+      "source_key": "gitlab:soso_data_center:fd011006a3ba67d84a971c3e6c2da3747b4378ca"
+    },
+    "reachability": null,
+    "snapshot": {
+      "snapshot_at": "2026-11-26T17:50:00+08:00",
+      "state": null
+    },
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:fd011006a3ba67d84a971c3e6c2da3747b4378ca",
+    "source_time": "2026-11-18T16:52:47+08:00",
+    "summary": "复测反馈后补修表头继承被非表格块打断的问题",
+    "superseded_by": null,
+    "supersedes": null
+  },
+  {
+    "bug_links": [
+      {
+        "basis": "同根因、同缺陷的扩展修复",
+        "bug_id": "B01",
+        "linked_at": "2026-11-26T18:00:00+08:00",
+        "role": "related_fix"
+      }
+    ],
+    "collected_at": "2026-11-26T17:50:00+08:00",
+    "content_sha256": "c09368012f96785a9e9b6a5d2854e76af9a13838cd15250a12ee43337a47ef72",
+    "equivalent_refs": [],
+    "evidence_id": "EV05",
+    "kind": "commit",
+    "quote": "fix(dc): 表格切片在 naive/md/table/image 切片器同样不拼前文上下文（禅道 #14686）",
+    "raw_pointer": {
+      "content_sha256": "c09368012f96785a9e9b6a5d2854e76af9a13838cd15250a12ee43337a47ef72",
+      "locator": "/real_inputs/TC-005/inputs/E8",
+      "path": "test-inputs-V1.4.json",
+      "source_key": "gitlab:soso_data_center:2ac5f64a500d8f1222ebb0c49ed5217759893e07"
+    },
+    "reachability": null,
+    "snapshot": {
+      "snapshot_at": "2026-11-26T17:50:00+08:00",
+      "state": null
+    },
+    "source": "gitlab",
+    "source_key": "gitlab:soso_data_center:2ac5f64a500d8f1222ebb0c49ed5217759893e07",
+    "source_time": "2026-11-18T19:21:35+08:00",
+    "summary": "同一口径同步到四个切片器",
+    "superseded_by": null,
+    "supersedes": null
+  }
+]

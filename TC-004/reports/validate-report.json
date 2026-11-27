@@ -1,0 +1,12 @@
+{
+  "checks": [],
+  "summary": {
+    "by_code": {},
+    "cases": [
+      "TC-004"
+    ],
+    "fail_count": 0,
+    "ok": true,
+    "warn_count": 0
+  }
+}

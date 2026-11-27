@@ -1,0 +1,35 @@
+{
+  "cases": {
+    "TC-005": {
+      "bug_ids": [
+        "B01"
+      ],
+      "counts": {
+        "bugs_without_occurrence": 0,
+        "confirmed_defects": 1,
+        "coverage": "输入 5 条（1 个禅道快照、4 个提交）；时间精度 seconds；未覆盖：部署与现场复测；未知：环境",
+        "evidence_items": 5,
+        "fix_actions": 3,
+        "independent_occurrences": 1,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "recurrence_events": 0,
+        "related_cases": 0,
+        "repeat_unresolved_events": 0,
+        "suspect_defects": 0,
+        "unresolved_open_bugs": 0,
+        "verified_environments": "未知（本案例无已验证环境流转）"
+      },
+      "evidence_ids": [
+        "EV01",
+        "EV02",
+        "EV03",
+        "EV04",
+        "EV05"
+      ]
+    }
+  },
+  "run_id": "run-20261126-02"
+}

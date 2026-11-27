@@ -1,0 +1,1 @@
+{"at": "2026-11-18T15:48:09+08:00", "bug_id": "B01", "environment": null, "evidence_ids": ["EV02"], "field": "lifecycle", "from": "open", "reason": "主修复已提交并回归，部署与复测证据缺失", "run_id": "run-20261126-02", "to": "fixed_unverified", "transition_id": "TR-TC-005-01"}

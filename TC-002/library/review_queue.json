@@ -1,0 +1,22 @@
+[
+  {
+    "added_at": "2026-11-26T18:00:00+08:00",
+    "added_by_run": "run-20261126-02",
+    "bug_id": "B01",
+    "candidate_snapshot": {
+      "title": "[dc-server] 本体 token 过期后 /api/dc/onto/scenes 返回 502"
+    },
+    "confidence": "medium",
+    "differences": [],
+    "missing_evidence": [
+      "部署与复测证据"
+    ],
+    "reason": "仅见 Merge 提交，未取得部署/现场复测证据，lifecycle 只能到 fixed_unverified",
+    "resolution": null,
+    "resolved_at": null,
+    "resolved_by": null,
+    "review_id": "RV-TC-002-01",
+    "similar_points": [],
+    "type": "field_verify"
+  }
+]
