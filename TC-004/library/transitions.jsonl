@@ -1,1 +1,0 @@
-{"at": "2026-11-18T15:48:09+08:00", "bug_id": "B01", "environment": null, "evidence_ids": ["EV01", "EV02"], "field": "lifecycle", "from": "open", "reason": "禅道 resolution=fixed 且修复提交已合入 develop，尚无部署/复测证据", "run_id": "run-20261126-02", "to": "fixed_unverified", "transition_id": "TR-TC-004-01"}
