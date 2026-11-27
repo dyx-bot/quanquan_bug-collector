@@ -1,0 +1,1080 @@
+{
+ "meta": {
+  "title": "Bug Collector Skill 测试输入（独立测试输入，与参考答案分离）",
+  "version": "V1.4 最终版测试输入（同步 Skill V0.1.4；输入与预期结果分离，不含答案字段）",
+  "date": "2026-11-26",
+  "usage_rule": "本文件仅含真实/构造的原始数据与必要元数据（来源、ID、时间、正文）；不包含 goal/category/expected/assertions/basis/negatives/usage 等可能提示答案的字段。real_inputs 与 synthetic_inputs 分区存放，synthetic 案例的构造性质在分区名与 manifest 中标注，不在输入体里再加提示。",
+  "excluded_fields": [
+   "goal",
+   "category",
+   "expected_*",
+   "assertions",
+   "basis",
+   "negatives",
+   "usage"
+  ],
+  "sources": {
+   "repo": "Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center（本地克隆 work/dc_repo_1910，提交内容以快照为准）",
+   "zentao": "快照获取于 2026-11-25 15:55 (北京时间)",
+   "chat": "钉钉「数据小队」群，29 条被引消息全文（messageId 可回查）"
+  },
+  "based_on": "candidate-cases-V1.3.json 的 real_inputs（逐条保留）+ 扩展 synthetic_inputs（R1~R8）"
+ },
+ "real_inputs": [
+  {
+   "case_id": "TC-001",
+   "inputs": [
+    {
+     "ref": "E1",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "d631b389837b1d00a2675c56d2c306130d7758f8",
+     "parents": [
+      "f013f444c0e10c5dbc8ea12728931aa94c2bc300"
+     ],
+     "parent_count": 1,
+     "author": "yangxiaoyun",
+     "CommitDate": "2026-11-13T10:16:30Z",
+     "subject": "test commit dc-api",
+     "body": ""
+    },
+    {
+     "ref": "E2",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "84cf120b47af7d69cd2b56505b742d4d019f6247",
+     "parents": [
+      "7a24e154e49ba10c87055895193246f12007f63e"
+     ],
+     "parent_count": 1,
+     "author": "陈昔",
+     "CommitDate": "2026-11-18T06:33:57Z",
+     "subject": "调整 runtime/storage 的插入位置，保证与 develop@122e700 可无冲突合并",
+     "body": "server.py 的 rp/dcs 导入放到 sys.path 补齐与 CFG 读取之后（远离 develop 的\nbankflow 导入插入点）；Dockerfile 保持 develop 修改的基础 COPY 行不变，运行时\n两个文件的 COPY 移到 USER 之后单独一行；config.json 回到本分支基线，\ndevelop 自己的配置变更交给合并带入。\n\n文件内容与上一提交一致（合入 develop 后的最终形态不变），只调整了 diff 落点，\n使 MR 可直接合并。pytest 72 项通过。\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-002",
+   "inputs": [
+    {
+     "ref": "E3",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "27da39f3cefd65a4bbf51ecb05d3af80d4b283e5",
+     "parents": [
+      "50942b414dd49209eafc00d2dec9cafe27b2d11d",
+      "137308a07e2fab70dd292eabf0aa9ef08d5cae66"
+     ],
+     "parent_count": 2,
+     "author": "范灵秀",
+     "CommitDate": "2026-11-24T01:59:19Z",
+     "subject": "Merge branch 'fix/dc-onto-token-refresh-20261124' into 'develop'",
+     "body": "fix(dc): 本体 token 过期自动重登，修复 /api/dc/onto/scenes 502（HTTP 401）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!188"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-003",
+   "inputs": [
+    {
+     "ref": "E4",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "da00120fcc61be20fc1dae572a66da921b08c6e2",
+     "parents": [
+      "a8d5c046401920544cc713f2186ffe92130e1411"
+     ],
+     "parent_count": 1,
+     "author": "温晓宇",
+     "CommitDate": "2026-11-07T22:31:50+08:00",
+     "subject": "feat(dc): 全站视觉美化·澄蓝精工方向（方向A选定，qiaomu-design 试衣间）",
+     "body": "- styles.css 设计令牌重铸：暖中性画布 + 白卡 + 发丝线，品牌蓝 #2f5fd0\n  收敛为点缀；语义色 success/warning/info 重调；chart 序列对齐\n- 修复存量 bug：--muted-foreground 原为 18% 深灰（近黑），改回 46%\n- kit.tsx StatusPill 圆角收敛 full\n- sync-board 配色常量与面板内联样式：antd 蓝绿黄紫 → 品牌调色板\n  （语义角色不变），14 处硬编码色改 token/CSS 变量\n- 新增 DESIGN.md：全站设计锚（色彩/排版/形状/组件工艺唯一权威）\n- design-previews/2026-11-07-dc-beautify/：四方向试衣间存档（方向A选定依据）\n- .gitignore 补 .claude/（本地 skill 不入库）\n\n验收：45 页 before/after 截图对比；tsc 存量 17 行错误改动前后一致；\nvite build 通过；无斜体/紫渐变/居中 Hero。路由与业务逻辑零改动。"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-004",
+   "inputs": [
+    {
+     "ref": "E5",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "2c70dbdb5d8589ca53701656dd3965806af625a8",
+     "parents": [
+      "d6bcc16c4d3a8f331d598ea6f6a950e7eb7304ec"
+     ],
+     "parent_count": 1,
+     "author": "陈昔",
+     "CommitDate": "2026-11-18T07:48:09Z",
+     "subject": "表格切片修复：分隔行识别、真实表头继承、空壳行与<br>清理、禁表格上下文拼接（禅道 #14686）",
+     "body": "- normalize_table_md：识别「分隔行在首行」的 OXR 形态，移位为真实表头在前、分隔行随后；单元格内 <br> 变体替换为空格；全空壳行继续丢弃\n- split_table_md：按位置定位表头+分隔行，超长拆段时每段重复真实表头+分隔行，段内不残留多余分隔行\n- normalize_table_blocks：无表头结构的续块从前一个带表头的 table 块继承；整篇无表头时不凭空拼分隔行\n- build_chunks_dg：表格切片不再拼「前文/后文上下文」，避免同表尾行重复进切片\n- 新增 tests/test_table_md.py（17 例）：首行分隔行、跨块表头、无表头、合并单元格、xlsx/docx/pdf 形态、<br> 清理、上下文禁拼、幂等\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>"
+    },
+    {
+     "ref": "Z-14686",
+     "kind": "zentao_bug",
+     "bug_id": "14686",
+     "snapshot": {
+      "id": 14686,
+      "status": "resolved",
+      "pri": 2,
+      "activatedCount": 0,
+      "openedBy": "zhuangyanwen 庄艳雯",
+      "openedDate": "2026-11-17T08:38:07Z",
+      "resolvedBy": "chenxi2 陈昔",
+      "resolution": "fixed",
+      "resolvedDate": "2026-11-18T12:06:48Z",
+      "closedDate": null,
+      "lastEditedDate": "2026-11-18T12:06:54Z"
+     },
+     "snapshot_at": "2026-11-25 15:55 (北京时间)"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-005",
+   "inputs": [
+    {
+     "ref": "Z-14686",
+     "kind": "zentao_bug",
+     "bug_id": "14686",
+     "snapshot": {
+      "id": 14686,
+      "status": "resolved",
+      "pri": 2,
+      "activatedCount": 0,
+      "openedBy": "zhuangyanwen 庄艳雯",
+      "openedDate": "2026-11-17T08:38:07Z",
+      "resolvedBy": "chenxi2 陈昔",
+      "resolution": "fixed",
+      "resolvedDate": "2026-11-18T12:06:48Z",
+      "closedDate": null,
+      "lastEditedDate": "2026-11-18T12:06:54Z"
+     },
+     "snapshot_at": "2026-11-25 15:55 (北京时间)"
+    },
+    {
+     "ref": "E5",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "2c70dbdb5d8589ca53701656dd3965806af625a8",
+     "parents": [
+      "d6bcc16c4d3a8f331d598ea6f6a950e7eb7304ec"
+     ],
+     "parent_count": 1,
+     "author": "陈昔",
+     "CommitDate": "2026-11-18T07:48:09Z",
+     "subject": "表格切片修复：分隔行识别、真实表头继承、空壳行与<br>清理、禁表格上下文拼接（禅道 #14686）",
+     "body": "- normalize_table_md：识别「分隔行在首行」的 OXR 形态，移位为真实表头在前、分隔行随后；单元格内 <br> 变体替换为空格；全空壳行继续丢弃\n- split_table_md：按位置定位表头+分隔行，超长拆段时每段重复真实表头+分隔行，段内不残留多余分隔行\n- normalize_table_blocks：无表头结构的续块从前一个带表头的 table 块继承；整篇无表头时不凭空拼分隔行\n- build_chunks_dg：表格切片不再拼「前文/后文上下文」，避免同表尾行重复进切片\n- 新增 tests/test_table_md.py（17 例）：首行分隔行、跨块表头、无表头、合并单元格、xlsx/docx/pdf 形态、<br> 清理、上下文禁拼、幂等\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>"
+    },
+    {
+     "ref": "E6",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "1388d788f0fbcf670e1eaf45b6f1ec40d36acda7",
+     "parents": [
+      "2c70dbdb5d8589ca53701656dd3965806af625a8"
+     ],
+     "parent_count": 1,
+     "author": "陈昔",
+     "CommitDate": "2026-11-18T07:48:16Z",
+     "subject": "补表格切片回归测试（禅道 #14686）：首行分隔行/跨块表头/无表头/合并单元格/多形态/<br>清理/上下文禁拼",
+     "body": "Co-Authored-By: Claude Code <noreply@anthropic.com>"
+    },
+    {
+     "ref": "E7",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "fd011006a3ba67d84a971c3e6c2da3747b4378ca",
+     "parents": [
+      "1388d788f0fbcf670e1eaf45b6f1ec40d36acda7"
+     ],
+     "parent_count": 1,
+     "author": "陈昔",
+     "CommitDate": "2026-11-18T08:52:47Z",
+     "subject": "fix(dc): 表格表头继承被非表格块打断时重置（#14686 复测反馈）",
+     "body": "normalize_table_blocks 遇到非 table 块时重置 prev_head_prefix：\n中间隔了正文/标题后，下一张无表头的表是另一张表，不再继承\n上一张表的表头；紧邻续块的继承行为不变。\n\n补回归用例 test_header_inheritance_broken_by_non_table_block\n（table→text→table(no header) 保持自身数据行 + 连续继承仍有效）。"
+    },
+    {
+     "ref": "E8",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "2ac5f64a500d8f1222ebb0c49ed5217759893e07",
+     "parents": [
+      "9ce3998146cb0d9295565a8abaa3ab4b0a5fa38a"
+     ],
+     "parent_count": 1,
+     "author": "陈昔",
+     "CommitDate": "2026-11-18T11:21:35Z",
+     "subject": "fix(dc): 表格切片在 naive/md/table/image 切片器同样不拼前文上下文（禅道 #14686）",
+     "body": "xlsx 默认类目走 naive 切片器，此前只改了 dg：长表切片仍以「【前文上下文】上一段尾行」开头，\n同批行在切片里重复出现，命中行被顶出首屏。本次把 dg 的口径同步到会处理表格块的\nmd / naive / table / image 四个切片器：表格切片只保留（标题）+（表头+分隔行+数据行），\n图片块仍保留上下文。\n\n补参数化用例覆盖 5 个切片器的「表格切片无上下文/表格正文首行是真实表头」，\n以及长表拆段后 naive 每段都以真实表头开头；dc-server 全量 105 passed。"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-006",
+   "inputs": [
+    {
+     "ref": "Z-15030",
+     "kind": "zentao_bug",
+     "bug_id": "15030",
+     "snapshot": {
+      "id": 15030,
+      "status": "active",
+      "pri": 1,
+      "activatedCount": 0,
+      "openedBy": "wenxiaoyu 温晓宇",
+      "openedDate": "2026-11-23T06:45:19Z",
+      "resolvedBy": null,
+      "resolution": "",
+      "resolvedDate": null,
+      "closedDate": null,
+      "lastEditedDate": null
+     },
+     "snapshot_at": "2026-11-25 15:55 (北京时间)"
+    },
+    {
+     "ref": "Z-15032",
+     "kind": "zentao_bug",
+     "bug_id": "15032",
+     "snapshot": {
+      "id": 15032,
+      "status": "active",
+      "pri": 2,
+      "activatedCount": 0,
+      "openedBy": "wenxiaoyu 温晓宇",
+      "openedDate": "2026-11-23T06:45:27Z",
+      "resolvedBy": null,
+      "resolution": "",
+      "resolvedDate": null,
+      "closedDate": null,
+      "lastEditedDate": null
+     },
+     "snapshot_at": "2026-11-25 15:55 (北京时间)"
+    },
+    {
+     "ref": "Z-15036",
+     "kind": "zentao_bug",
+     "bug_id": "15036",
+     "snapshot": {
+      "id": 15036,
+      "status": "active",
+      "pri": 1,
+      "activatedCount": 0,
+      "openedBy": "wenxiaoyu 温晓宇",
+      "openedDate": "2026-11-23T13:15:45Z",
+      "resolvedBy": null,
+      "resolution": "",
+      "resolvedDate": null,
+      "closedDate": null,
+      "lastEditedDate": "2026-11-23T13:42:21Z",
+      "files_empty": true
+     },
+     "snapshot_at": "2026-11-25 15:55 (北京时间)"
+    },
+    {
+     "ref": "E9:merge",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "534ac0ce23f820ed2ab4d5e5e7ee76fa6701e510",
+     "parents": [
+      "97eb3356ad0eabd8529969e58684ca78b8d5fd79",
+      "42cbf01af81ae3ae68b556d0e8906ce4fe35b395"
+     ],
+     "parent_count": 2,
+     "author": "温晓宇",
+     "CommitDate": "2026-11-23T08:55:21Z",
+     "subject": "Merge branch 'fix/dc-15030-skip-recover-20261123' into 'develop'",
+     "body": "fix(dc): 15030 乱码误判四条修法 + 覆盖率分母（基于 shared 切片索引分支）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!167"
+    },
+    {
+     "ref": "E10:merge",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "b9ead6f4aac3f6d34d54d9db8b791c86c8597050",
+     "parents": [
+      "6274cc280f16c41fd7bdbae0087712577b4751fd",
+      "db5252848473e81aeca667274b605677285b5b5d"
+     ],
+     "parent_count": 2,
+     "author": "温晓宇",
+     "CommitDate": "2026-11-23T11:14:55Z",
+     "subject": "Merge branch 'fix/dc-15032-reparse-rematch-20261123' into 'develop'",
+     "body": "fix(dc): 15032 重新解析按新正文重匹配切片器（full 模式回落 auto）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!174"
+    },
+    {
+     "ref": "E10:c1",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "db5252848473e81aeca667274b605677285b5b5d",
+     "parents": [
+      "6274cc280f16c41fd7bdbae0087712577b4751fd"
+     ],
+     "parent_count": 1,
+     "author": "温晓宇",
+     "CommitDate": "2026-11-23T11:04:43Z",
+     "subject": "fix(dc): 15032 重新解析按新正文重匹配切片器（full 模式回落 auto）",
+     "body": "Co-Authored-By: Claude Code <noreply@anthropic.com>"
+    },
+    {
+     "ref": "E11:c1",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "0f77e11c2815951a8d78499c0e31e0429141e195",
+     "parents": [
+      "50942b414dd49209eafc00d2dec9cafe27b2d11d"
+     ],
+     "parent_count": 1,
+     "author": "温晓宇",
+     "CommitDate": "2026-11-23T13:41:23Z",
+     "subject": "feat(dc): #15036 OOM 防护——解析子进程隔离/流式表格/oversize 分流/背压分片",
+     "body": "四层口径：②解析在独立子进程（RLIMIT_AS）；③大表格本地流式解析（不整表物化）+ oversize 车道与禁续跑；④内存水位背压 + blocks_raw 分片留档。新增回归 tests/test_oom_guard_20261123.py。\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>"
+    },
+    {
+     "ref": "E11:c2",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "b5d6bdb86b197c0819b88ab49fd05e68a0879519",
+     "parents": [
+      "0f77e11c2815951a8d78499c0e31e0429141e195"
+     ],
+     "parent_count": 1,
+     "author": "温晓宇",
+     "CommitDate": "2026-11-23T13:41:28Z",
+     "subject": "feat(dc): server 接入 #15036 四层 OOM 防护（解析隔离/流式表格/oversize 车道/背压与分片留档）",
+     "body": "- 本地重解析（流式表格、路由 PDF/图片）跑独立子进程，RLIMIT_AS 限制，OOM 只死子进程、任务可重试\n- 大 xlsx（≥8MB）走本地流式解析，按行窗口出块；oversize（≥40MB 或 >2000 万字）独立车道并发 1、禁止复用断点留档\n- 内存水位 ≥85% 暂停派发新任务（已接的跑完）；/metrics 增补背压/oversize/解析隔离指标\n- blocks_raw 超阈值改分片流式写，不再生成单份几百 MB 大 JSON\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>"
+    },
+    {
+     "ref": "E11:c3",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "045234d12c6219c55ea2f6dd7dd0b6dfe23181c5",
+     "parents": [
+      "7bedfc173ef8fe8d64223ef8df0721af576843e3"
+     ],
+     "parent_count": 1,
+     "author": "温晓宇",
+     "CommitDate": "2026-11-23T16:37:06Z",
+     "subject": "feat(dc): 解析 worker 池一期——API 只调度、重解析在 worker 子进程（#15036）",
+     "body": "- 新增 parse_pool：worker 队列 + 在途上限(2×worker) + 内存水位背压 + OOM/超时/异常自动重试(≤2，台账持久化)\n- 解析子进程 RLIMIT_AS 之外加 RSS 看门狗（超限 kill，避免虚拟地址预留造成假 OOM）\n- server 接入：_parse_isolated 统一入口（DC_PARSE_POOL=0 回退 parse_isolate 直调），oversize 不重试\n- 调度背压叠加池在途闸门；/metrics 增 dc_parse_pool_* 九项\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>"
+    },
+    {
+     "ref": "E11:c4",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "d988394d6c3e747e9724a4a25abe52b4a03c861e",
+     "parents": [
+      "27da39f3cefd65a4bbf51ecb05d3af80d4b283e5",
+      "a556f02d1f7ba3ef757255407795743a2d0bb2c2"
+     ],
+     "parent_count": 2,
+     "author": "温晓宇",
+     "CommitDate": "2026-11-24T02:28:36Z",
+     "subject": "Merge branch 'fix/dc-oom-guard-15036-20261123' into 'develop'",
+     "body": "#15036 OOM 防护四层：解析子进程隔离 + 流式表格 + oversize 分流 + 背压/分片留档\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!176"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-007",
+   "inputs": [
+    {
+     "ref": "E12:merge",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "71bc6835100118a62a4784dbd0b0f381122aeb36",
+     "parents": [
+      "6bfc0f5f81ab27ada9876cbbeec52b9225670582",
+      "0bca7d80d6cea72e0812bf758b6242d9827ee743"
+     ],
+     "parent_count": 2,
+     "author": "温晓宇",
+     "CommitDate": "2026-11-23T05:48:56Z",
+     "subject": "Merge branch 'fix/dc-route-qc-batch-20261123' into 'develop'",
+     "body": "fix(dc): 解析路由质检整改一批（文本层兜底/乱码探测/表格结构/切片页码/入库拆账）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!163"
+    },
+    {
+     "ref": "E9:merge",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "534ac0ce23f820ed2ab4d5e5e7ee76fa6701e510",
+     "parents": [
+      "97eb3356ad0eabd8529969e58684ca78b8d5fd79",
+      "42cbf01af81ae3ae68b556d0e8906ce4fe35b395"
+     ],
+     "parent_count": 2,
+     "author": "温晓宇",
+     "CommitDate": "2026-11-23T08:55:21Z",
+     "subject": "Merge branch 'fix/dc-15030-skip-recover-20261123' into 'develop'",
+     "body": "fix(dc): 15030 乱码误判四条修法 + 覆盖率分母（基于 shared 切片索引分支）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!167"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-008",
+   "inputs": [
+    {
+     "ref": "Z-15048",
+     "kind": "zentao_bug",
+     "bug_id": "15048",
+     "snapshot": {
+      "id": 15048,
+      "status": "active",
+      "pri": 1,
+      "activatedCount": 0,
+      "openedBy": "wenxiaoyu 温晓宇",
+      "openedDate": "2026-11-23T15:40:59Z",
+      "resolvedBy": null,
+      "resolution": "",
+      "resolvedDate": null,
+      "closedDate": null,
+      "lastEditedDate": "2026-11-23T16:34:51Z"
+     },
+     "snapshot_at": "2026-11-25 15:55 (北京时间)"
+    },
+    {
+     "ref": "E13:merge1",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "bc489ee82bbbf5b571cbe0e6e87e675fdb20a0de",
+     "parents": [
+      "9af8ef018a15de7b76650d5ddfca00ce5eac3f86",
+      "be78a3a483e2245e1a591008900f0ac76efc164d"
+     ],
+     "parent_count": 2,
+     "author": "温晓宇",
+     "CommitDate": "2026-11-23T16:22:48Z",
+     "subject": "Merge branch 'fix/dc-title-noise-20261124' into 'develop'",
+     "body": "fix(dc): 标题噪声收紧——说明行/长句/无编号标题不进标题栈（#15048 跟进）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!185"
+    },
+    {
+     "ref": "E13:merge2",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "50942b414dd49209eafc00d2dec9cafe27b2d11d",
+     "parents": [
+      "bc489ee82bbbf5b571cbe0e6e87e675fdb20a0de",
+      "0cb467096908e1114317fe9d13533ce46cf547e7"
+     ],
+     "parent_count": 2,
+     "author": "温晓宇",
+     "CommitDate": "2026-11-23T16:29:55Z",
+     "subject": "Merge branch 'fix/dc-title-noise2-20261124' into 'develop'",
+     "body": "fix(dc): 标题噪声收紧二轮——running header 降级 + 无编号标题保留（#15048 跟进）\n\nSee merge request Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center!186"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-009",
+   "inputs": [
+    {
+     "ref": "E14",
+     "kind": "git_commit",
+     "repo": "soso_data_center",
+     "sha": "8e05cad500d1de01ef70cea59c2fcbe32eaeb60d",
+     "parents": [
+      "69698d581389b2161ebccf50dbfeca90e98b09b4"
+     ],
+     "parent_count": 1,
+     "author": "陈昔",
+     "CommitDate": "2026-11-23T07:55:35Z",
+     "subject": "feat(dc): 云端解析接入（华为 Aura sidecar）——独立分支，默认不启用",
+     "body": "- 新增 sidecar center-apps/dc-hw-parse（Python 3.11）：POST /parse 把 OBS 原件\n  按页段送 Aura UDF（MarkItDown）解析，normalize 成 dc block 契约（type/md/page）；\n  支持 DC_HW_PARSE_MODE=local，不依赖华为账号即可验证整条链路\n- dc-server 新增 hw_parse.py 客户端：应用 parse=hw_aura 时才启用，shadow 只对账、\n  on 命中即用，sidecar 不可达/超时/空结果一律回落本地 route/DP/OXR，任务不失败\n- runtime_profile 登记 parse=hw_aura provider，缺 sidecar_url 时回落 local 并给原因\n- _file_blocks 增加云端解析分支（本地链路保持原样），config.json 只加空配置项\n- 单测：dc-server 9 项 + sidecar 6 项；验证手册见 center-apps/dc-hw-parse/VERIFY.md\n- 明确未验证：Aura 真机端点（无凭证）、OCR（交付包目录缺失）\n\nCo-Authored-By: Claude Code <noreply@anthropic.com>"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-A1",
+   "inputs": [
+    {
+     "ref": "G12",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgEXrRIY1FPcuTcdis5lV+JQ==",
+     "time": "2026-11-19 09:16:19 陈昔",
+     "sender": "msgEXrRIY1FPcuTcdis5lV+JQ==",
+     "text": "@小圈圈 原文有标题，对应切片却显示无章节标题，看看是什么原因[图片消息](mediaId=@lQLPJwnt4uH3MGXNAtbNBmiwairdaAWIPXkKzfZQzrYiAA)"
+    },
+    {
+     "ref": "G13",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msg2voV9yw1h7IZgCL4XxZ33Q==",
+     "time": "2026-11-19 09:25:51 小圈圈",
+     "sender": "msg2voV9yw1h7IZgCL4XxZ33Q==",
+     "text": "@陈昔 \n 任务：白皮书切片显示「无章节标题」原因排查，已定位（不是解析丢标题，是 table 切片器没写 title 字段） \n 根因（代码 + 数据都核实过） ： \n 1. 这篇文档入库时 智能解析按内容自动选中了 table 表格切片器 （ 表格行 68 行，占正文 27%  → 智能切片：table），不是 dg 通用切片器。\n2. !124 的标题统一 没有覆盖  build_chunks_table （server.py:6306）：它的 text 切片 title 仍硬编码为文档名（server.py:6353），表格切片只取紧邻表题、无表题也落文档名。\n3. 讽刺的是标题信息都在：blocks 留档里  # 1 摘要  就是 title 块，table 切片器还把它拼进了切片正文（就是截图里的「【1 摘要】」前缀），只是没写进 title 字段 → 前端见 title==文档名 → 降级显示「无章节标题」。 \n ES 实测 （soso_dc_chunks-testcx1_v1 / doc_c9991f55a0ea，135 片）：118 个 text 片 + 13 个 table 片 title=文档名，只有 4 个自带表题的表格片有真标题（如「表 4-1 平台分层说明」）；切片 #6 title=文档名，与截图完全吻合。 \n 影响面 ：全平台 45 篇 active 文档走 table 切片器（默认租户 20、广发 15、国家电投 6、testcx1 4），全部同样表现； build_chunks_image  也有同样的 doc_title 残留（server.py:6593，6 篇）。 存量回填救不了它们 ——backfill 重跑的还是同一个 table 切片器。 \n 修法 ：给  build_chunks_table  补 heading_stack（复用现成的 heading_level_text/push_heading，text 片 title=章节路径、表格片=自带表名>章节路径，content 不动）； build_chunks_image  兜底换成 chunk_fallback_title。合并部署后对这 51 篇跑一次回填即可。 \n 要修的话说一声，我开分支补这两个切片器提 MR。 \n 在圈圈查看任务"
+    },
+    {
+     "ref": "G14",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgD9Y1wLdli3DXDmd+Zql+5A==",
+     "time": "2026-11-19 09:29:01 Audrey",
+     "sender": "msgD9Y1wLdli3DXDmd+Zql+5A==",
+     "text": "@陈昔 我在改 es，稍等，等我改完"
+    },
+    {
+     "ref": "G15",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgC/L1dLFp8mWpB8PZWH3MJA==",
+     "time": "2026-11-19 16:04:12 Audrey",
+     "sender": "msgC/L1dLFp8mWpB8PZWH3MJA==",
+     "text": "@陈昔 改完了，"
+    },
+    {
+     "ref": "G16",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msg940Ddiaw6nHI8lYJyXBe0A==",
+     "time": "2026-11-19 16:40:08 陈昔",
+     "sender": "msg940Ddiaw6nHI8lYJyXBe0A==",
+     "text": "@小圈圈 重新基于环境现在的情况，排查一下原因"
+    },
+    {
+     "ref": "G17",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgravRolNpYHJJizPJSro8pA==",
+     "time": "2026-11-19 16:48:18 小圈圈",
+     "sender": "msgravRolNpYHJJizPJSro8pA==",
+     "text": "@陈昔 \n 任务：按现网最新情况重查白皮书切片「无章节标题」原因 \n 环境确实变了，旧结论不能直接搬： soso_dc_server  现在是  dev_20261119_filechain2 （今天 15:13 由其他会话部署）， soso_dc_frontend  是  dev_20261118_5d79f9c ，默认应用为  soso_search_dvp ，库内 213 篇文档 / 32483 片。上一轮定位用的  doc_c9991f55a0ea  在当前库已不存在，所以全部重新取证。 \n 结论：现网同一个「无章节标题」现象是两个不同原因，要按文档的切片器区分。 \n 一、table 表格切片器 —— 仍是代码缺陷，不是在写库环节丢的 \n •运行镜像和 develop 的  build_chunks_table  完全一致：没有标题栈，text 切片  title  写死为文档名，表格切片只取「表题 > 最近标题」。\n•实测  chunk-preview?doc_id=doc_ddbd337a5d1d&parser_type=table （多模态数据湖技术建议书.pdf）：328 片，text 片 title 全是「多模态数据湖技术建议书」，而正文开头是「【1.1 支撑复杂场景智能决策的需要】」——标题块被拼进正文当 pending_title，没写进 title 字段。\n•现网影响面：16 篇 table 文档、2714 片，2083 个 text 片里 2050 个 title=文档名（灵石县 945/950、三宝营 818/841、光伏组件 184/215、JYJC 163/176 与 48/51 等）。\n•对该篇跑  titles-backfill  dry_run： changed=0  ——  回填救不了 table 切片器 ，必须改代码。 build_chunks_image  同样用 doc_title 兜底（6 篇）。 \n 二、dg / naive / md / qa 切片器 —— 代码已修好，是存量数据没回填 \n •这些切片器在 develop 和运行镜像里都已有标题栈（ heading_path_of  /  push_heading  /  chunk_fallback_title ）。\n•但 43 篇 dg 文档的 289 个 text 片是 11-18 21:00（!124 部署）之前切的，ES 里存的还是文档名。用同一份解析块现切  doc_22e85d405a4c ，text 片 title 已是「一、XX系统服务 / 二、培训服务」；对其 dry_run  changed=38 。\n•全租户 dry_run：171 篇里 168 篇可算， 31 篇 483 片需要改 （dg 23 / naive 6 / md 1 / qa 1）；3 篇被护栏跳过（软团队AI变革进程 43vs42、财管公式 24vs23、繁峙县 es=0），3 篇  db://  文档按设计无切片。 \n 两类为什么界面表现一模一样 ：前端  chunkChapterTitle （files.detail.$id.tsx:195-200）判断  title === doc.title || title === file_name  就返回空，直接显示「无章节标题」。table 切片器产出的 title 正好等于 doc.title，老数据的 title 也正好等于 doc.title，界面上区分不出来。 \n 下一步（按性价比） ：① 立刻跑一次  titles-backfill （dry_run 已确认 483 片可改、0 冲突），能马上消掉 dg/naive/md 这批老文档的「无章节标题」；② table 那 16 篇要先给  build_chunks_table  补标题栈（复用现成 heading_path_of/push_heading，表格片取 表题>章节路径）， build_chunks_image  兜底换  chunk_fallback_title ，合并部署后再回填一次。 \n 这两步可以直接做，回一句「回填」我就先跑存量，或说「修代码」我先开分支补 table 切片器提 MR。 \n 在圈圈查看任务"
+    },
+    {
+     "ref": "G18",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msginDCV6K7Anxpd63T7AQY9w==",
+     "time": "2026-11-19 16:53:37 Audrey",
+     "sender": "msginDCV6K7Anxpd63T7AQY9w==",
+     "text": "@小圈圈 回填+修代码"
+    },
+    {
+     "ref": "G19",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgNfoDMIbb1oGD8NAg623SQw==",
+     "time": "2026-11-19 16:59:39 小圈圈",
+     "sender": "msgNfoDMIbb1oGD8NAg623SQw==",
+     "text": "@温晓宇 \n 任务：切片标题「存量回填」+ 补 table/image 切片器代码，这两件事都已完成 \n 1) 存量回填：已写入 483 片，0 失败  在 81 的现网环境（ soso_dc_server=dev_20261119_filechain2 ）上先跑了一次 dry_run（试运行）：共 171 篇文档，有 483 片需要修改；再用  dry_run=false  正式执行，实际更新 483 片、失败 0 片。有 3 篇被  align_skipped  护栏跳过，即重建后的切片数与 ES 中的切片数不一致，因此不做回填（软团队AI变革进程 43vs42、财管公式 24vs23、繁峙县 es=0）；另有 3 篇  db://  文档本来没有切片，属正常。抽验  doc_0aa059e2a6b7 （兴业会议纪要，101 片）后确认：切片标题已从只显示文档名，变成按章节显示，如「一、会议主题」「二、会议核心内容」「三、我方平台及产品能力介绍」。 \n 2) table / image 切片器的代码已补齐，已提交 MR !128  https://git.datagrand.com/Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center/-/merge_requests/128 \n •分支  fix/dc-table-image-titles-20261119 ，提交  55b08fd ，基于最新 develop  fdeafb4b\n•build_chunks_table  补上了标题栈：text 切片的 title 取章节路径，table 切片取「表格自带表名 > 章节路径」，image 切片同样如此，没有章节时回落到文档名；正文里「【最近标题】」前缀的规则保持不变，content、chunk_idx 和向量都没有改动\n•build_chunks_image  同样补上了标题栈：没有章节时沿用「文档名 · 第 N 页」，单页且无章节时改用内容首行兜底\n•新增 4 个单元测试， tests/  全量  152 passed ；用现网  doc_ddbd337a5d1d  的 blocks 跑了一遍新的 table 切片器：共 328 片，310 个 text 切片里 title 仍是文档名的有  0 个 （现网 ES 里是 2050/2083），首个切片的 title 已是「1.1 支撑复杂场景智能决策的需要」\n•这个 MR 的作者是  wenxiaoyu （本轮 GitLab 绑定账号），负责人已设为陈昔  chenxi2 \n 尚未生效的部分 ：!128 还没合并、也没部署。table 那 16 篇（2714 片）要等这次修复上线后，再跑一次  titles-backfill ，界面上才会显示章节标题；回复「合并部署」我就合并、部署 81，并补跑这批回填。 \n 在圈圈查看任务"
+    },
+    {
+     "ref": "G20",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgUbeb6B5oJAb389z6SDitHQ==",
+     "time": "2026-11-19 17:33:04 陈昔",
+     "sender": "msgUbeb6B5oJAb389z6SDitHQ==",
+     "text": "@小圈圈 合并部署"
+    },
+    {
+     "ref": "G21",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msg5yDduaZ0p61PYcc6F8ffow==",
+     "time": "2026-11-19 17:45:36 小圈圈",
+     "sender": "msg5yDduaZ0p61PYcc6F8ffow==",
+     "text": "@陈昔 \n 任务：MR !128 合并、部署 81、table/image 文档存量回填，已完成并现场复验 \n 合并 ：!128 已合入  develop ，merge commit  a1841997 ，合并时间 2026-11-19 17:34（本轮经 GitLab API 回读确认  state=merged ）。 \n 部署 81 （旧→新）： \n •soso_dc_server ： dev_20261119_filechain2  →  dev_20261119_filechain2_title128 ，现网  1/1\n•soso_dc_frontend 不动 ，仍是  dev_20261118_5d79f9c ， 1/1 （!128 只改 dc-server，前端已有「无章节标题」降级 UI）\n•现网镜像  dev_20261119_filechain2  里含有其他会话未合并的 shared-index 改动，不能拿 develop 的 server.py 直接构建，所以取运行镜像里的 server.py 叠加 !128 的 diff 后再打包；回滚 tag 保留  dev_20261119_filechain2 \n 存量回填 ：先 dry_run（171 篇 / 2505 片可改）→  dry_run=false  实写  2505 片、0 失败 ；3 篇被  align_skipped  护栏跳过（软团队AI变革进程 43vs42、财管公式 24vs23、繁峙县 es=0），3 篇  db://  无切片属正常。刚才再跑一次 dry 探针： docs_ok=168 / docs_failed=3 / changed=0 ，已收敛。 \n 现场复验 （刚在 81 上跑的）： \n •chunk-preview?doc_id=doc_ddbd337a5d1d&parser_type=table ：328 片，首片 title 已是「1.1 支撑复杂场景智能决策的需要」，第 4 片起是「2总体架构」——table 切片器标题栈生效\n•chunk-search?q=支撑复杂场景智能决策 ：落库切片 title 就是章节名，不再是文档名\n•compose pin 已同步远端  soso_deploy/deploy_dev ，提交  a9ce687 ，pin 为  dc_server:dev_20261119_filechain2_title128  +  dc_frontend:dev_20261118_5d79f9c \n 一个数据质量提醒：部分 PDF（如灵石县那份）解析时把页脚「第 199 页 共319 页」识别成了标题块，回填后它的切片标题会是「6.附件 / 第 199 页 共319 页」这类，不再是无标题但偏噪。要更干净得在解析端加页眉页脚过滤，属于另一个改动，这次没动；要做的话我可以单独开分支。 \n 在圈圈查看任务"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-A2",
+   "inputs": [
+    {
+     "ref": "G22",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msg667v8MDLaXiGQ1o1oiUB4g==",
+     "time": "2026-11-22 16:18:55 Audrey",
+     "sender": "msg667v8MDLaXiGQ1o1oiUB4g==",
+     "text": "@小圈圈  直连 OXR 上线了就接着往下推，不用停。这件事从现在起由我按质检口径逐项复测，你做完在群里报结果和证据路径，不用等我问。\n\n【我独立取的现状，16:12 实测】\n\n1. 原素材那批共 87 个任务，69 完成、18 失败、0 在跑。失败里音视频 4 个全是 ASR 超时，大 PDF 写 ES 断管 2 个（2740 条和 5741 条切片全丢），1779 页超限 1 个，不支持格式 11 个。你之前报的 93 个文件、89 个任务、7 个重复，和 87 对不上。\n\n2. 压测那批 86 分钟完成 26 个，约每小时 18 个；排队第 50 位已等 5100 秒，预计等待却显示 1600 秒。\n\n3. 81 的 dc_server 只用 0.22 核（限额 8 核）。51 的 GPU6 利用率 98%，GPU0 到 GPU5 利用率全是 0%，上面挂着 layout、ocr、table、formula 等 worker 进程，还有 3 个 dp_unite 副本。\n\n4. 21 个失败任务的文案还停在「重新排队、排队中、解析中」；任务列表接口写死只回 200 行，分页参数无效。\n\n【五个目标怎么验收，每项都要原始采样】\n\n1. 速度：整批端到端页/分钟 = 总页数 ÷（最后一个完成时刻 − 提交时刻），另报个/小时和单文件时延 p50、p95。目标不低于整改前基线的 10 倍，并报出你压出来的上限 N。\n\n2. 资源利用率：吞吐饱和度 = 实测总吞吐 ÷ 各解析实例单发吞吐之和，要求不低于 70%；解析 GPU 利用率按秒采样，中位数不低于 70%。并发按 1、2、4、8、16、32 做梯度，取拐点留余量。\n\n3. 一次性成功率：不靠重试一次就成功的文件数 ÷ 可解析文件数，目标 100%；最终完成率 100%；卡死 0、超时 0；没到 100% 的每个失败给根因。\n\n4. 完整性：逐文件对账表，提交数 = 完成 + 重复跳过 + 预检拒绝 + 失败；每个 PDF 页覆盖率 100%（空白页单列）；分段并行的页号集合等于 1 到 N，不缺不重；空切片 0 个。AES 加密那份的去向也写进对账表。\n\n5. 准确性：沿用字符 3-gram F1 加覆盖率，但 DP 和 OXR 同一批文件各跑一遍做对比，按文件类型给分流建议；覆盖率不在 0.95 到 1.05 的、F1 低于 90 的逐个给原因。77.8、85.6、86.9 那三份 docx 和覆盖率 1.26 那份先查清。换引擎后不许比 DP 基线低 2 分以上。\n\n【边改边用数据钉死这四件事】\n\n1. dp.datagrand.cn 后面是不是就是 51 这套 dp_v2。如果是，旧链路的瓶颈在 87 的 dgpe-worker 派发并发（你昨天量到 8 个在途只有 1 个在解析），给出这个上限、能不能调、归谁管。\n\n2. OXR 模型才 3.0G，显存大头是 vLLM 预留。降预留能不能在 51 的 GPU0、2、4（各空闲 10.9 到 13.1G）再起 2 到 3 份，实测吞吐掉多少。其他 GPU 机器也盘一遍，给卡级清单。\n\n3. 每个文件各阶段耗时分解（转换、解析、切片、写 ES、本体、图谱），哪个阶段累计占用解析槽最久先治哪个。本体推送同步占 worker 这轮解决。\n\n4. 两条解析链路同时用，按文件类型和准确率分流，不搞一刀切。\n\n【必须修的缺陷，逐条录禅道后把单号回我】\n\n1. 音视频 4 个全败：600 秒一段、超时也是 600 秒，等于必超。\n\n2. 解析完写 ES 断管丢全部切片：用 MAT-041 和 MAT-004 原文件复测。\n\n3. 超过 1000 页的自动拆分入库再合并，不要让用户手动拆。\n\n4. 失败任务残留进行中文案；任务列表接口加真分页；预计等待算准。\n\n5. 11 个不支持格式：vsd、vsdx、rar 能自动转的就转完入库，dwg、ofd 转不了的明确拒绝并给办法，逐个格式给结论。\n\n6. 82 个压测文件现在混在 soso_search_dvp 正式应用的资产目录和 ES 里。以后压测走独立测试应用，测完清理。\n\n【注意事项】\n\n1. 81 是共享机，load 40 以上，根盘只剩 15G，new-data 剩 51G。每次压测前先报磁盘余量，并带背压，不许把宿主打到影响其他租户。\n\n2. dp.datagrand.cn 和 51 的卡都是共享的，先拿到并发上限再压。\n\n3. 预检拒绝不计入熔断统计；重试不得重跑已成功的阶段。\n\n4. 完整口径在附件《测试计划》里，按它出一份《压测报告》，原始采样留路径。"
+    },
+    {
+     "ref": "G25",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgKR5kraW1xu/4hMnyrx0wow==",
+     "time": "2026-11-23 03:51:46 Audrey",
+     "sender": "msgKR5kraW1xu/4hMnyrx0wow==",
+     "text": "@小圈圈  03:19 的 M2 交付核完了：dwg、薄文本层规则、ofd、rar 通过；30 页结构核对不通过，表格这一类错误率远超 5%，发布前必须修；薄页先走 OXR 我不同意。这条请在你当前工作线处理，不要另开线程部署。\n\n【通过，我核过】\n\n1. dwg：两份都是 AC1024，LibreDWG 0.14 能读，文字和图块名都抽出来了。路线定为镜像里源码编译，不依赖 ODA。\n\n2. 薄文本层规则：页级和文件级都实现了。MAT-033、034、035 实测全部命中，改走 DP 后恢复 2.8 万、1.0 万、7 千字，和我用 OXR 量到的数一致。\n\n3. ofd 有文字层可以直接读；rar5 用 bsdtar 能解。禅道 15023、15024 记下。\n\n【不通过：30 页结构核对】\n\n4. 我对照页面图看了 4 页，30 页都用程序比过，问题如下：\n\na. 你抽的 15 页「多栏」全是表格页，一页多栏正文都没有，阅读顺序没验到。这批里真正的多栏正文在 MAT-040_Underground_Transportation_Systems_in_Europe 那份，67 页里有 25 页是双栏。重抽这 15 页：第 5、7、9、15、16、23、24、30、31、32、33、42、47、60、64 页。\n\nb. 多级表头错位，9 页：第 461、517、577、649、836、966、985、1021、1081 页都是清单计价表。「金额（元）」下面的子表头被拼成一格，数据落到错的列下。第 985 页合价的 49,442.10 落在「综合单价」列下，「本页小计」和「合计」的金额落在第 2 列。这种表在云池里有几百页。\n\nc. 表格结构被打散，4 页：第 637、1153、1201 页被压成 4 行 17 列，第 637 页我看了图，实际约 29 行 10 列；第 1417 页实际是 5 列 17 行的合并单元格表，被压成 2 行 18 列，整列文字粘成一格，25 个格子重复左边。\n\nd. 页眉页脚没去：每页开头的「第N页,共1779页」、章节流水号（34、104 这类）、表下的注释，都排在正文前面。\n\ne. 抽样里还有 4 页本身是薄页（第 22、25、28、31 页），文本层通道只出 25 到 28 个字。\n\n5. 修法方向：\n\na. 多级表头拼成完整列名（如「金额（元）/综合单价」），数据对到正确的列；合并的标签行把金额放回对应列；空行只留一行。\n\nb. 保留合并单元格的行列跨度。\n\nc. 每张表重建后自检行数、列数、重复格比例；拿不准的页整页回退 OXR，只限有文本层的页。\n\nd. 页眉页脚按位置去掉，表下的注释排在表后面。\n\n6. 修完重交：原来 30 页加上我指定的 15 页，每页写明自检结果；薄页那 4 页写明走了哪条通道。\n\n【薄页先走 OXR：不同意】\n\n7. 证据是第 28 页（税收完税证明，扫描件，整页约 400 字）：OXR 输出 6,406 个字，前半段对，后面是几十行重复的「3.8 | 3.9 | … | 4.7」和「未分配利润」，是模型幻觉。你说 OXR 每页 669 到 2,673 字，其中可能就有这种重复。\n\n8. 所以：扫描页和薄页一律先走 DP。OXR 的输出加一道重复检查，同一行或同一格重复 3 次以上，或去掉重复后字数掉一半，就判废回退 DP。OXR 处理有文本层的页时也过这道检查。\n\n【DP 现在慢，还有一处要核】\n\n9. 8 份并发 13 分钟，聚合每秒 0.9 到 1.5 页；21 到 31 页的小文件也要 420 秒左右，说明每份有一段固定开销。你走的是 87:8800 转远程 DP。查清时间花在上传、转图、识别还是轮询上；51 本机的 dp_unite 另测一次吞吐；批处理时并发开满。\n\n10. DP 重跑的字数有几份明显高于 OXR 和旧链路：MAT-041 39.7 万对 23.0 万，MAT-048 3.9 万对 1.5 万，答疑澄清说明文件 3.8 万对 2.2 万。要么是重复，要么是以前漏了。逐页对一下，报每页字数分布和重复行比例。\n\n【顺序】\n\n11. M3 接模型判断和页级混走，M4 一次发布前群里说。第 4 到 6 条修完之前不发。"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-A3",
+   "inputs": [
+    {
+     "ref": "G1",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgJbsX7MvSYKkjbA5UkSsYVw==",
+     "time": "2026-11-17 09:16:53 陈昔",
+     "sender": "msgJbsX7MvSYKkjbA5UkSsYVw==",
+     "text": "@小圈圈 soso-dev环境，新建的应用，需要有默认的内置类目、字段、索引、词典"
+    },
+    {
+     "ref": "G2",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msg/oPLunyutDj3WQ0IpdlB1Q==",
+     "time": "2026-11-17 10:05:14 小圈圈",
+     "sender": "msg/oPLunyutDj3WQ0IpdlB1Q==",
+     "text": "@陈昔 \n 任务：soso-dev 非默认应用详情页切片为空、原文件预览和下载返回 404，已修改并提交 MR \n 已按上一轮的定位完成改动，并提交了 MR !105（状态 opened，author=陈昔 chenxi2， fix/dc-tenant-detail-20261117  →  develop ）： https://git.datagrand.com/Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center/-/merge_requests/105 提交： c67925e0 \n 后端  dc-server/server.py \n •新增  _doc_app(doc_id, app=\"\") ，按「显式参数、文档记录里的  app 、当前请求租户」的顺序解析租户；即使后台线程没有请求上下文，也能靠文档记录拿到正确的 app\n•es_fetch_doc_chunks  /  es_fetch_chunk  /  es_update_chunks_bulk  改用  app_es_alias(ES[\"alias\"], _doc_app(...)) ，更新走  ensure_index(_doc_app(...)) （此前固定读全局  soso_dc_chunks ，所以详情页显示「已入库 145 切片」但列表为空、修改切片返回 404）\n•retire_superseded  把旧文档的  app  传给切片清理和行资产清理\n•同类问题一并修： load_blocks  用切片回退重建解析块、 suggest_tags 、行资产重建、拆分时清理子文档、去重合并 \n 前端  src/lib/dc-api.ts \n •docPreviewPdf  改走  withPortalAuth() ，带上  X-Soso-App （原来用裸 fetch，非默认应用直接 404）\n•docFileUrl  直链补  ?app=<当前应用> （window.open 发不了请求头） \n 验证（都是本地、没连真实 ES） ： py_compile  通过；打桩测试 13 条断言全过（非默认应用读、单条读、bulk 更新都指向  soso_dc_chunks-testcx1 ，默认应用仍走  soso_dc_chunks ，显式 app 优先、无 app 时回落请求租户，retire 与 load_blocks/suggest_tags 传对租户）；前端两个文件用 TS 解析器检查 0 诊断。 没做 前端全量构建（本地无 node_modules）、没部署 81，所以还没拿  doc_4e70a14487a8 / doc_3a98f1779343  做页面回归。 \n 后续：这个 MR 需要合并后才会生效，合并后我可以用  testcx1  那两个文档做详情页回归（切片列表、解析文本、Office 预览、下载原文件）；合并和部署要你明确点头，我不会自己合。 \n 在圈圈查看任务"
+    },
+    {
+     "ref": "G3",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgtFl4rfb9DVW0b1pJNp0DAA==",
+     "time": "2026-11-17 11:25:38 陈昔",
+     "sender": "msgtFl4rfb9DVW0b1pJNp0DAA==",
+     "text": "@小圈圈 合并 MR !104 、 MR !105 ，然后部署"
+    },
+    {
+     "ref": "G4",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgr0AHNLGrbFV8vd9yOTyNsg==",
+     "time": "2026-11-17 11:42:45 小圈圈",
+     "sender": "msgr0AHNLGrbFV8vd9yOTyNsg==",
+     "text": "@陈昔 \n 任务：合并 MR !104 / !105 并部署到 soso-dev（81） \n 两个 MR 已经合并，并已用合并后的代码部署完成。 \n 合并 \n •MR !104  feat(dc): 新建应用自动播种内置类目/字段/索引/词典  → merged，merge commit  e4f28f1\n•MR !105  fix(dc): 资产详情按文档所属应用读写切片与原文件  → merged，merge commit  8ebc493\n•两条都合进  develop （soso_data_center），无冲突 \n 部署（81 / soso-dev） \n •新镜像： dc_server:dev_20261117_mr104105 、 dc_frontend:dev_20261117_mr104105 （前端用合并后源码 vite 构建，后端基于现网  dev_20261115_multirepo  基础镜像打）\n•soso_dc_server 、 soso_dc_frontend  已  docker service update  并 converged，均  1/1 Running ，无重启 \n 验证 \n •/api/dc/health  正常（ES/oxr 地址在），公网  172.26.26.81:8866/api/dc/health  同样 200\n•/dc/  页面返回的新 bundle  assets/index-BXobeavL.js ，与本地构建产物一致（前端改动已生效）\n•容器内  /app/server.py  已含  ensure_builtin_config （6 处）和  _doc_app （10 处）， ast.parse  通过\n•配置接口  /api/dc/config/dictionaries  正常；启动日志显示为  soso_search_dvp  幂等补齐了缺失的内置字段  app （MR !104 的播种逻辑确实在跑） \n 一点说明：非默认租户（如 soso_guanyutest）的文档详情校验依赖门户登录态，匿名接口会落默认租户，我这边只能验证到「跨租户访问被正确隔离（404）、默认租户读写正常」。建议你用门户账号登进去，打开 soso_guanyutest 的一篇文档详情页确认 MR !105 的空白问题已修复——这是唯一需要人眼确认的一项。 \n 镜像目前只打在 81 本地，未推 registry；需要归档或给其他环境用时说一声我再推。 \n 在圈圈查看任务"
+    },
+    {
+     "ref": "G5",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgm7pTOHsAfGiJoCD7UdLjHg==",
+     "time": "2026-11-17 15:44:06 陈昔",
+     "sender": "msgm7pTOHsAfGiJoCD7UdLjHg==",
+     "text": "@小圈圈 我刚刚创建了一个应用 ai_jian_zheng_quan ，这个应用依旧没有内置的类目、字段、索引、词典"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-A4",
+   "inputs": [
+    {
+     "ref": "G6",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgu3iq+y95AT8oZxxZWtvxlg==",
+     "time": "2026-11-17 12:13:02 陈昔",
+     "sender": "msgu3iq+y95AT8oZxxZWtvxlg==",
+     "text": "@小圈圈 soso-dev环境，首页搜索命中数据中心的切片，点击搜索结果列表的切片，查看原文时需要定位到对应切片的位置"
+    },
+    {
+     "ref": "G7",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgD2ngRZ5VVVZFEls6Bt3Mmg==",
+     "time": "2026-11-17 15:36:18 小圈圈",
+     "sender": "msgD2ngRZ5VVVZFEls6Bt3Mmg==",
+     "text": "@陈昔 \n 任务：首页搜索命中数据中心切片后「查看原文」定位原文 \n 已完成，改动已上线 soso-dev 并做了端到端验证： \n 实际效果 ：hybrid-search 返回的切片结果里  detail_url  已带切片锚点，例如  /dc/#/files/detail/doc_ddbd337a5d1d?chunk=10 ；打开详情页后右侧切片列表自动选中第 #N 片并滚动高亮，左侧预览（文本/PDF/Office）联动定位到对应位置。Playwright 实测  ?chunk=42  时切片 #42 选中、PDF 第 4/46 页段落高亮，无 console 报错。现网镜像  soso_search:dev_20261117_chunkdetail2 、 dc_frontend:dev_20261117_chunkfix2 。 \n 代码已提 MR（作者已回读为陈昔，目标 develop，均未合并） \n 1. pangu_search_online MR !4：fusion 侧给 data_center 条目拼  ?chunk= （兼容  chunk_index  与  chunk_metadata.chunk_idx ，无序号不拼空锚点），补了单测并通过 https://git.datagrand.com/Search_Recommend_Department/Intelligent_Search/soso_project/pangu_search_online/-/merge_requests/4\n2. soso_data_center MR !108：详情页解析  ?chunk=  自动定位，文本/PDF/Office/图片预览与切片列表双向高亮；数据库行资产不做定位 https://git.datagrand.com/Search_Recommend_Department/Intelligent_Search/soso_project/soso_data_center/-/merge_requests/108 \n 还需要你这边做的 ：两个 MR 我这边不合，要等评审合入 develop；合并后按既有镜像链路重建，soso-dev 就跑在主干上而不是临时分支镜像。 \n 一个待确认的小边界： ?chunk=  用的是 ES 返回的切片序号（从 0 起）。如果同一文档在两次入库之间重新切过片，旧链接的序号可能对不上——要不要加一层内容指纹兜底，你定。 \n 在圈圈查看任务"
+    },
+    {
+     "ref": "G8",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgtiQ1Rcq/j+ZyVSiW1R4vCw==",
+     "time": "2026-11-18 10:37:03 陈昔",
+     "sender": "msgtiQ1Rcq/j+ZyVSiW1R4vCw==",
+     "text": "@小圈圈 soso-dev环境，首页搜索命中数据中心的切片，点击搜索结果列表的切片，查看原文时依旧没有定位到对应切片的位置，看看是什么原因"
+    },
+    {
+     "ref": "G9",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msg+EZ5mZcyku25sxY6sJOPXQ==",
+     "time": "2026-11-18 11:29:21 小圈圈",
+     "sender": "msg+EZ5mZcyku25sxY6sJOPXQ==",
+     "text": "@陈昔 \n 任务：排查 soso-dev「查看原文」不定位切片——部署被冲回旧镜像，已切回含修复镜像并实测定位正常 \n 原因 ：不是代码问题，是部署被冲掉了。11-17 的定位修复当时只拿临时镜像  dc_frontend:dev_20261117_chunkfix2  用  docker service update  挂上去， soso_deploy/docker-compose.yml  里的 pin 一直停在修复前构建的  dev_20261115_multirepo （bundle 里没有  ?chunk=  解析代码）；昨晚 18:55 develop 部署按 compose 重下发，把 dc_frontend 冲回旧镜像，于是再点「查看原文」就不定位了。后端没受影响。 \n 已处置 ：dc_frontend 已切到含修复的  dev_20261117_mr109 ，compose pin 同步改为该 tag（备份  docker-compose.yml.bak-20261118_chunkfix ），下次部署不会再冲掉。 \n 本轮实测（均为刚跑的真实结果） ： \n •现网  soso_dc_frontend  运行镜像 =  dev_20261117_mr109 ，与 compose pin 一致，服务 1/1；门户  /dc/  实际下发的 bundle（ index-CUtPf6v5.js ）含  get(\"chunk\")  定位代码。\n•search-online 现网镜像含切片锚点：多组查询实测 dc 结果均返回  detail_url=…/doc_xxx?chunk=N （如  doc_ddbd337a5d1d?chunk=99 、 doc_a25063de5c13?chunk=6 ）。\n•Playwright 端到端： doc_ddbd337a5d1d?chunk=99  → PDF 跳第 13/46 页、切片列表滚动到 #99； doc_a25063de5c13?chunk=6 （PPTX）→ PDF 第 5/6 页原文高亮、右侧「切片 #6」卡片选中描边。截图核对过，无 console 报错。 \n 你现在从首页搜索点「查看原文」应该就恢复了；如果浏览器还停着旧页面，先强刷一次（Ctrl+F5）再试。若仍不定位，把你点的搜索词或新标签页地址栏 URL 发我，我按那条链路继续查（仅混合检索链路带了切片锚点，走兜底旧链路的结果目前不带，这是下一个要补的点）。 \n 一个已确认的小边界：右侧列表的选中高亮会被「PDF 翻页联动」覆盖成命中切片所在页的第一片（同页多片时高亮首片），PDF 页码和原文高亮仍准确；要精确高亮命中片需要再改一版前端，需要的话我来改。 \n 在圈圈查看任务"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-A5",
+   "inputs": [
+    {
+     "ref": "G10",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgCmF5P8WrpyrQQAH36nsppg==",
+     "time": "2026-11-18 10:46:25 陈昔",
+     "sender": "msgCmF5P8WrpyrQQAH36nsppg==",
+     "text": "@小圈圈 soso-dev环境，数据归集-上传文件后，选择智能加工策略，但是匹配加工策略失败，具体见截图如下[图片消息](mediaId=@lQLPJxY4vNGyiFnNAkrNB2iwzUDcy6d2UGkKzMFY8fLTAA)"
+    },
+    {
+     "ref": "G11",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgZbdxftOXDrLg6RROg717zA==",
+     "time": "2026-11-18 11:23:42 小圈圈",
+     "sender": "msgZbdxftOXDrLg6RROg717zA==",
+     "text": "@陈昔 \n 任务：排查数据归集选智能加工策略后全部显示「匹配失败」的原因 \n 结论：匹配逻辑没有问题，是你测试的 10:38~10:49 那几分钟，soso_dc_frontend 正好被重新部署（multirepo→mr109），服务闪断，匹配接口 /api/dc/processing-strategies/match 返回 502（nginx 错误页而非 JSON），前端解析失败就把每个文件统一标成「匹配失败，上传时由服务端按文件类型匹配」。 \n 证据（soso-dev 三层日志时间线）： \n •10:35~10:38 另一会话的匹配请求全部 200，说明接口和匹配逻辑当时是好的；\n•10:38:40 dc_frontend 旧容器被杀（dc_server 日志出现对应 BrokenPipe），10:38:42~10:39:41 你发的匹配请求 1×499 + 4×502（8866 nginx 日志，soso-dev.datagrand.com/dc/）；\n•10:43~10:49 dc_frontend 以 mr109 镜像重新就绪；现网 compose 目前 pin 在  dc_frontend:dev_20261117_mr109 、 dc_server:dev_20261117_5d8cc15 。 \n 我按截图四个文件名实测 /match 全部 200 且匹配正确：两个文件名带「问答」的（xlsx/mp4）→问答/FAQ 加工策略、png→图片/扫描件加工策略、docx→通用文档加工策略。 页面上那个错误态是按文件缓存的，服务恢复后不会自动重试——刷新页面重进「数据归集」重新选一次文件即可恢复正常。 \n 两个值得改的点：① 前端把 502/401 等真实错误吞成了统一「匹配失败」文案，可以改成透出真实原因并自动重试一次，免得部署窗口撞车时误判；② mp4 因为文件名含「问答」被文件名关键词优先匹配到了「问答/FAQ」切片策略（媒体扩展名没有自己的推荐规则），视频被按 FAQ 切片多半不合预期。这两处要改的话说一声，我提 MR。 \n 在圈圈查看任务"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-A6",
+   "inputs": [
+    {
+     "ref": "G26",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msg44lR2Nrg5oqfYyfqYJgZ/A==",
+     "time": "2026-11-24 01:47:51 Audrey",
+     "sender": "msg44lR2Nrg5oqfYyfqYJgZ/A==",
+     "text": "@小圈圈  一期开工简报收货，逐条批复。\n\n1. 核点3 影子实测：收货。VA/RSS ≤2.5×、距 4GiB 有 7× 余量——假 OOM 风险在本批语料上排除。guard=both（RSS 看门狗为主+AS 兜底）+ false_oom 指标的设计比单闸更稳，照此落。原始数据目录我在。\n\n2. 外发事故：如实报的处理正确，收货。三件跟进：a) 录禅道——模块 dc_route，级别 P1，性质=数据外发（标题分级出公司，与 11-23 早 P-73 同族），根因=影子容器漏配 DC_ROUTE_DP_DIRECT_URL 时 T2 静默回落 dgpe；修复=DC_ROUTE_DP_FORBID_DGPE 反向闸默认开。回号给我填问题表。b) FORBID_DGPE 闸的回归用例要覆盖「直连缺失→该段失败转 T3」路径，别只测正常路径。c) 18 份重跑用直连版数据作准，同意；被外发的 261 次上传里涉及其他租户流量的事实也写进禅道单。\n\n3. T2 直连新基准（云池 901s→252s、MAT-050 172s→95s、MAT-033 150s→21s）记台账——这说明此前 T2 慢的很大一块是 dgpe 回落造成的，直连 51 桥才是真实性能。发布后云池 3 分钟线重新量，可能直接达标。\n\n4. 核点6/7：收货。47+2 拆分断言合理；薄页 A 案（【第N页】前缀并入+merged_thin_pages+DC_THINPAGE_MERGE=0 回退）同意——比白名单通用，页号归属保住了。\n\n5. 四连发拆线：我这边拆不了——15:43、18:53、昨晚四连发都是别的线在发（大概率还是你在另一个群下的需求那条线），数据小队群里看不到。我已经把「昨晚 4 版未预告、现网 titlenoise 缺 15030 修复和 !176 隔离模块」这个事实报给温晓宇，由他确认归属和是否要拦。你们这边的动作：一期 MR 基于最新 develop 解冲突照做；另外在发布清单里加一条硬检查——发布前 diff 现网 server.py vs develop，确认 15030/!176 是否被别的线覆盖丢失，丢了就在我们这版一起补回。\n\n6. 明天回归日照计划：全链接线→monster 注入→87 全链影子对照 run8→calamine wheel 进镜像。影子跑之前先确认 FORBID_DGPE 在影子容器里默认生效——别再犯一次。这条在当前工作线处理，不要另开线程部署。"
+    },
+    {
+     "ref": "G29",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgJueAW9ZAVbWMpuK80GsnxA==",
+     "time": "2026-11-24 11:51:30 小圈圈",
+     "sender": "msgJueAW9ZAVbWMpuK80GsnxA==",
+     "text": "@温晓宇 \n 任务执行失败。 原因：处理失败：员工返回的操作内容不完整或格式异常，本次任务未完成。请查看执行记录并核查已执行的操作。 \n 在圈圈查看任务"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-A7",
+   "inputs": [
+    {
+     "ref": "G23",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgjIQSGx9fu/qInPXwuhu4Ww==",
+     "time": "2026-11-23 00:04:10 Audrey",
+     "sender": "msgjIQSGx9fu/qInPXwuhu4Ww==",
+     "text": "@小圈圈  温晓宇刚定了方向：目标只有一个，把他这批素材解析得又快又好又准。没达到的要求由你改到位，不再只报「未达标」。这条请在当前工作线处理，不要另开线程部署。\n\n【边界，先说死】\n\n1. 23:32 起跑的 93 文件全量还在跑。跑完并且我复核之前：不合并部署仓、不发布、不清库、不往 soso_dc_qa 传文件、不占用两个解析实例。开发和自测在现网之外做，用独立目录和独立进程，不经过 dc_server。\n\n2. 这一轮全量的结果和逐文件表留档，不许删，新路径要拿它做对照。\n\n3. 清库、发布、批量上传这类动作之前，先确认没有别的线在跑。今晚 23:25 那次清库把另一条线做到 85% 的云池一起删了，不许再发生。\n\n4. 大模型只用公司网关上已有的，不调外部接口。\n\n【现在差在哪】\n\n5. 速度：批量 76.5 页/分钟，单份大文件 48.9。这一批 99.9% 的页带文本层，却全部渲染成图片走 OXR，单卡约 1 页/秒是这条路线的上限。\n\n6. 利用率：批量饱和度 65%，单文件 41%，都没到 70%。\n\n7. 一次性成功和完整性：正式应用里原批 18 个失败；dwg、ofd、rar 共 4 个文件直接被拒；54 个 PDF 里有 23 页有文本但没产出。\n\n8. 准确性：xlsx 等低分文件的清洗调优没做；现在的打分基准就是 PDF 文本层，看不出阅读顺序和表格结构对不对。\n\n【要做成什么样：按文件选解析路径】\n\n9. 参照合合的做法：电子档直接读文本层是最快的一档，扫描件走小模型级联，视觉大模型只做可选档，按页并行。\n\n10. 每个文件先算一遍特征：格式、页数、带文本层的页占比、乱码比例、图片覆盖、表格线密度。规则能定的直接定：\n\na. 文本层可用的 PDF 和转成 PDF 的 Visio：直接读文本层，带坐标取块，判断分栏和阅读顺序，去页眉页脚，表格从文本层重建。只用 CPU。\n\nb. 扫描件和图片：走 51 上的 DP 级联，失败再走 OXR。\n\nc. 拿不准的页、复杂表格、公式、手写：走 OXR。同一份文件里按页混走。\n\nd. rar：解包后里面每个文件按上面的规则各自处理。ofd：有文本层直接读，没有就转成图再识别。dwg：抽出文字标注、图块名、图框标题栏入库，并注明只含图纸文字。\n\n11. 规则拿不准的新文件，交给大模型判断一次：输入是特征摘要加抽 2 到 3 页（网关有视觉模型就带页面图，没有就带文本层片段），输出固定 JSON：文档类型、路径、参数、置信度、理由。置信度低的走最稳的 OXR 并标出来。\n\n12. 路径记忆：判断过的按类别记进路径表，类别由格式、特征档、文档类型组成，对应路径、参数、成功率和质量抽样结果。同类文件再来了直接查表走，不再调模型。每类定期抽 5% 复核，失败或质量下降就降级该类别并重新判断。每个文件记下特征、路径、是否查表命中、是否调过模型、耗时。\n\n13. 质量把关：每个文件解析完自动比对文本量、页覆盖、乱码和重复行比例，异常的回退 OXR。再抽样让模型对照页面图检查阅读顺序和表格，结果回写路径表。\n\n14. 单份大文件的并行度从 2 提到 4 到 6。文本层通道按容器 8 核配满，不够就报需要多少核。瓶颈挪到了清洗、切片或写库，报出来并一并解决。\n\n【怎么验收，同一批 93 个文件】\n\n15. 速度：全批端到端 30 分钟以内，争取 20 分钟，今晚这一轮的实际用时做对照。单份 1779 页的解析 3 分钟以内。\n\n16. 利用率：批处理期间不出现有活没干、资源闲着。每条通道的饱和度和瓶颈在哪一级都要报。\n\n17. 一次性成功：压测应用 83 个全部一次成功；正式应用原批 87 个全部有结果，包括那 4 个被拒的格式。\n\n18. 完整性：93 个文件逐个有着落；页覆盖不低于 99.5%，其余页逐页写原因；现在那 23 页有文本没产出的要归零。\n\n19. 准确性：同口径 3-gram F1 不低于 OXR 的中位 92.2。另外抽不少于 30 页（多栏 15、表格 15），对照页面图和 OXR 结果核阅读顺序和表格，错的不超过 5%。低分文件清洗调优后给同口径前后对比。\n\n20. 交：五项指标各一个数、逐文件对账表、路径表、模型调用次数和耗时、按秒采样的原始文件。\n\n【顺序】\n\n21. 现在：出方案，同时开始离线开发。方案写清路径表结构、模型判断的输入输出、文本层通道怎么做、三种格式怎么支持。方案直接做，不用等我回。\n\n22. 全量跑完我复核后，先用现在的版本把正式应用原批 18 个失败件里能救的重跑，那 4 个格式除外，让温晓宇明早能看到结果。\n\n23. 新路径做完自测后合并成一次发布，发布前群里说一声。发完在压测应用重跑同一批 93 个，按 15 到 20 交结果。\n\n24. 我复核通过后，正式应用里这批 87 个按新路径重跑一遍，交最终逐文件状态。\n\n25. 旧账别丢：81 磁盘扩容今天提；图谱删除接口（15017）追到人为止；你报告里说 87 的 GPU 和 saas-prod 共用，给我 nvidia-smi 的进程清单；项目结束拆掉常驻采样。"
+    },
+    {
+     "ref": "G24",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msg1zMWZXBYJx6w9n9Ra5Q7nA==",
+     "time": "2026-11-23 01:29:04 Audrey",
+     "sender": "msg1zMWZXBYJx6w9n9Ra5Q7nA==",
+     "text": "@小圈圈  93 文件全量 01:16 跑完了，我核完了，结论和下一步一起给你。方案我看过，有三处要改，另外我有一个数报错了，先更正。这条请在你当前工作线处理，不要另开线程部署。\n\n【先更正我的错】\n\n1. 我 00:04 那条第 5 点说「这批 99.9% 的页带文本层」，错了。我在 81 上逐页数过：51 个 PDF 共 8,041 页，没有文本层的 842 页，占 10.5%；30 字以下的 347 页；30 字以上的 6,852 页，占 85.2%。没有文本层的主要是 9 个整本扫描件，约 800 页：MAT-041 评定标准 252 页、MAT-042 公路沉管隧道 130 页、MAT-038 124 页、MAT-050 122 页、MAT-037 66 页、MAT-036 31 页、MAT-048 28 页、MAT-047 22 页、答疑澄清说明文件 22 页。\n\n2. 这改变了方案的分量：文本层通道管 85% 的页，剩下约 800 页扫描件必须靠 DP 级联或 OXR。DP 级联在这 9 个扫描件上的速度和质量现在是空白，M2 里先实测出来，和 OXR 对比后再定扫描件走哪条。\n\n【全量的结果，我自己取的数】\n\n3. 通过的：你 01:23 报的数和我独立取的一致。83 个全部一次成功，失败 0、重试 0；93 个文件对上账（83 个入库，6 个重复都留了痕，4 个格式不支持被拒）；加工策略都匹配上了；全程没有重启。\n\n4. 速度没到线：83 个用了 104.9 分钟，8,041 页合 76.7 页/分钟，是双实例上限的 65%。00:38 以后只剩云池一份在跑，33 分钟只用上 6 个槽里的 2 个。\n\n5. 完整性没到线，其中一条是 P1 缺陷：8,041 页里 7,876 页有块，97.95%。MAT-050 天津市建筑工人施工现场安全指导手册 122 页里只有 24 页有块，第 34 到 122 页共 89 页连着全空，却显示完成。你把这 98 页归成空白或纯图，我不同意：我把第 40 页和第 90 页渲染出来看了，每页都有标题和一条安全提示，约 60 字，例如「大模板在吊运前要认真检查吊绳和锁具，防止吊运过程中出现模板坠落」。这是 89 条安全注意事项全丢了。录禅道，P1：查清是 OXR 没返回文字还是后处理丢了，逐页给出结果并重跑；新路径里扫描件连续多页没有块要判异常，回退到 DP 级联。\n\n6. 文档详情的页覆盖字段不对：MAT-050 只有 24/122 页有块，page_coverage 却显示 1.0。录禅道，P2。\n\n7. 51 的解析卡我自己采到中位 93%，和你的一致；87 卡的 88% 是你的采样，我登不上那台机器，核不了。服务进程 CPU 中位 0.03 核，全程在等识别结果。\n\n【现在可以做的一件事】\n\n8. 用现在的版本，在正式应用里把原批 18 个失败件中能救的 14 个重跑：7 个 Visio、4 个音视频、MAT-004、MAT-041、云池。这 14 个今晚在压测应用里都过了。要求：只动这 14 个；带身份；跑完报每个的状态、页覆盖、切片数；旧的失败记录要变成完成或标成已被取代，列表里不许再显示那 4 个格式以外的失败；这一步不发版。哪条线接都行，接了在群里说一声。\n\n【方案要改的三处】\n\n9. OXR 兜底的耗时估错了。方案按 6 并发约 6 页/秒算（350 页 60 秒、573 页 95 秒），实测两台机器上限约 2 页/秒，今晚整批平均 1.3。350 到 573 页要 3 到 8 分钟，云池过不了 3 分钟线。按实测速率重算，稀疏页先试 DP 级联。\n\n10. 云池的页数口径和你对一下：我数的是没有文本层 0 页，30 字以下 271 页，100 字以下 424 页。你说的「350 空文本、573 低文本」请写明阈值。\n\n11. 准确性的验法要换。文本层通道的输出本来就来自文本层，拿文本层当基准打分天然接近满分。改成结构核对：抽不少于 30 页（多栏 15、表格 15），把页面图、文本层通道的输出、OXR 的输出三样放到 81 的 /root/dc_qa_20261122/report/ 下，我对照页面图独立核阅读顺序和表格，错的不超过 5%。这一步放在 M2 结束时做，不要等到发布以后。\n\n【其余】\n\n12. dwg 那 2 个文件以入库为终点。两个工具链都装不上就回来找我，不要自己降级成拒绝。\n\n13. 81 上 soso-format-convert 容器一直占 4 到 5 核，批次跑完也没降。查一下里面 4 个 dp_slave 是不是空转，是的话录禅道。\n\n14. 这一轮全量的结果继续留着做对照。新路径仍然合并成一次发布，发布前群里说一声。"
+    },
+    {
+     "ref": "G25",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgKR5kraW1xu/4hMnyrx0wow==",
+     "time": "2026-11-23 03:51:46 Audrey",
+     "sender": "msgKR5kraW1xu/4hMnyrx0wow==",
+     "text": "@小圈圈  03:19 的 M2 交付核完了：dwg、薄文本层规则、ofd、rar 通过；30 页结构核对不通过，表格这一类错误率远超 5%，发布前必须修；薄页先走 OXR 我不同意。这条请在你当前工作线处理，不要另开线程部署。\n\n【通过，我核过】\n\n1. dwg：两份都是 AC1024，LibreDWG 0.14 能读，文字和图块名都抽出来了。路线定为镜像里源码编译，不依赖 ODA。\n\n2. 薄文本层规则：页级和文件级都实现了。MAT-033、034、035 实测全部命中，改走 DP 后恢复 2.8 万、1.0 万、7 千字，和我用 OXR 量到的数一致。\n\n3. ofd 有文字层可以直接读；rar5 用 bsdtar 能解。禅道 15023、15024 记下。\n\n【不通过：30 页结构核对】\n\n4. 我对照页面图看了 4 页，30 页都用程序比过，问题如下：\n\na. 你抽的 15 页「多栏」全是表格页，一页多栏正文都没有，阅读顺序没验到。这批里真正的多栏正文在 MAT-040_Underground_Transportation_Systems_in_Europe 那份，67 页里有 25 页是双栏。重抽这 15 页：第 5、7、9、15、16、23、24、30、31、32、33、42、47、60、64 页。\n\nb. 多级表头错位，9 页：第 461、517、577、649、836、966、985、1021、1081 页都是清单计价表。「金额（元）」下面的子表头被拼成一格，数据落到错的列下。第 985 页合价的 49,442.10 落在「综合单价」列下，「本页小计」和「合计」的金额落在第 2 列。这种表在云池里有几百页。\n\nc. 表格结构被打散，4 页：第 637、1153、1201 页被压成 4 行 17 列，第 637 页我看了图，实际约 29 行 10 列；第 1417 页实际是 5 列 17 行的合并单元格表，被压成 2 行 18 列，整列文字粘成一格，25 个格子重复左边。\n\nd. 页眉页脚没去：每页开头的「第N页,共1779页」、章节流水号（34、104 这类）、表下的注释，都排在正文前面。\n\ne. 抽样里还有 4 页本身是薄页（第 22、25、28、31 页），文本层通道只出 25 到 28 个字。\n\n5. 修法方向：\n\na. 多级表头拼成完整列名（如「金额（元）/综合单价」），数据对到正确的列；合并的标签行把金额放回对应列；空行只留一行。\n\nb. 保留合并单元格的行列跨度。\n\nc. 每张表重建后自检行数、列数、重复格比例；拿不准的页整页回退 OXR，只限有文本层的页。\n\nd. 页眉页脚按位置去掉，表下的注释排在表后面。\n\n6. 修完重交：原来 30 页加上我指定的 15 页，每页写明自检结果；薄页那 4 页写明走了哪条通道。\n\n【薄页先走 OXR：不同意】\n\n7. 证据是第 28 页（税收完税证明，扫描件，整页约 400 字）：OXR 输出 6,406 个字，前半段对，后面是几十行重复的「3.8 | 3.9 | … | 4.7」和「未分配利润」，是模型幻觉。你说 OXR 每页 669 到 2,673 字，其中可能就有这种重复。\n\n8. 所以：扫描页和薄页一律先走 DP。OXR 的输出加一道重复检查，同一行或同一格重复 3 次以上，或去掉重复后字数掉一半，就判废回退 DP。OXR 处理有文本层的页时也过这道检查。\n\n【DP 现在慢，还有一处要核】\n\n9. 8 份并发 13 分钟，聚合每秒 0.9 到 1.5 页；21 到 31 页的小文件也要 420 秒左右，说明每份有一段固定开销。你走的是 87:8800 转远程 DP。查清时间花在上传、转图、识别还是轮询上；51 本机的 dp_unite 另测一次吞吐；批处理时并发开满。\n\n10. DP 重跑的字数有几份明显高于 OXR 和旧链路：MAT-041 39.7 万对 23.0 万，MAT-048 3.9 万对 1.5 万，答疑澄清说明文件 3.8 万对 2.2 万。要么是重复，要么是以前漏了。逐页对一下，报每页字数分布和重复行比例。\n\n【顺序】\n\n11. M3 接模型判断和页级混走，M4 一次发布前群里说。第 4 到 6 条修完之前不发。"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-A8",
+   "inputs": [
+    {
+     "ref": "G27",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msgPkkSuxn+ge8mGsZ/jhVH5g==",
+     "time": "2026-11-24 10:56:32 Audrey",
+     "sender": "msgPkkSuxn+ge8mGsZ/jhVH5g==",
+     "text": "@小圈圈  防护版发布验收：通过。我独立核过的：\n\n1. 容器 dev_20261124_23b7f5a5 10:54:39 起（预告窗口 10:50-11:20 内），healthy；内存限额已到 14GiB（119.6MiB/14GiB 实测）。\n2. DC_PARSE_POOL=0 实测在 env；embed-identity 200、51 内网口径没被动（url/model/dim/batch/concurrency 全对）。\n3. server.py 防护标记实核（_table_stream_applies/_mark_oversize/FORBID 等在位）；镜像内 calamine 可导入我发布前就验过。\n4. API 200、qa 任务表正常。\n\n你还欠两个数：a) 中断时长精确值（swarm 任务切换时间戳你能取到）；b) 87 文档快查（一次性成功+页覆盖+embedding 拆账）。发出来我核完把这版正式记台账。监视我这边跑着（health_flips+内存 1 小时窗口），异常我直接喊回滚。这条在当前工作线处理，不要另开线程部署。"
+    },
+    {
+     "ref": "G28",
+     "kind": "dingtalk_message",
+     "group": "数据小队",
+     "message_id": "msguTRlaIiZ/DEBhK5xqhejqA==",
+     "time": "2026-11-24 11:49:26 Audrey",
+     "sender": "msguTRlaIiZ/DEBhK5xqhejqA==",
+     "text": "@小圈圈  欠数验收通过，判定不回滚，两条建议都批。\n\n1. 中断 149.8s：如实报收货——规格/镜像分两次 service update 是执行问题，下次合成一次。记台账。\n\n2. 87 快查独立核过：qa 500 全 done；dmesg \"Killed process\" 计数 3 未动（无新 OOM，防护实证）；MAT-001 我在 ES 实数 128 chunks、36 个页码（1-35、37），和你报的逐位一致——**15032 生效，P-98 正式闭环**；页覆盖 99.96% 同 run8 三页；ES 31,748 对账一致。27 分 07 秒在 30 分线内，比 run8 慢的原因（6 并行×并发 4 打满 51）你的解释我接受——批内自竞争，云池单文档 3 分钟线不受影响。这版记台账，不回滚。\n\n3. 健康误杀（11:00:54 那次）记 P-103，录禅道：模块 dc_server/healthcheck，级别 P1。现象=高负载下 /health 连续超时（10×8-12s）+一次 101 秒 000→swarm 判死重建（exit 137），非 OOM（dmesg 未动）、非 service update；影响=批中在途中断重跑，无数据丢失。复现=87 快查批 10:57-11:24 窗口，1 秒采样 CSV 为证。修法两条都批：\n① healthcheck retries 3→6、timeout 5→10s——部署仓配置，随明天的二期回归版一起发（今天不再单独动现网）；\n② cleaning/chunking 挪出 API 进程——就是明天回归的那版一期池化，根治路径确认。\n\n4. embedding 并发叠加记观察项：二期池化时按在途文档数自适应调 DC_EMBED_CONCURRENCY（批内多文档并行时单片降并发），别让 51 被自己打满。这个随第二版一起定。\n\n这条在当前工作线处理，不要另开线程部署。"
+    }
+   ]
+  }
+ ],
+ "synthetic_inputs": [
+  {
+   "case_id": "TC-R1",
+   "inputs": [
+    {
+     "ref": "S1",
+     "kind": "synthetic_event",
+     "label": "禅道单 X1（构造）",
+     "content": "打开 2026-09-10『列表导出 CSV 中文乱码』；2026-09-15 resolved(fixed)，修复 MR 09-16 发布；2026-09-18 在 dev-1 环境验收通过、closed（验证环境 dev-1，环境名按项目注册表 canonical_name 登记）。",
+     "environment": {
+      "canonical_name": "dev-1",
+      "category": "dev",
+      "version": null,
+      "raw_text": "dev-1 环境验收通过"
+     }
+    },
+    {
+     "ref": "S2",
+     "kind": "synthetic_event",
+     "label": "reopen 报告（构造）",
+     "content": "2026-11-20 上线『导出 Excel』新入口后，Excel 导出再次出现乱码（CSV 入口正常）；时间 11-20、版本 dev_20261120、环境 dev-1、复现步骤齐全；X1 reopened，activatedCount=1。",
+     "environment": {
+      "canonical_name": "dev-1",
+      "category": "dev",
+      "version": null,
+      "raw_text": "dev-1 环境，版本 dev_20261120"
+     }
+    },
+    {
+     "ref": "S3",
+     "kind": "synthetic_event",
+     "label": "第二轮修复（构造）",
+     "content": "2026-11-21 提交第二轮 MR：Excel 出口编码处理修复。"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-R2",
+   "inputs": [
+    {
+     "ref": "S1",
+     "kind": "synthetic_event",
+     "label": "禅道单 X2（构造）",
+     "content": "『导出超时』2026-09-20 打开；2026-09-25 resolved(fixed)（MR 合并，test-1 环境复验记录『通过』，验证仅覆盖 test-1）。",
+     "environment": {
+      "canonical_name": "test-1",
+      "category": "test",
+      "version": null,
+      "raw_text": "test-1 环境复验通过"
+     }
+    },
+    {
+     "ref": "S2",
+     "kind": "synthetic_event",
+     "label": "重现报告（构造）",
+     "content": "2026-11-22 线上 soso-prod 同一现象重现，用户侧报『又复现了』（新时间/新截图）。",
+     "environment": {
+      "canonical_name": "soso-prod",
+      "category": "production",
+      "version": null,
+      "raw_text": "线上 soso-prod"
+     }
+    },
+    {
+     "ref": "S3",
+     "kind": "synthetic_event",
+     "label": "发布记录（构造）",
+     "content": "2026-11-21 发布仓对该服务在 soso-prod 执行 rollback，回到 09-10 旧镜像（tag release-20261110 → release-20260901，附回滚操作记录）；test-1 仍在修复版。",
+     "environment": {
+      "canonical_name": "soso-prod",
+      "category": "production",
+      "version": null,
+      "raw_text": "soso-prod 回滚到旧镜像"
+     }
+    }
+   ]
+  },
+  {
+   "case_id": "TC-R3",
+   "inputs": [
+    {
+     "ref": "S1",
+     "kind": "synthetic_event",
+     "label": "历史闭环单 X3（构造）",
+     "content": "『表格切片表头丢失』2026-08-12 打开，2026-08-20 resolved(fixed)：A 切片器获取表头的 bug，已在 soso-prod 闭环并验证通过。",
+     "environment": {
+      "canonical_name": "soso-prod",
+      "category": "production",
+      "version": null,
+      "raw_text": "soso-prod 已验证闭环"
+     }
+    },
+    {
+     "ref": "S2",
+     "kind": "synthetic_event",
+     "label": "新缺陷 X4（构造）",
+     "content": "2026-11-24 新开禅道单 X4：『Word 文档表格首列被凭空拼出表头』——现象相似（都涉及表头），根因为无表头表格的兜底拼接逻辑（B 分支），复现条件（无表头结构文档）与模块均不同于 X3；首次出现环境 soso-prod。",
+     "environment": {
+      "canonical_name": "soso-prod",
+      "category": "production",
+      "version": null,
+      "raw_text": "soso-prod 首次出现"
+     }
+    },
+    {
+     "ref": "S3",
+     "kind": "synthetic_event",
+     "label": "独立修复（构造）",
+     "content": "2026-11-25 X4 获独立修复 MR（尚未部署验证）。",
+     "environment": null
+    }
+   ]
+  },
+  {
+   "case_id": "TC-R4",
+   "inputs": [
+    {
+     "ref": "S0",
+     "kind": "config_snapshot",
+     "label": "环境注册表（构造）",
+     "content": "项目 environment_registry：test-a（别名：测试环境A、test-a；category=test）、test-b（别名：测试环境B、test-b；category=test）、soso-prod（category=production）。分类相同不代表同一环境。"
+    },
+    {
+     "ref": "S1",
+     "kind": "synthetic_event",
+     "label": "X5 首报与 test-a 验证（构造）",
+     "content": "2026-09-01 首报『导出文件标题被截断』；09-05 修复 MR 合并；09-07 部署 test-a 并复测通过（verified_fixed，environment=test-a，category=test）。",
+     "environment": {
+      "canonical_name": "test-a",
+      "category": "test",
+      "version": null,
+      "raw_text": "test-a 复测通过"
+     }
+    },
+    {
+     "ref": "S2",
+     "kind": "synthetic_event",
+     "label": "test-b 再次出现（构造）",
+     "content": "2026-11-20 test-b 出现同一现象（新时间/新环境/新截图）；经核对与 X5 为同一缺陷（同模块『导出』、同根因：导出文件标题被截断；有非现象类锚点），test-b 此前无任何验证记录；无回退证据。",
+     "environment": {
+      "canonical_name": "test-b",
+      "category": "test",
+      "version": null,
+      "raw_text": "测试环境B 复现"
+     }
+    }
+   ]
+  },
+  {
+   "case_id": "TC-R5",
+   "inputs": [
+    {
+     "ref": "S0",
+     "kind": "config_snapshot",
+     "label": "环境注册表（构造）",
+     "content": "项目 environment_registry：soso-prod（category=production）。"
+    },
+    {
+     "ref": "S1",
+     "kind": "synthetic_event",
+     "label": "X6 首报与 prod 验证（构造）",
+     "content": "2026-09-02 首报『登录页验证码不显示』；09-08 修复 MR 合并；09-10 部署 soso-prod；09-11 现场复测通过（verified_fixed，environment=soso-prod）。",
+     "environment": {
+      "canonical_name": "soso-prod",
+      "category": "production",
+      "version": null,
+      "raw_text": "soso-prod 现场复测通过"
+     }
+    },
+    {
+     "ref": "S2",
+     "kind": "synthetic_event",
+     "label": "prod 再次出现（构造）",
+     "content": "2026-11-18 soso-prod 同一现象再次出现（新时间/复现步骤/截图）。",
+     "environment": {
+      "canonical_name": "soso-prod",
+      "category": "production",
+      "version": null,
+      "raw_text": "soso-prod 线上"
+     }
+    },
+    {
+     "ref": "S3",
+     "kind": "synthetic_event",
+     "label": "发布回滚记录（构造）",
+     "content": "2026-11-17 发布仓 revert：镜像 tag 由 release-20261110 回滚为 release-20260901，附回滚操作记录。",
+     "environment": {
+      "canonical_name": "soso-prod",
+      "category": "production",
+      "version": null,
+      "raw_text": "prod 回滚到旧镜像"
+     }
+    }
+   ]
+  },
+  {
+   "case_id": "TC-R6",
+   "inputs": [
+    {
+     "ref": "S0",
+     "kind": "config_snapshot",
+     "label": "主记录与项目时区（构造）",
+     "content": "主记录 DC-9001 已存在；项目时区 Asia/Shanghai；事件去重策略取 config/default.json recurrence.event_dedupe。"
+    },
+    {
+     "ref": "S1",
+     "kind": "synthetic_occurrence",
+     "label": "OC-alt-1（构造）",
+     "content": "observed_at='2026-10-12'（仅日期）；evidence=E1（群报障原文+截图，role=report）。"
+    },
+    {
+     "ref": "S2",
+     "kind": "synthetic_occurrence",
+     "label": "OC-alt-2（构造）",
+     "content": "observed_at='2026-10-12T09:14:00+08:00'；evidence=E1（同一截图，role=report）+E2（MR-700，primary_fix）。"
+    },
+    {
+     "ref": "S3",
+     "kind": "synthetic_occurrence",
+     "label": "OC-alt-3（构造）",
+     "content": "observed_at='2026-10-12'（仅日期）；evidence 仅 E2（MR-700，primary_fix），无现象类证据。"
+    },
+    {
+     "ref": "S4",
+     "kind": "synthetic_occurrence",
+     "label": "OC-alt-4（构造）",
+     "content": "observed_at='2026-10-13T10:05:00+08:00'；evidence=E3（新的报障原文+不同复现操作，环境 raw_text='客户现场'），与 E1 无交集。"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-R7",
+   "inputs": [
+    {
+     "ref": "S0",
+     "kind": "config_snapshot",
+     "label": "主记录（构造）",
+     "content": "主记录 DC-9001 已存在，含 OC-0001 kind=first observed_at=2026-10-12T09:14:00+08:00。"
+    },
+    {
+     "ref": "S1",
+     "kind": "synthetic_bug_record",
+     "label": "别名记录 DC-9002（构造）",
+     "content": "DC-9002（同一缺陷『导出乱码』）2026-10-20 登记，merge.merged_into=DC-9001，confidence=high；含 OC-0007 kind=repeat_unresolved observed_at=2026-10-19T11:00:00+08:00，证据 E9（新截图+新时间，与原次无交集）。"
+    },
+    {
+     "ref": "S2",
+     "kind": "synthetic_audit",
+     "label": "归并审计（构造）",
+     "content": "归并记录保留原编号 DC-9002、证据映射与 merged_at；别名记录内容冻结，只追加证据归档。"
+    }
+   ]
+  },
+  {
+   "case_id": "TC-R8",
+   "inputs": [
+    {
+     "ref": "S0",
+     "kind": "config_snapshot",
+     "label": "config/default.json",
+     "content": "meta.skill_version=V0.1.3；mode_default=offline；storage.storage_root=null；storage.persistence.method=null。"
+    },
+    {
+     "ref": "S1",
+     "kind": "config_snapshot",
+     "label": "项目配置（含未落实项）",
+     "content": "soso_data_center.json 含 5 处 __TBD__：仓库 ID、群 ID、环境名、编号前缀、时区。"
+    },
+    {
+     "ref": "S2",
+     "kind": "synthetic_batch",
+     "label": "离线输入包（构造）",
+     "content": "1 条修复类 commit（正文含现象+修复）；1 条 test commit（body 空）；1 条禅道 active 快照（模拟输入，非正式库）。"
+    },
+    {
+     "ref": "S3",
+     "kind": "run_params",
+     "label": "运行参数（构造）",
+     "content": "mode=offline；offline_root=/tmp/offline-root；run_id 由运行方指定（不读正式 state 计数器）。"
+    }
+   ]
+  }
+ ]
+}

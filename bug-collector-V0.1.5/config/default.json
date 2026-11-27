@@ -1,0 +1,165 @@
+{
+  "meta": {
+    "config_version": 1,
+    "skill_version": "V0.1.5",
+    "notes": "通用默认值，跨项目复用。项目专项信息（来源身份、环境注册表、词表增量、编号前缀）一律放 config/projects/<project>.json（模板见 config/projects/_template.json）；通用默认不得登记任何具体项目的群 ID、仓库 ID、环境名或项目特征。值为 null 的存储类字段属部署必填项，未配置时只允许 offline 模式，不得启动正式采集、正式入库与编号分配。"
+  },
+  "config_merge": {
+    "strategy": "field_level_deep_merge",
+    "object_replace": false,
+    "default_file": "config/default.json",
+    "project_file_glob": "config/projects/<project>.json",
+    "environment_registry_mapping": {
+      "_note": "项目顶层 environment_registry 与默认 recurrence.environment_registry 按字段合并，非整对象替换。",
+      "project_path": "environment_registry",
+      "default_path": "recurrence.environment_registry",
+      "environments": "union_by_canonical_name",
+      "unknown_aliases_policy": {"project_key": "environment_registry.unknown_aliases_policy", "default_key": "recurrence.environment_registry.unknown_handling", "override": true},
+      "other_default_keys": "inherit_and_locked"
+    },
+    "locked_constraints": [
+      "recurrence.environment_registry.primary_key",
+      "recurrence.environment_registry.category_is_not_identity",
+      "recurrence.environment_registry.cross_environment_verification",
+      "recurrence.event_dedupe.evidence_intersection.project_override_allowed",
+      "recurrence.event_dedupe.counter_evidence_blocks_auto_merge",
+      "dedup.auto_merge_min_confidence",
+      "filter.unmatched_policy"
+    ],
+    "effective_config_output": "effective-config.json",
+    "_note": "合并后的实际生效配置在每次运行开始写出 effective-config.json，并核对上述锁定键未被项目配置覆盖或放宽；项目配置只覆盖其显式给出的字段。"
+  },
+  "numbering": {
+    "prefix_source": "config/projects/<project>.json:prefix",
+    "offline_test_prefix_allowed": ["TEST"],
+    "offline_assigns_formal_ids": false,
+    "_note": "offline 允许用 TEST 作测试项目标识但不分配任何正式编号（TEST-NNNN / EV / OC / RV / TR）；正式项目必须使用真实前缀。Q-C2。"
+  },
+  "mode_default": "offline",
+  "timezone": "Asia/Shanghai",
+  "run": {
+    "command_timeout_seconds": 60,
+    "turn_budget_seconds": 180,
+    "allow_background_tasks": false
+  },
+  "output_formats": {
+    "machine": ["json", "jsonl"],
+    "human": ["md", "csv", "xlsx"]
+  },
+  "storage": {
+    "storage_root": null,
+    "offline_root": null,
+    "persistence": {
+      "method": null,
+      "branch": null,
+      "commit_policy": null,
+      "conflict_check": "version_monotonic_read_back"
+    },
+    "_note": "storage_root / offline_root / persistence.method 为部署必填项：必须指向经授权的外部持久化存储（如独立质量控制 GitLab 仓库路径）；为 null 时仅允许 offline，且 offline_root 未配置时由运行参数临时指定隔离目录。"
+  },
+  "collection": {
+    "window": {
+      "default_days": null,
+      "overlap_minutes": 60,
+      "page_size": null,
+      "max_pages": null
+    },
+    "_note_window": "default_days / page_size 必须由任务或项目配置显式给出，不设通用默认（避免猜测采集范围）；max_pages 未配置时以接口能力为准，必须读到 hasMore=false 才能标 complete。",
+    "context_before": 10,
+    "context_after": 10,
+    "retry": {
+      "max_retries": 3,
+      "backoff_seconds": [5, 15, 60],
+      "retryable_error_classes": ["transient_error", "timeout"],
+      "non_retryable_error_classes": ["permission_denied", "not_found_confirmed", "param_error"]
+    },
+    "attachments": {
+      "download_enabled": true,
+      "max_file_size_mb": 20,
+      "expired_or_denied": "record_gap_no_substitute"
+    }
+  },
+  "filter": {
+    "keyword_positive": ["bug", "缺陷", "报错", "异常", "失败", "复现", "挂了", "回滚", "修复", "阻塞", "卡住", "数据不对", "对不上", "环境失效"],
+    "keyword_negative": ["周报", "值班", "发布通知", "日程", "招聘"],
+    "unmatched_policy": "candidate_low"
+  },
+  "dedup": {
+    "time_window_days": 30,
+    "auto_merge_min_confidence": "high"
+  },
+  "recurrence": {
+    "environment_registry": {
+      "primary_key": "canonical_name",
+      "normalization_order": ["canonical_name_exact", "aliases_match", "keep_raw_text_and_review"],
+      "categories": [
+        {"id": "dev", "meaning": "开发/联调环境"},
+        {"id": "test", "meaning": "功能/集成测试环境"},
+        {"id": "uat", "meaning": "用户/联合验收测试环境"},
+        {"id": "staging", "meaning": "预发/灰度环境"},
+        {"id": "production", "meaning": "正式生产环境"},
+        {"id": "customer", "meaning": "客户现场自有部署/租户环境"},
+        {"id": "sandbox", "meaning": "演示/沙盒环境"},
+        {"id": "unknown", "meaning": "无法归类或信息不足的环境"}
+      ],
+      "category_is_not_identity": true,
+      "version_role": "auxiliary",
+      "unknown_handling": {
+        "unresolved_name": "keep_raw_and_flag",
+        "affects_recurrence": "recurrence_check"
+      },
+      "cross_environment_verification": {
+        "scope": "per_environment",
+        "auto_extend_to_other_environments": false,
+        "auto_extend_to_same_category": false,
+        "verification_record": {
+          "lifecycle_to": "verified_fixed",
+          "transition_carries_environment": true,
+          "derived_output": "verified_environments"
+        },
+        "missing_env_or_version_affecting_recurrence": "recurrence_check"
+      }
+    },
+    "event_dedupe": {
+      "aggregate": "by_primary_bug_record_first",
+      "precise_time_policy": "compare_after_unified_timezone_normalization",
+      "date_only_policy": "same_natural_day_in_project_timezone",
+      "preserve_original_precision": true,
+      "evidence_intersection": {
+        "qualifying_roles": ["report"],
+        "_note": "只有该缺陷 bug_links 上 role=report 的证据（现象首报/复述、现象截图/日志，按内容判定）计入交集；仅共享 primary_fix/related_fix 的修复记录、MR、部署或复测回执（status_evidence）、背景资料（background）不计入交集，不能作为自动去重依据。",
+        "project_override_allowed": false
+      },
+      "counter_evidence_blocks_auto_merge": true,
+      "ambiguous_policy": "review_queue_disclose_pending",
+      "keep_raw_occurrence_records": true
+    }
+  },
+  "validation": {
+    "required": true,
+    "preprocess_script": "scripts/bc_preprocess.py",
+    "validate_script": "scripts/bc_validate.py",
+    "index_files": ["records_index.jsonl", "case_scopes.json", "summary.json"],
+    "report_file": "reports/actual_counts.json",
+    "fail_action": "block_qc_pass_and_delivery_claim",
+    "warn_action": "pending_with_disclosure",
+    "checks": ["source_identity", "source_time", "quote", "raw_pointer", "case_isolation", "fact_anchors", "occurrence_evidence", "context_events", "enums_refs", "actual_counts"],
+    "case_isolation": true,
+    "time_fields": {
+      "source_record_time": ["dingtalk.time", "gitlab.CommitDate", "zentao.snapshot.openedDate"],
+      "occurred_at": ["bugs.first_observed_at", "occurrences.observed_at"],
+      "collected_at": ["evidence.collected_at"],
+      "processed_at": ["runs.processed_at"],
+      "_note": "occurred_at 只能来自 source_record_time；精度保留，不补造时分秒。"
+    },
+    "force_identity_from_index": true,
+    "message_id_field_only": ["message_id", "messageId"],
+    "sender_is_not_identity": true,
+    "_note": "V0.1.5：语义处理前先预处理、交付前必须校验；validate 有 FAIL 时相关 QC 不得 PASS。"
+  },
+  "outputs": {
+    "enabled_default": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+    "_note_outputs": "对应 output-schema.md §9 的 15 项标准输出物编号；项目可裁剪但不影响 QC 检查口径。",
+    "reports_retention_days": null
+  }
+}
