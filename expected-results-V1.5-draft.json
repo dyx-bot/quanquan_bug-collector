@@ -1,0 +1,2425 @@
+{
+  "meta": {
+    "title": "Bug Collector Skill 独立审查候选参考答案",
+    "version": "V1.5-draft",
+    "date": "2026-11-27",
+    "based_on": "bug-collector-V0.1.5；test-inputs-V1.4.json；V1.4参考答案最终版（保留原文件）",
+    "review_status": "pending_human_approval",
+    "warning": "仅供独立验收方使用，不提供给被测Agent。基于原始事实和当前规则定标，不以第二轮actual_counts倒推答案。",
+    "baseline": {
+      "repo": "dyx-bot/quanquan_bug-collector",
+      "expected_v1_4_blob_sha": "d5da119826b0cfa3e41a68bd284900dc3ef56f0f",
+      "real_input_blob_sha": "e80684933f09e49317e7fe82cadbf7a22b462263",
+      "final_input_blob_sha": "69b428f6ee7e5e5bbfd3a5ebecebffc0348ac7f9",
+      "skill_v0_1_5_tree_sha": "8804963b70d2d70645005dbc88118b4858aabf0f"
+    },
+    "count_policy": "13项通用指标以output-schema §9.1为准；无约束非null值为目标。count_constraints优先用于条件判分；expected_counts中的null表示不固定预期值，不等于要求实际null（fix_actions未知时实际必须null）。evidence_items按实际证据库重算，不等同输入/候选数；输入覆盖按G-13独立核查。coverage检查内容要素而非逐字比对。非缺陷事件类型使用当前合法枚举，不以旧专项计数字段强制schema。",
+    "rule_ref_policy": "保留原有顶层结构、案例ID与主要字段；断言重新编排及编号，不与旧版按断言ID直接比较。expected_defect_count是简要目标，以expected_counts/count_constraints及断言为准。",
+    "judging_policy": {
+      "PASS": "有充分证据满足全部适用断言及统计约束；人工待决项已裁定。",
+      "FAIL": "存在确定性违规或业务断言失败；不能通过修改预期迎合实际输出。",
+      "PENDING": "原始事实、业务口径或运行证据不足；不计作通过。",
+      "BLOCKED": "构造输入缺字段或运行能力未支持，不能执行断言；不计作通过。",
+      "NOT_RUN": "未执行，不能计作通过。"
+    },
+    "revision_scope": "17真实案例独立重定标；8构造案例保留测试主题并同步版本/枚举，未运行。R1、R4、R6–R8存在输入条件或适配风险，须另行验证。",
+    "global_assertions": [
+      {
+        "id": "G-01",
+        "stage": "schema",
+        "check": "新增occurrence.kind仅first/repeat_unresolved/repeat_after_fix/rollback_regress；禁止旧标签枚举。",
+        "expected": true,
+        "rule": "output-schema §10.2；recurrence-rules §2"
+      },
+      {
+        "id": "G-02",
+        "stage": "schema",
+        "check": "filter_decision仅candidate/evidence_only/template/sync/noise/context，禁止excluded。",
+        "expected": true,
+        "rule": "filtering-rules §3.1；output-schema §1.1/§10.2"
+      },
+      {
+        "id": "G-03",
+        "stage": "schema",
+        "check": "bug_links.role仅primary_fix/related_fix/background/status_evidence/report；role在关联上。",
+        "expected": true,
+        "rule": "output-schema §4/§10.6"
+      },
+      {
+        "id": "G-04",
+        "stage": "schema",
+        "check": "描述标签fix_not_live/fix_not_effective/deployment_drift/mr_ref_unverified/context_only不进入不兼容枚举；类别/匹配/筛选分列。",
+        "expected": true,
+        "rule": "output-schema §10.2/§10.2.1"
+      },
+      {
+        "id": "G-05",
+        "stage": "count",
+        "check": "每案例actual_counts包含13项通用统计及bug_ids/evidence_ids；未知值说明原因，禁止以0冒充未知。",
+        "expected": true,
+        "rule": "output-schema §9.1；recurrence-rules §3.7"
+      },
+      {
+        "id": "G-06",
+        "stage": "count",
+        "check": "recurrence_events与两个子类型同时给出，且总数等于子类型和。",
+        "expected": true,
+        "rule": "recurrence-rules §3.2"
+      },
+      {
+        "id": "G-07",
+        "stage": "integrity",
+        "check": "verified_environments只取有效验证流转canonical_name；不跨环境外推，不因后续复发抹去历史。",
+        "expected": true,
+        "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+      },
+      {
+        "id": "G-08",
+        "stage": "integrity",
+        "check": "报告披露coverage（时间窗、来源、精度、未覆盖、未知）及事件去重确认/待复核数量。",
+        "expected": true,
+        "rule": "recurrence-rules §3.8"
+      },
+      {
+        "id": "G-09",
+        "stage": "count",
+        "check": "派生统计可从实际记录重算并与报告一致；独立案例之和不能称项目唯一缺陷总数。",
+        "expected": true,
+        "rule": "output-schema §9.1；recurrence-rules §3.7"
+      },
+      {
+        "id": "G-10",
+        "stage": "integrity",
+        "check": "offline不写正式库/水位/计数器，不分配正式ID；历史构造ID仅保留审计。真实写入边界需独立证据，未核验则PENDING。",
+        "expected": true,
+        "rule": "output-schema §1.2/§1.3；execution-rules §5/§9"
+      },
+      {
+        "id": "G-11",
+        "stage": "filter",
+        "check": "未核实MR引用仅作待核查线索，不造kind=mr证据、不作归并强证据。",
+        "expected": true,
+        "rule": "output-schema §4/§10.6"
+      },
+      {
+        "id": "G-12",
+        "stage": "integrity",
+        "check": "实际加载Skill/default及运行声明版本一致为V0.1.5；__TBD__不当真实参数；构造R8旧配置冲突单独披露。",
+        "expected": true,
+        "rule": "SKILL §2；execution-rules §4"
+      },
+      {
+        "id": "G-13",
+        "stage": "integrity",
+        "check": "原始索引、筛选、证据逐条对账；source_key可由来源身份重算，messageId/SHA/禅道号不改写；conversationId派生映射与异常sender披露。",
+        "expected": true,
+        "rule": "quality-checklist QC-40–44；output-schema §10.6"
+      },
+      {
+        "id": "G-14",
+        "stage": "integrity",
+        "check": "来源时间、精度、quote、raw_pointer、content_sha256、fact_anchors与原始输入相符；不串用其他案例证据；实际触发时间与来源时间有差异时披露。",
+        "expected": true,
+        "rule": "quality-checklist QC-40–44；output-schema §10.6"
+      },
+      {
+        "id": "G-15",
+        "stage": "integrity",
+        "check": "非缺陷分流按规则结构化留痕；混合消息非缺陷主题不静默丢弃；事实更正链保留原记录。",
+        "expected": true,
+        "rule": "filtering-rules §3.1；output-schema §1.1/§10.2；output-schema §4/§10.6"
+      },
+      {
+        "id": "G-16",
+        "stage": "integrity",
+        "check": "执行确定性校验；FAIL不得标PASS，WARN逐条核实；业务断言独立验收，不能以校验器0 FAIL代替业务通过。",
+        "expected": true,
+        "rule": "quality-checklist QC-40–44；output-schema §10.6"
+      }
+    ],
+    "statistics": {
+      "real_cases": 17,
+      "synthetic_cases": 8,
+      "real_assertions": 91,
+      "synthetic_assertions": 40,
+      "global_assertions": 16
+    },
+    "assertion_revision_note": "原V1.4的逐案例断言按事实及规则重新组织，部分同义断言合并；数量减少不等于原断言通过，也不保证与旧版逐条一一映射。",
+    "input_scope_note": "真实输入在两个V1.4路径下内容一致；构造输入存在差异，尤其R4。构造测试须固定输入SHA并先检查fixture与脚本兼容性。"
+  },
+  "real_expectations": [
+    {
+      "case_id": "TC-001",
+      "category": "数据清洗",
+      "goal": "纯测试提交及合并落点调整不误判缺陷",
+      "expected_defect_count": "0",
+      "expected_counts": {
+        "confirmed_defects": 0,
+        "suspect_defects": 0,
+        "evidence_items": null,
+        "fix_actions": 0,
+        "independent_occurrences": 0,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": 0,
+        "related_cases": 0,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-13～11-18；两条 GitLab 提交；秒级。"
+      },
+      "expected_filter": "E1 空正文测试提交；E2 仅调整 diff 落点；非候选，合法分流并留痕。",
+      "expected_merge": "无。",
+      "expected_attribution": "原身份及原文保留；不挂缺陷。",
+      "expected_recurrence": "无。",
+      "basis": "E2 parent_count=1，提交说明最终形态不变。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "E1",
+        "E2"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "filtering-rules §3.1/§4.1/§4.2",
+        "filtering-rules §3.1；output-schema §1.1/§10.2",
+        "output-schema §9.1；recurrence-rules §3.7"
+      ],
+      "count_constraints": {
+        "evidence_items": "按本案例实际 evidence 库的唯一证据身份重算；所有输入须在索引及筛选留痕，非缺陷上下文可单独留痕，不要求全部成为缺陷证据。"
+      },
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-001-1",
+          "stage": "filter",
+          "check": "E1/E2 均不生成缺陷候选，理由分别指出空正文测试及纯 diff 落点调整。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-001-2",
+          "stage": "filter",
+          "check": "E2 不因合并字样判为 Merge commit。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-001-3",
+          "stage": "integrity",
+          "check": "两条输入均有筛选和 context_events 留痕；template/sync/context 或有依据的 noise 合法，不强制理由字符串。",
+          "expected": true,
+          "rule": "filtering-rules §3.1；output-schema §1.1/§10.2"
+        },
+        {
+          "id": "TC-001-4",
+          "stage": "count",
+          "check": "0明确、0疑似、0发生、0复发。",
+          "expected": true,
+          "rule": "output-schema §9.1；recurrence-rules §3.7"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-002",
+      "category": "Commit 筛选",
+      "goal": "Merge 正文独有修复信息不漏提",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": 0,
+        "evidence_items": 1,
+        "fix_actions": 1,
+        "independent_occurrences": null,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": null,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-24；GitLab 1条 Merge；秒级；无独立报障、部署及复验。"
+      },
+      "expected_filter": "父提交数2，分析完整 message。",
+      "expected_merge": "只一个缺陷，不借用其他案例。",
+      "expected_attribution": "E3 primary_fix；!188 未核实引用。",
+      "expected_recurrence": "0复发；默认无首次发生记录。",
+      "basis": "正文明确 token 过期未自动重登导致 scenes 502（HTTP401）。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "E3"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "filtering-rules §3.1/§4.1/§4.2",
+        "output-schema §4/§10.6",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7",
+        "recurrence-rules §2.1/§2.8/§3.1"
+      ],
+      "count_constraints": {
+        "independent_occurrences": "默认0；如以明确修复描述和提交时间作为首次可核验观察的代理，必须经人工认可，且不得声称是实际故障触发时间。认可后可为1。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。",
+        "bugs_without_occurrence": "按实际有效主记录中没有可计入发生记录者重算；不得虚构发生。"
+      },
+      "manual_review_items": [
+        "提交描述的现象是否可用提交时间作为首次可核验观察代理（当前规则§2.8与校验器对report证据的要求需统一）。"
+      ],
+      "assertions": [
+        {
+          "id": "TC-002-1",
+          "stage": "filter",
+          "check": "识别 Merge，正文 fix 信息进入候选。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-002-2",
+          "stage": "extract",
+          "check": "提取 token 过期未自动重登及 /api/dc/onto/scenes 502/401，事实不超出 E3。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-002-3",
+          "stage": "attribution",
+          "check": "E3 primary_fix；!188 只作未核实引用，不造第二条 MR evidence。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-002-4",
+          "stage": "state",
+          "check": "合并不等于部署或复验，不判 verified_fixed/closed。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-002-5",
+          "stage": "recurrence",
+          "check": "发生证据按约束裁定，0复发。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-003",
+      "category": "Commit 筛选",
+      "goal": "feat 内嵌存量 bug 不漏提",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": 0,
+        "evidence_items": 1,
+        "fix_actions": 1,
+        "independent_occurrences": null,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": null,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-07；GitLab 1条提交；秒级；无独立报障/部署/复验。"
+      },
+      "expected_filter": "只抽取显式修复存量 bug 子句，视觉美化为需求/背景。",
+      "expected_merge": "一条独立缺陷。",
+      "expected_attribution": "E4 primary_fix。",
+      "expected_recurrence": "0复发。",
+      "basis": "--muted-foreground 原18%近黑，改回46%。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "E4"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "filtering-rules §3.1/§4.1/§4.2",
+        "output-schema §4/§10.6",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7",
+        "recurrence-rules §2.1/§2.8/§3.1"
+      ],
+      "count_constraints": {
+        "independent_occurrences": "默认0；若人工认可E4明确现象及来源时间为首次可核验观察代理，可为1；不伪造实际触发时间。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。",
+        "bugs_without_occurrence": "按实际有效主记录中没有可计入发生记录者重算；不得虚构发生。"
+      },
+      "manual_review_items": [
+        "与TC-002相同的首次观察代理口径。"
+      ],
+      "assertions": [
+        {
+          "id": "TC-003-1",
+          "stage": "filter",
+          "check": "feat 前缀不跳过修复子句。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-003-2",
+          "stage": "extract",
+          "check": "1个明确色值问题，18%→46%；不把全站改版、设计文件当缺陷。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-003-3",
+          "stage": "attribution",
+          "check": "E4=primary_fix，不借用其他提交。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-003-4",
+          "stage": "state",
+          "check": "不编造上线、验证或闭环。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-003-5",
+          "stage": "recurrence",
+          "check": "发生按证据约束裁定，无复发。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-004",
+      "category": "跨源去重",
+      "goal": "中文修复标题及禅道编号归并，禁止跨案例事实污染",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": 0,
+        "evidence_items": 2,
+        "fix_actions": 1,
+        "independent_occurrences": 1,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-17～11-25；GitLab+禅道；秒级；无复验。"
+      },
+      "expected_filter": "无固定前缀仍识别修复。",
+      "expected_merge": "E5明示#14686，与状态快照归一；快照缺标题/现象，不声称双核验了缺陷正文。",
+      "expected_attribution": "E5 primary_fix；禅道快照status_evidence（可承载首报时间线索）。",
+      "expected_recurrence": "首次1次，0复发。",
+      "basis": "E5修复分隔行、表头继承、空壳行/<br>与表格上下文拼接；禅道仅状态快照。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "E5",
+        "Z-14686"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "filtering-rules §3.1/§4.1/§4.2",
+        "dedup-rules §3/§4.3/§5",
+        "output-schema §4/§10.6",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7",
+        "recurrence-rules §2.1/§2.8/§3.1"
+      ],
+      "count_constraints": {
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。"
+      },
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-004-1",
+          "stage": "filter",
+          "check": "无feat/fix前缀也识别中文修复标题。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-004-2",
+          "stage": "merge",
+          "check": "E5与#14686归一主记录；不虚构快照标题/描述。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-004-3",
+          "stage": "extract",
+          "check": "仅提取E5支持的表格结构/上下文问题，不混入TC-A1章节标题栈事实。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-004-4",
+          "stage": "attribution",
+          "check": "E5 primary_fix，保留禅道resolved/fixed状态，不等于已验证。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-004-5",
+          "stage": "recurrence",
+          "check": "禅道开单作为首次观察锚点，后续修复不另计；无复发。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-005",
+      "category": "跨源去重",
+      "goal": "同一缺陷多轮补修不增加发生",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": 0,
+        "evidence_items": 5,
+        "fix_actions": null,
+        "independent_occurrences": 1,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-17～11-25；4提交+禅道快照；秒级；无现场复验。"
+      },
+      "expected_filter": "E6纯补测试，不生成独立缺陷。",
+      "expected_merge": "五条输入归同一#14686。",
+      "expected_attribution": "E5主修；E7/E8补修；E6测试辅助（related_fix或background；有实际验证回执才可作为status_evidence）。",
+      "expected_recurrence": "1次首次，0 repeat_unresolved/复发。",
+      "basis": "E7继承重置，E8扩展切片器；E6只补测试。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "Z-14686",
+        "E5",
+        "E6",
+        "E7",
+        "E8"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "dedup-rules §3/§4.3/§5",
+        "output-schema §4/§10.6",
+        "recurrence-rules §3.6",
+        "recurrence-rules §2.1/§2.8/§3.1",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+      ],
+      "count_constraints": {
+        "fix_actions": "3为合理候选（E5主修、E7继承重置、E8多切片器同步）；若有证据说明属同一处置则按实际枚举，无法确认独立性则null。E6不能单计。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。"
+      },
+      "manual_review_items": [
+        "独立修复动作的业务粒度（Q-06）。"
+      ],
+      "assertions": [
+        {
+          "id": "TC-005-1",
+          "stage": "merge",
+          "check": "1个主记录，全部5条证据可回查。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-005-2",
+          "stage": "extract",
+          "check": "事实只用E5–E8及快照，不引入章节标题栈。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-005-3",
+          "stage": "attribution",
+          "check": "E6仅测试辅助，不是独立修复或现场复验。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-005-4",
+          "stage": "count",
+          "check": "fix_actions按独立处置判断，不取提交数4。",
+          "expected": true,
+          "rule": "recurrence-rules §3.6"
+        },
+        {
+          "id": "TC-005-5",
+          "stage": "recurrence",
+          "check": "1 first，补修和复测反馈无新独立发生证据。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        },
+        {
+          "id": "TC-005-6",
+          "stage": "state",
+          "check": "禅道resolved/fixed保留，不判已验证。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-006",
+      "category": "问题链拆分",
+      "goal": "同批三个禅道缺陷与多条提交各自归属",
+      "expected_defect_count": "3",
+      "expected_counts": {
+        "confirmed_defects": 3,
+        "suspect_defects": 0,
+        "evidence_items": 10,
+        "fix_actions": null,
+        "independent_occurrences": 3,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-23～11-25；3快照+7不同SHA；秒级；无部署复验。"
+      },
+      "expected_filter": "三单均保留，Merge与source commit按内容处理。",
+      "expected_merge": "15030乱码误判、15032重解析重匹配、15036 OOM分别归一。",
+      "expected_attribution": "10个来源身份不丢弃；E10 merge及其次父提交可为同一修复动作。",
+      "expected_recurrence": "三个first，0复发。",
+      "basis": "编号与各自修复描述不同，三个快照active。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "Z-15030",
+        "Z-15032",
+        "Z-15036",
+        "E9:merge",
+        "E10:merge",
+        "E10:c1",
+        "E11:c1",
+        "E11:c2",
+        "E11:c3",
+        "E11:c4"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "output-schema §9.1；recurrence-rules §3.7",
+        "dedup-rules §3/§4.3/§5",
+        "output-schema §4/§10.6",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7",
+        "recurrence-rules §3.6"
+      ],
+      "count_constraints": {
+        "fix_actions": "仅枚举有证据的独立处置；无法确认时实际值必须为 null，并披露原因。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。"
+      },
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-006-1",
+          "stage": "count",
+          "check": "明确缺陷3、首次发生3、复发0。",
+          "expected": true,
+          "rule": "output-schema §9.1；recurrence-rules §3.7"
+        },
+        {
+          "id": "TC-006-2",
+          "stage": "merge",
+          "check": "E9→15030、E10→15032、E11→15036；三个主记录互不归并。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-006-3",
+          "stage": "integrity",
+          "check": "10条不同来源身份保留，不能因同一修复动作删除不同SHA。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-006-4",
+          "stage": "state",
+          "check": "三个active源状态均保留；不宣称已验证。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-006-5",
+          "stage": "count",
+          "check": "修复动作不按7条commit推算，未解决数按实际lifecycle。",
+          "expected": true,
+          "rule": "recurrence-rules §3.6"
+        },
+        {
+          "id": "TC-006-6",
+          "stage": "negative",
+          "check": "不按同日/同作者/解析域批量归并；same_incident/caused_by不计similar_class。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-007",
+      "category": "证据归属",
+      "goal": "批次摘要逐域保留，不虚构确认数或发生",
+      "expected_defect_count": "0或1；仅#15030在明确现象与预期充分时确认，否则疑似并列缺失信息。",
+      "expected_counts": {
+        "confirmed_defects": null,
+        "suspect_defects": null,
+        "evidence_items": 2,
+        "fix_actions": null,
+        "independent_occurrences": 0,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": null,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-23；2条Merge；秒级；没有各域独立发生/复验。"
+      },
+      "expected_filter": "E12五域逐一候选；E9#15030按独立编号锚点处理。",
+      "expected_merge": "仅本案两提交，不能借TC-006快照；E12乱码探测与#15030歧义待核。",
+      "expected_attribution": "E9/E12为commit，!167/!163未核实MR线索。",
+      "expected_recurrence": "0发生、0复发；批次修复摘要不构成独立发生。",
+      "basis": "E12列文本层兜底/乱码探测/表格结构/切片页码/入库拆账；E9仅乱码误判四条修法+覆盖率分母摘要。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "E12:merge",
+        "E9:merge"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "filtering-rules §3.1/§4.1/§4.2",
+        "dedup-rules §3/§4.3/§5",
+        "recurrence-rules §2.1/§2.8/§3.1",
+        "output-schema §4/§10.6"
+      ],
+      "count_constraints": {
+        "confirmed_defects": "0或1；仅#15030在明确现象与预期充分时确认，否则疑似并列缺失信息。",
+        "suspect_defects": "候选域至少覆盖E12五域和E9编号锚点；真实疑似缺陷数不能直接等于域数；证据不足的域可候选+复核而不必全部建主记录。",
+        "fix_actions": "仅枚举有证据的独立处置；无法确认时实际值必须为 null，并披露原因。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。",
+        "bugs_without_occurrence": "按实际有效主记录中没有可计入发生记录者重算；不得虚构发生。"
+      },
+      "manual_review_items": [
+        "#15030摘要是否足以确认；E9覆盖率分母与乱码误判是否独立。"
+      ],
+      "assertions": [
+        {
+          "id": "TC-007-1",
+          "stage": "filter",
+          "check": "E12五个问题域均独立留候选，不漏域。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-007-2",
+          "stage": "extract",
+          "check": "#15030编号锚点保留；不按四条修法机械拆成4个缺陷，覆盖率分母如另定性必须有证据。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-007-3",
+          "stage": "merge",
+          "check": "五域真实独立缺陷数待定，#15030确认或降疑似需证据，不跨案例借快照。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-007-4",
+          "stage": "recurrence",
+          "check": "无足够发生证据，0 occurrence。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        },
+        {
+          "id": "TC-007-5",
+          "stage": "attribution",
+          "check": "不把MR引用写为真实MR快照；role合法且挂关联。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-007-6",
+          "stage": "schema",
+          "check": "match_result/category与候选域数量分列。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-008",
+      "category": "复发识别",
+      "goal": "跟进修复不等于独立发生或复发",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": 0,
+        "evidence_items": 3,
+        "fix_actions": null,
+        "independent_occurrences": 1,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-23～11-25；禅道+2 Merge；秒级；无部署复验。"
+      },
+      "expected_filter": "跟进提交保留。",
+      "expected_merge": "均并入#15048。",
+      "expected_attribution": "禅道active快照，跟进提交related_fix；!185/186未核实引用。",
+      "expected_recurrence": "1 first，0 repeat_unresolved，0复发。",
+      "basis": "两轮跟进无独立现象，active且activatedCount=0。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "Z-15048",
+        "E13:merge1",
+        "E13:merge2"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "output-schema §9.1；recurrence-rules §3.7",
+        "output-schema §4/§10.6",
+        "recurrence-rules §3.6",
+        "recurrence-rules §2.1/§2.8/§3.1",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+      ],
+      "count_constraints": {
+        "fix_actions": "null或有充分独立处置证据的次数（原候选2）；不得按MR数推算。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。"
+      },
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-008-1",
+          "stage": "count",
+          "check": "1明确缺陷、3证据、1首次、0复发。",
+          "expected": true,
+          "rule": "output-schema §9.1；recurrence-rules §3.7"
+        },
+        {
+          "id": "TC-008-2",
+          "stage": "attribution",
+          "check": "两个跟进提交related_fix；禅道状态保留。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-008-3",
+          "stage": "count",
+          "check": "fix_actions仅按可枚举处置。",
+          "expected": true,
+          "rule": "recurrence-rules §3.6"
+        },
+        {
+          "id": "TC-008-4",
+          "stage": "recurrence",
+          "check": "无新独立发生，不计repeat_unresolved。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        },
+        {
+          "id": "TC-008-5",
+          "stage": "state",
+          "check": "源active不被改写，未验证；未解决数按lifecycle。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-009",
+      "category": "信息完整性",
+      "goal": "未验证新增能力不直接当Bug",
+      "expected_defect_count": "0",
+      "expected_counts": {
+        "confirmed_defects": 0,
+        "suspect_defects": null,
+        "evidence_items": null,
+        "fix_actions": 0,
+        "independent_occurrences": 0,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": null,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-24～11-25；GitLab；秒级；Aura真机端点及OCR交付目录未验证。"
+      },
+      "expected_filter": "优先context/requirement，保留两项缺口。",
+      "expected_merge": "无。",
+      "expected_attribution": "E14背景；未验证项可由context_events或复核承载。",
+      "expected_recurrence": "0发生、0复发。",
+      "basis": "新增云端解析，默认不启用，无实际失败与既定预期冲突。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "E14"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "output-schema §9.1；recurrence-rules §3.7",
+        "filtering-rules §3.1/§4.1/§4.2",
+        "filtering-rules §3.1；output-schema §1.1/§10.2",
+        "output-schema §4/§10.6"
+      ],
+      "count_constraints": {
+        "suspect_defects": "0优先；至多1条证据支持的疑似，不确认。",
+        "evidence_items": "按本案例实际 evidence 库的唯一证据身份重算；所有输入须在索引及筛选留痕，非缺陷上下文可单独留痕，不要求全部成为缺陷证据。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。",
+        "bugs_without_occurrence": "按实际有效主记录中没有可计入发生记录者重算；不得虚构发生。"
+      },
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-009-1",
+          "stage": "count",
+          "check": "明确缺陷0，发生0。",
+          "expected": true,
+          "rule": "output-schema §9.1；recurrence-rules §3.7"
+        },
+        {
+          "id": "TC-009-2",
+          "stage": "filter",
+          "check": "新功能不直接当Bug；如留疑似须有独立依据。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-009-3",
+          "stage": "integrity",
+          "check": "Aura真机端点与OCR交付包目录两个未验证项均结构化留痕。",
+          "expected": true,
+          "rule": "filtering-rules §3.1；output-schema §1.1/§10.2"
+        },
+        {
+          "id": "TC-009-4",
+          "stage": "negative",
+          "check": "不编造验证结果、附件或部署结论。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-A1",
+      "category": "群聊提取",
+      "goal": "同现象不同根因及更正链、验证范围",
+      "expected_defect_count": "2",
+      "expected_counts": {
+        "confirmed_defects": 2,
+        "suspect_defects": null,
+        "evidence_items": null,
+        "fix_actions": null,
+        "independent_occurrences": null,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": null,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": [
+          "soso-dev"
+        ],
+        "coverage": "11-19；10消息；秒级；G17复诊、G19/G21回填、81现场验证；未覆盖其他环境。"
+      },
+      "expected_filter": "G14/15/16/18/20状态/指令；G13→G17更正量化与诊断。",
+      "expected_merge": "table/image代码缺标题栈与dg/naive/md/qa存量未回填是两个独立根因、不同处置；同一代码修法不按切片器机械拆。",
+      "expected_attribution": "G12首报；G13旧诊断；G17分别支持两类；G19代码/数据处置，G21验证。!128仅群内引用。",
+      "expected_recurrence": "0复发；重新排查/更正不自动增加发生。",
+      "basis": "G17明确两原因；G19回填483片；G21回填2505片并复验；3篇align_skipped护栏跳过、3篇db://按设计无切片。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "G12",
+        "G13",
+        "G14",
+        "G15",
+        "G16",
+        "G17",
+        "G18",
+        "G19",
+        "G20",
+        "G21"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "output-schema §4/§10.6",
+        "dedup-rules §3/§4.3/§5",
+        "filtering-rules §3.1；output-schema §1.1/§10.2",
+        "recurrence-rules §2.1/§2.8/§3.1",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+      ],
+      "count_constraints": {
+        "suspect_defects": "页脚噪声0或1条疑似；即使不建主记录也须保留线索。",
+        "independent_occurrences": "两个明确缺陷各按本身现象证据计首次（通常2）；若页脚疑似有独立事实及可核验发生证据才可另计。",
+        "evidence_items": "按本案例实际 evidence 库的唯一证据身份重算；所有输入须在索引及筛选留痕，非缺陷上下文可单独留痕，不要求全部成为缺陷证据。",
+        "fix_actions": "仅枚举有证据的独立处置；无法确认时实际值必须为 null，并披露原因。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。",
+        "bugs_without_occurrence": "按实际有效主记录中没有可计入发生记录者重算；不得虚构发生。"
+      },
+      "manual_review_items": [
+        "是否将存量未回填作为单独数据缺陷（本稿推荐拆分）；页脚质量提醒定性。"
+      ],
+      "assertions": [
+        {
+          "id": "TC-A1-1",
+          "stage": "integrity",
+          "check": "10消息全留痕，G13/G17双向更正链；不以旧影响面作为当前权威。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-A1-2",
+          "stage": "extract",
+          "check": "识别2个明确根因及不同处置，不因同现象归并为一个主记录。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-A1-3",
+          "stage": "filter",
+          "check": "G14/15/16/18/20不建缺陷；页脚噪声单独留线索。",
+          "expected": true,
+          "rule": "filtering-rules §3.1；output-schema §1.1/§10.2"
+        },
+        {
+          "id": "TC-A1-4",
+          "stage": "attribution",
+          "check": "483与2505按各自时点保留，不随意相加；3篇跳过及db://边界说明保留。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-A1-5",
+          "stage": "recurrence",
+          "check": "各首次发生依据各自报告；G12不能无条件同时证明存量数据问题，G17明确分支；更正本身不新增发生，0复发。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        },
+        {
+          "id": "TC-A1-6",
+          "stage": "state",
+          "check": "G19存量回填抽验与G21代码现场复验分别记录，验证仅覆盖soso-dev及实际场景。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-A2",
+      "category": "群聊提取",
+      "goal": "长消息多主题分类，实际异常与目标分开",
+      "expected_defect_count": "9为必识别明确现象；82压测文件污染若有产品隔离预期与责任证据，可另判第10；否则记remediation并说明。",
+      "expected_counts": {
+        "confirmed_defects": null,
+        "suspect_defects": 1,
+        "evidence_items": 2,
+        "fix_actions": 0,
+        "independent_occurrences": null,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": null,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-22～11-23；2消息；秒级；无附件测试计划、闭环/复验。"
+      },
+      "expected_filter": "性能、格式边界、统计差异、抽样执行问题、数据污染整改独立留痕；验收目标非缺陷。",
+      "expected_merge": "不同现象分开；ES断管两个文件同根因不机械拆。",
+      "expected_attribution": "G22/G25分别提供现象证据。",
+      "expected_recurrence": "0复发、0 repeat_unresolved。",
+      "basis": "G22 ASR600秒分段/600秒超时、ES断管、任务状态/分页/ETA；G25多级表头、结构、页眉页脚、OXR幻觉（第28页6406字）。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "G22",
+        "G25"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "filtering-rules §3.1/§4.1/§4.2",
+        "dedup-rules §3/§4.3/§5",
+        "filtering-rules §3.1；output-schema §1.1/§10.2",
+        "recurrence-rules §2.1/§2.8/§3.1"
+      ],
+      "count_constraints": {
+        "confirmed_defects": "9为必识别明确现象；82压测文件污染若有产品隔离预期与责任证据，可另判第10；否则记remediation并说明。",
+        "independent_occurrences": "每个确认且有报告的现象各一次；疑似或整改不按候选数虚增。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。",
+        "bugs_without_occurrence": "按实际有效主记录中没有可计入发生记录者重算；不得虚构发生。"
+      },
+      "manual_review_items": [
+        "压测数据污染的产品责任和隔离预期；1779页设计边界。"
+      ],
+      "assertions": [
+        {
+          "id": "TC-A2-1",
+          "stage": "extract",
+          "check": "9个明确现象：ASR必超、ES断管、失败状态文案、分页失效、ETA错误、多级表头、表格结构、页眉页脚、OXR重复幻觉。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-A2-2",
+          "stage": "extract",
+          "check": "1779页超限保留疑似，未证明上限是产品违约前不确认。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-A2-3",
+          "stage": "merge",
+          "check": "2740/5741切片丢失不按数量拆成两个ES缺陷。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-A2-4",
+          "stage": "filter",
+          "check": "GPU/CPU调度、11格式边界、93/89/7差异、抽样错误、82压测文件混入正式资产分别留痕。",
+          "expected": true,
+          "rule": "filtering-rules §3.1；output-schema §1.1/§10.2"
+        },
+        {
+          "id": "TC-A2-5",
+          "stage": "negative",
+          "check": "验收目标、薄页先走OXR的路线选择不当Bug；实际OXR幻觉不得漏提。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-A2-6",
+          "stage": "recurrence",
+          "check": "按实际现象登记首次，不把多个主题或修法当复发。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-A3",
+      "category": "群聊提取",
+      "goal": "需求→部署→实际失败，同时识别另一独立缺陷",
+      "expected_defect_count": "2",
+      "expected_counts": {
+        "confirmed_defects": 2,
+        "suspect_defects": 0,
+        "evidence_items": null,
+        "fix_actions": null,
+        "independent_occurrences": null,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": null,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-17；5消息；秒级；非默认租户页面复验缺失。"
+      },
+      "expected_filter": "G1需求；G2明确非默认应用错误；G3指令、G4部署回执；G5新建应用仍缺配置。",
+      "expected_merge": "G2与G5两个独立业务断点；存量补齐不是新建路径。",
+      "expected_attribution": "G2现象与修复回述；G5 report；G4状态；!104/105只作引用。",
+      "expected_recurrence": "G5 first（G1未证明既有缺陷）；G2按证据门槛；0复发、0 repeat_unresolved。",
+      "basis": "G1需要默认内置配置；G4部署及health检查不等于具体场景复验；G5具体失败。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "G1",
+        "G2",
+        "G3",
+        "G4",
+        "G5"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "filtering-rules §3.1/§4.1/§4.2",
+        "dedup-rules §3/§4.3/§5",
+        "recurrence-rules §2.1/§2.8/§3.1",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7",
+        "output-schema §4/§10.6"
+      ],
+      "count_constraints": {
+        "independent_occurrences": "通常2：G5与G2分别明确现象。若G2仅作修复回述且无可核验首次观察时间，可人工裁定1并说明。",
+        "evidence_items": "按本案例实际 evidence 库的唯一证据身份重算；所有输入须在索引及筛选留痕，非缺陷上下文可单独留痕，不要求全部成为缺陷证据。",
+        "fix_actions": "仅枚举有证据的独立处置；无法确认时实际值必须为 null，并披露原因。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。",
+        "bugs_without_occurrence": "按实际有效主记录中没有可计入发生记录者重算；不得虚构发生。"
+      },
+      "manual_review_items": [
+        "若业务材料证明G1为既有功能缺陷，需重新裁定发生类别；当前输入不支持该前提。"
+      ],
+      "assertions": [
+        {
+          "id": "TC-A3-1",
+          "stage": "filter",
+          "check": "G1不自动当缺陷首报，G3不当缺陷。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-A3-2",
+          "stage": "extract",
+          "check": "G2非默认应用详情切片为空/预览下载404及G5新建应用配置缺失均识别。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-A3-3",
+          "stage": "merge",
+          "check": "两个独立断点不合并，不借存量应用补齐证据。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-A3-4",
+          "stage": "recurrence",
+          "check": "G5 first；不以G1需求直接制造repeat_unresolved；G2发生按约束。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        },
+        {
+          "id": "TC-A3-5",
+          "stage": "state",
+          "check": "不把G4健康检查或代码存在视为两场景验证通过；保留非默认租户复验缺口。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-A3-6",
+          "stage": "attribution",
+          "check": "!104/105未核实MR引用，不造独立快照。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-A4",
+      "category": "群聊提取",
+      "goal": "验证后的部署回退重现，区分需求与缺陷首报",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": null,
+        "evidence_items": 4,
+        "fix_actions": null,
+        "independent_occurrences": null,
+        "recurrence_events": null,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": null,
+        "recurrence_by_subtype": null,
+        "verified_environments": [
+          "soso-dev"
+        ],
+        "coverage": "11-17～11-18；4消息；秒级；G7/G9在soso-dev实测；无独立发布系统快照。"
+      },
+      "expected_filter": "G6初始需求/既有缺陷首报属性待裁定；G7交付验证；G8失败；G9回退原因及恢复验证。",
+      "expected_merge": "主定位问题仅1条；兜底链路缺锚点/同页高亮边界另留线索。",
+      "expected_attribution": "G7/G9状态证据；G8 report；G6按属性作background或report。",
+      "expected_recurrence": "按A/B分支：A既有缺陷首报→first+rollback_regress；B新增需求→G8为first并保留已交付能力回退事实，不能补造旧缺陷。",
+      "basis": "G7 Playwright通过；G9具体旧镜像、compose pin覆盖、切回mr109并同步pin且复测通过。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "G6",
+        "G7",
+        "G8",
+        "G9"
+      ],
+      "judge_notes": "两分支必须联动；不能单独比较复发数。若需补证，先PENDING而非PASS。",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "filtering-rules §3.1/§4.1/§4.2",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7",
+        "recurrence-rules §2.2–§2.7",
+        "output-schema §4/§10.6",
+        "recurrence-rules §2.1/§2.8/§3.1"
+      ],
+      "count_constraints": {
+        "suspect_defects": "0或有证据支持的边界疑似；不影响定位主问题1条。",
+        "independent_occurrences": "A=2（first+rollback_regress）；B=1（G8 first）。",
+        "recurrence_events": "A=1，B=0；条件为G6是否属于既有缺陷。不得随意选择。",
+        "recurrence_by_subtype": "A={repeat_after_fix:0,rollback_regress:1}；B两项0。",
+        "fix_actions": "仅枚举有证据的独立处置；无法确认时实际值必须为 null，并披露原因。",
+        "unresolved_open_bugs": "定位主问题在G9现场验证后不应仍为open/fixing；如独立边界线索进入疑似主记录，则按实际lifecycle重算，不能因此否定主问题验证。",
+        "bugs_without_occurrence": "定位主问题有发生证据；独立边界疑似是否有发生证据须单独核验，不按候选数补造。"
+      },
+      "manual_review_items": [
+        "G6是已有功能缺陷还是新增需求？当前文本偏需求；需业务确认。",
+        "G9具体镜像/pin及实测报告是否足以证明回退；本稿认为可作为离线证据，不得虚构发布系统快照；若证据不足进recurrence_check。"
+      ],
+      "assertions": [
+        {
+          "id": "TC-A4-1",
+          "stage": "extract",
+          "check": "定位主问题1条；G9额外边界不自动确认成第二个产品缺陷。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-A4-2",
+          "stage": "state",
+          "check": "G7/G9在soso-dev验证，G9明确pin已同步；不写pin未落盘。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-A4-3",
+          "stage": "recurrence",
+          "check": "核实具体回退证据及同环境有效验证，按A/B一致分支判定，禁止因无代码reopen直接否定回退。",
+          "expected": true,
+          "rule": "recurrence-rules §2.2–§2.7"
+        },
+        {
+          "id": "TC-A4-4",
+          "stage": "integrity",
+          "check": "G8失败、G7/G9验证及G9镜像/pin事实能回查。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-A4-5",
+          "stage": "negative",
+          "check": "G6需求措辞不足以证明既有缺陷首报；不能为凑两次发生补造首次。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-A5",
+      "category": "群聊提取",
+      "goal": "环境闪断与独立产品问题区分",
+      "expected_defect_count": "前端错误提示如有预期依据可确认为1，否则0并留疑似；mp4无明确策略预期时不得确认。",
+      "expected_counts": {
+        "confirmed_defects": null,
+        "suspect_defects": null,
+        "evidence_items": 2,
+        "fix_actions": 0,
+        "independent_occurrences": null,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": null,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-18；2消息；秒级；G10仅mediaId无截图内容；明确soso-dev。"
+      },
+      "expected_filter": "环境闪断502=environment_event，附件缺口=evidence_gap；前端错误提示与mp4策略分别评估。",
+      "expected_merge": "环境事件与产品缺陷不是同一实体；mp4候选独立。",
+      "expected_attribution": "G10现象原点、G11诊断；无!113输入，不造修复记录。",
+      "expected_recurrence": "0复发；按发生证据判断首次。",
+      "basis": "G11明确10:38～10:49部署闪断，统一匹配失败文案且不自动重试；mp4 FAQ多半不合预期。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "G10",
+        "G11"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "filtering-rules §3.1；output-schema §1.1/§10.2",
+        "filtering-rules §3.1/§4.1/§4.2",
+        "output-schema §4/§10.6",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7",
+        "recurrence-rules §2.1/§2.8/§3.1"
+      ],
+      "count_constraints": {
+        "confirmed_defects": "前端错误提示如有预期依据可确认为1，否则0并留疑似；mp4无明确策略预期时不得确认。",
+        "suspect_defects": "mp4保留疑似或复核线索；前端若未确认也保留疑似，实际主记录数量依证据。",
+        "independent_occurrences": "前端确认且G10/G11支撑时通常1；仅疑似且未达发生门槛为0；禁止环境事件计入。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。",
+        "bugs_without_occurrence": "按实际有效主记录中没有可计入发生记录者重算；不得虚构发生。"
+      },
+      "manual_review_items": [
+        "前端提示的既定预期及媒体匹配策略。"
+      ],
+      "assertions": [
+        {
+          "id": "TC-A5-1",
+          "stage": "filter",
+          "check": "匹配逻辑未故障，部署窗口502独立环境事件。",
+          "expected": true,
+          "rule": "filtering-rules §3.1；output-schema §1.1/§10.2"
+        },
+        {
+          "id": "TC-A5-2",
+          "stage": "extract",
+          "check": "前端吞错与mp4策略分别保留；mp4不能仅凭多半不合预期确认为缺陷。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-A5-3",
+          "stage": "integrity",
+          "check": "截图缺失及G10/G11真实ID和11-18消息时间保留。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-A5-4",
+          "stage": "state",
+          "check": "两处仅修改建议，不造!113或已修复结论。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-A5-5",
+          "stage": "recurrence",
+          "check": "环境事件不计产品发生；疑似不凭建议自动生成occurrence。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-A6",
+      "category": "群聊提取",
+      "goal": "明确事故报告与跨群证据缺口区分",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": 0,
+        "evidence_items": null,
+        "fix_actions": 0,
+        "independent_occurrences": 1,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": 1,
+        "related_cases": 0,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-24；2消息；秒级；外发底层日志/正式单号及四连发归属缺失。"
+      },
+      "expected_filter": "外发P1报告登记；发布缺修复为待核过程问题；G29平台执行失败模板。",
+      "expected_merge": "不跨群补证，不把发布漂移自动当第二个产品缺陷。",
+      "expected_attribution": "G26 report；G29 platform_incident；证据缺口台账。",
+      "expected_recurrence": "一次事故报告，0复发。",
+      "basis": "G26第2点明确外发、P1、根因和录单要求；第5点不可见的是四连发归属。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "G26",
+        "G29"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "filtering-rules §3.1/§4.1/§4.2",
+        "filtering-rules §3.1；output-schema §1.1/§10.2",
+        "output-schema §4/§10.6",
+        "recurrence-rules §2.1/§2.8/§3.1",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+      ],
+      "count_constraints": {
+        "evidence_items": "按本案例实际 evidence 库的唯一证据身份重算；所有输入须在索引及筛选留痕，非缺陷上下文可单独留痕，不要求全部成为缺陷证据。"
+      },
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-A6-1",
+          "stage": "extract",
+          "check": "识别1个数据外发P1，事实限定G26。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-A6-2",
+          "stage": "filter",
+          "check": "四连发归属/现网缺失修复另记证据缺口或过程事件；G29非产品缺陷。",
+          "expected": true,
+          "rule": "filtering-rules §3.1；output-schema §1.1/§10.2"
+        },
+        {
+          "id": "TC-A6-3",
+          "stage": "integrity",
+          "check": "不跨群补证，不虚构#15049快照或已核实关联。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-A6-4",
+          "stage": "recurrence",
+          "check": "不因261次上传或P-73同族登记多次发生/复发。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        },
+        {
+          "id": "TC-A6-5",
+          "stage": "state",
+          "check": "修法获批不表示实施或验证。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-A7",
+      "category": "群聊提取",
+      "goal": "更正链及不同缺陷事实独立绑定",
+      "expected_defect_count": "6个必识别明确现象；G23的23页缺产出若有独立性证据可为第7，否则保留线索。",
+      "expected_counts": {
+        "confirmed_defects": null,
+        "suspect_defects": null,
+        "evidence_items": 3,
+        "fix_actions": 0,
+        "independent_occurrences": null,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": null,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-23；3消息；秒级；样本外页级与DP字符数核查未提供。"
+      },
+      "expected_filter": "G23的99.9%被G24更正；G24两个明确P1/P2，G25四个异常；性能/抽样/调查单独留痕。",
+      "expected_merge": "更正仅针对错误数字，不删除G23其他有效事实；23页与89页是否独立需核对。",
+      "expected_attribution": "89页丢失、page_coverage必须锚G24；结构/幻觉锚G25；各自时间。",
+      "expected_recurrence": "0复发，更正不增加发生。",
+      "basis": "G24 8041=842+347+6852，MAT-050丢89页及覆盖率1.0；G25表头、结构、页眉页脚、OXR幻觉。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "G23",
+        "G24",
+        "G25"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "output-schema §4/§10.6",
+        "filtering-rules §3.1/§4.1/§4.2",
+        "dedup-rules §3/§4.3/§5",
+        "filtering-rules §3.1；output-schema §1.1/§10.2",
+        "recurrence-rules §2.1/§2.8/§3.1"
+      ],
+      "count_constraints": {
+        "confirmed_defects": "6个必识别明确现象；G23的23页缺产出若有独立性证据可为第7，否则保留线索。",
+        "suspect_defects": "容器占核待查、DP字数差异等依证据保留疑似或调查项，不强制疑似主记录总数。",
+        "independent_occurrences": "各明确且独立现象按其报告计首次；23页独立性待裁定，更正不另计。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。",
+        "bugs_without_occurrence": "按实际有效主记录中没有可计入发生记录者重算；不得虚构发生。"
+      },
+      "manual_review_items": [
+        "G23的23页与G24的89页是否独立事件。"
+      ],
+      "assertions": [
+        {
+          "id": "TC-A7-1",
+          "stage": "integrity",
+          "check": "G23/G24更正链，99.9%不再权威；正确分母8041与842/347/6852。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-A7-2",
+          "stage": "extract",
+          "check": "G24两明确缺陷及G25四明确异常逐项识别。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-A7-3",
+          "stage": "merge",
+          "check": "G23另23页未产出保留；按证据决定是否与G24丢页独立，不仅凭数字不同拆分。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-A7-4",
+          "stage": "attribution",
+          "check": "G24的89页及覆盖率不挂G23；三条消息不统一成G25时间。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-A7-5",
+          "stage": "filter",
+          "check": "G24容器持续占4–5核待查空转、G25 DP字数差异等留调查线索；不写已确认CPU空闲。",
+          "expected": true,
+          "rule": "filtering-rules §3.1；output-schema §1.1/§10.2"
+        },
+        {
+          "id": "TC-A7-6",
+          "stage": "recurrence",
+          "check": "更正不增加事件；按各来源记录独立首次，0复发。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    },
+    {
+      "case_id": "TC-A8",
+      "category": "群聊提取",
+      "goal": "验收通过仍有欠项；执行异常、缺陷、观察项分开",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": 0,
+        "evidence_items": null,
+        "fix_actions": 0,
+        "independent_occurrences": 1,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": 1,
+        "related_cases": 0,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "11-24；2消息；秒级；未提供禅道单号、CSV及修法发布证据。"
+      },
+      "expected_filter": "G27通过但欠2项；G28分P-103、149.8s执行问题、embedding观察。",
+      "expected_merge": "P-103与发布中断互不归并；15032/P-98闭环仅背景。",
+      "expected_attribution": "G28 report；计划修法不作已执行primary_fix；G27回执。",
+      "expected_recurrence": "首次1次，0复发。",
+      "basis": "G28明确P-103高负载health误杀、非OOM/非service update、P1；修法获批未发布。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "G27",
+        "G28"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "filtering-rules §3.1/§4.1/§4.2",
+        "filtering-rules §3.1；output-schema §1.1/§10.2",
+        "dedup-rules §3/§4.3/§5",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7",
+        "output-schema §4/§10.6",
+        "recurrence-rules §2.1/§2.8/§3.1"
+      ],
+      "count_constraints": {
+        "evidence_items": "按本案例实际 evidence 库的唯一证据身份重算；所有输入须在索引及筛选留痕，非缺陷上下文可单独留痕，不要求全部成为缺陷证据。"
+      },
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-A8-1",
+          "stage": "extract",
+          "check": "P-103为1个P1缺陷。",
+          "expected": true,
+          "rule": "filtering-rules §3.1/§4.1/§4.2"
+        },
+        {
+          "id": "TC-A8-2",
+          "stage": "filter",
+          "check": "G27欠中断时长与87文档快查两项；G28的149.8s及embedding观察分别结构化留痕，不进缺陷库。",
+          "expected": true,
+          "rule": "filtering-rules §3.1；output-schema §1.1/§10.2"
+        },
+        {
+          "id": "TC-A8-3",
+          "stage": "merge",
+          "check": "P-103与中断分开，15032/P-98不补造发生。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-A8-4",
+          "stage": "state",
+          "check": "两条修法获批未实施；fix_actions=0，不判已验证。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-A8-5",
+          "stage": "attribution",
+          "check": "单号待核实即可，不要求输入未提供的#15057。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-A8-6",
+          "stage": "recurrence",
+          "check": "1首次；按§2.8使用G28来源时间11:49:26，原文事件时间11:00:54另保留；0复发。",
+          "expected": true,
+          "rule": "recurrence-rules §2.1/§2.8/§3.1"
+        }
+      ],
+      "execution_status": "REFERENCE_DRAFT_NOT_GRADED"
+    }
+  ],
+  "synthetic_expectations": [
+    {
+      "case_id": "TC-R1",
+      "category": "复发识别（正向）",
+      "goal": "验证同环境已修复后再次独立发生",
+      "expected_defect_count": "原构造目标1；若能证明不同根因则2；身份不明须待复核。",
+      "expected_counts": {
+        "confirmed_defects": null,
+        "suspect_defects": null,
+        "evidence_items": 3,
+        "fix_actions": 2,
+        "independent_occurrences": null,
+        "recurrence_events": null,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": null,
+        "recurrence_by_subtype": null,
+        "verified_environments": [
+          "dev-1"
+        ],
+        "coverage": "09-10～11-21；构造日期；dev-1；跨环境未覆盖。"
+      },
+      "expected_filter": "S1历史关闭、S2重现报告、S3第二轮修复。",
+      "expected_merge": "原设计X1同一缺陷；CSV与Excel出口是否同根因须核对。",
+      "expected_attribution": "S1首报/验证；S2报告；S3第二轮修复。",
+      "expected_recurrence": "原设计repeat_after_fix=1；若不能确认同根因不得只凭reopened认复发。",
+      "basis": "S1 dev-1验收；S2 Excel乱码但CSV正常，X1 reopened；S3 Excel编码修复。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7",
+        "recurrence-rules §2.2–§2.7",
+        "output-schema §4/§10.6",
+        "output-schema §9.1；recurrence-rules §3.7"
+      ],
+      "count_constraints": {
+        "confirmed_defects": "原构造目标1；若能证明不同根因则2；身份不明须待复核。",
+        "suspect_defects": "按身份待核实情况重算，不能用疑似数替代已确认缺陷。",
+        "recurrence_events": "同一缺陷且验证有效为1，否则不能确认；身份不明为PENDING。",
+        "recurrence_by_subtype": "满足复发条件时repeat_after_fix=1、rollback_regress=0；否则0或待核。",
+        "independent_occurrences": "原构造目标2；若身份待核，确认数与待核数分列，不能将未确认事件强行计入。",
+        "unresolved_open_bugs": "原构造目标1；按当前已确认主记录lifecycle重算，身份待核单列。",
+        "bugs_without_occurrence": "按当前已确认主记录及有效发生重算；待核候选不强行建事件。"
+      },
+      "manual_review_items": [
+        "S2 Excel与CSV是否确属同一根因，构造输入未明确；建议后续单独补锚点，不在本次改输入。"
+      ],
+      "assertions": [
+        {
+          "id": "TC-R1-1",
+          "stage": "state",
+          "check": "S1历史verified_fixed及closed保留，dev-1验证范围明确。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-R1-2",
+          "stage": "recurrence",
+          "check": "判复发前核对同一缺陷身份、独立新现象及时间和相关环境验证。",
+          "expected": true,
+          "rule": "recurrence-rules §2.2–§2.7"
+        },
+        {
+          "id": "TC-R1-3",
+          "stage": "recurrence",
+          "check": "同根因且同环境时repeat_after_fix=1；身份不明须复核，不能仅凭reopened。",
+          "expected": true,
+          "rule": "recurrence-rules §2.2–§2.7"
+        },
+        {
+          "id": "TC-R1-4",
+          "stage": "attribution",
+          "check": "S2为新发生报告；S3为后续修复，不作复发证据。",
+          "expected": true,
+          "rule": "output-schema §4/§10.6"
+        },
+        {
+          "id": "TC-R1-5",
+          "stage": "count",
+          "check": "若同一缺陷，1主记录2次发生；若根因不同按独立缺陷判定。",
+          "expected": true,
+          "rule": "output-schema §9.1；recurrence-rules §3.7"
+        }
+      ],
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "case_id": "TC-R2",
+      "category": "复发识别（分环境负向）",
+      "goal": "测试环境验证不外推生产回滚",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": 0,
+        "evidence_items": 3,
+        "fix_actions": 1,
+        "independent_occurrences": 2,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 1,
+        "unresolved_open_bugs": 1,
+        "related_cases": 0,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": [
+          "test-1"
+        ],
+        "coverage": "09-20～11-22；构造日期；生产无验证证据。"
+      },
+      "expected_filter": "S3回滚独立过程事件，不另建缺陷。",
+      "expected_merge": "S2归X2。",
+      "expected_attribution": "S1首报/测试验证，S2报告，S3回滚状态证据。",
+      "expected_recurrence": "生产新发生repeat_unresolved；0复发。",
+      "basis": "test-1验证通过；soso-prod回滚后新报障，无生产已验证证据。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "recurrence-rules §2.2–§2.7",
+        "filtering-rules §3.1；output-schema §1.1/§10.2",
+        "output-schema §9.1；recurrence-rules §3.7",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+      ],
+      "count_constraints": {},
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-R2-1",
+          "stage": "recurrence",
+          "check": "只在test-1有历史验证，不判生产rollback_regress。",
+          "expected": true,
+          "rule": "recurrence-rules §2.2–§2.7"
+        },
+        {
+          "id": "TC-R2-2",
+          "stage": "recurrence",
+          "check": "S2在soso-prod独立出现，归X2、repeat_unresolved=1，first仅1。",
+          "expected": true,
+          "rule": "recurrence-rules §2.2–§2.7"
+        },
+        {
+          "id": "TC-R2-3",
+          "stage": "schema",
+          "check": "fix_not_live只作描述；回滚非新产品缺陷。",
+          "expected": true,
+          "rule": "filtering-rules §3.1；output-schema §1.1/§10.2"
+        },
+        {
+          "id": "TC-R2-4",
+          "stage": "count",
+          "check": "2发生、0复发、1未解决主记录。",
+          "expected": true,
+          "rule": "output-schema §9.1；recurrence-rules §3.7"
+        },
+        {
+          "id": "TC-R2-5",
+          "stage": "state",
+          "check": "verified_environments仅test-1；历史有效验证保留。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        }
+      ],
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "case_id": "TC-R3",
+      "category": "复发识别（同类不同根因）",
+      "goal": "同类相似不归并、不复发",
+      "expected_defect_count": "2",
+      "expected_counts": {
+        "confirmed_defects": 2,
+        "suspect_defects": 0,
+        "evidence_items": 3,
+        "fix_actions": null,
+        "independent_occurrences": 2,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 1,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": [
+          "soso-prod"
+        ],
+        "coverage": "08-12～11-25；构造日期；X4未部署验证。"
+      },
+      "expected_filter": "X3历史与X4新缺陷分别保留。",
+      "expected_merge": "X3/X4不同模块、根因与复现条件，不归并，similar_class关联。",
+      "expected_attribution": "S1支持X3；S2支持X4；S3独立修复。",
+      "expected_recurrence": "各1次首次，0复发。",
+      "basis": "表头丢失与无表头表格凭空拼表头为不同机制。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "judge_notes": "原V1.4 fix_actions=1可能仅计X4；本稿按整个案例重算X3/X4，不直接固定1。",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "output-schema §9.1；recurrence-rules §3.7",
+        "dedup-rules §3/§4.3/§5",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7",
+        "recurrence-rules §3.6"
+      ],
+      "count_constraints": {
+        "fix_actions": "仅枚举有证据的独立处置；无法确认时实际值必须为 null，并披露原因。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。"
+      },
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-R3-1",
+          "stage": "count",
+          "check": "2个明确主记录；2次首次、0复发。",
+          "expected": true,
+          "rule": "output-schema §9.1；recurrence-rules §3.7"
+        },
+        {
+          "id": "TC-R3-2",
+          "stage": "merge",
+          "check": "X4不得高置信并入X3；列至少两条差异。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-R3-3",
+          "stage": "merge",
+          "check": "similar_class关联，不生成related_case occurrence。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-R3-4",
+          "stage": "state",
+          "check": "X3验证不能借给X4，X4未部署验证。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-R3-5",
+          "stage": "count",
+          "check": "related_cases=1，修复动作按证据。",
+          "expected": true,
+          "rule": "recurrence-rules §3.6"
+        }
+      ],
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "case_id": "TC-R4",
+      "category": "复发识别（分环境）",
+      "goal": "同分类不同canonical_name，已确认同缺陷在未验证环境再发生",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": 0,
+        "evidence_items": null,
+        "fix_actions": 1,
+        "independent_occurrences": 2,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 1,
+        "unresolved_open_bugs": 1,
+        "related_cases": 0,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": [
+          "test-a"
+        ],
+        "coverage": "09-01～11-20；构造日期；test-b未验证。"
+      },
+      "expected_filter": "S1首报/验证；S2新报告。",
+      "expected_merge": "最终根目录输入S2已有同一缺陷锚点，归X5。",
+      "expected_attribution": "S1验证仅test-a，S2 report test-b；S0注册表非现象报告。",
+      "expected_recurrence": "first+repeat_unresolved，0复发。",
+      "basis": "根目录最终输入S2明确同模块/同根因及非现象类锚点；test-a/b同类不同身份。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "S0",
+        "S1",
+        "S2"
+      ],
+      "judge_notes": "只适用于根目录最终版输入（S2已补锚点）；Skill-Eval/test_inputs旧副本S2若仍缺锚点应PENDING。",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7",
+        "recurrence-rules §2.2–§2.7",
+        "output-schema §9.1；recurrence-rules §3.7"
+      ],
+      "count_constraints": {
+        "evidence_items": "按本案例实际 evidence 库的唯一证据身份重算；所有输入须在索引及筛选留痕，非缺陷上下文可单独留痕，不要求全部成为缺陷证据。"
+      },
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-R4-1",
+          "stage": "state",
+          "check": "verified_environments仅test-a，不能外推test-b。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-R4-2",
+          "stage": "recurrence",
+          "check": "S2为同一缺陷未验证环境独立发生，repeat_unresolved=1，不因无部署记录拒绝。",
+          "expected": true,
+          "rule": "recurrence-rules §2.2–§2.7"
+        },
+        {
+          "id": "TC-R4-3",
+          "stage": "integrity",
+          "check": "测试环境A/B按alias归一为test-a/b，保留raw_text。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-R4-4",
+          "stage": "count",
+          "check": "2独立发生、1未解决主记录、0复发；历史验证保留。",
+          "expected": true,
+          "rule": "output-schema §9.1；recurrence-rules §3.7"
+        },
+        {
+          "id": "TC-R4-5",
+          "stage": "negative",
+          "check": "不另立test-b first，不补造验证，不按分类合并。",
+          "expected": true,
+          "rule": "recurrence-rules §2.2–§2.7"
+        }
+      ],
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "case_id": "TC-R5",
+      "category": "复发识别（回滚重现）",
+      "goal": "同环境已验证且明确回退后重现",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": 0,
+        "evidence_items": null,
+        "fix_actions": 1,
+        "independent_occurrences": 2,
+        "recurrence_events": 1,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": 1,
+        "related_cases": 0,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 1
+        },
+        "verified_environments": [
+          "soso-prod"
+        ],
+        "coverage": "09-02～11-18；构造日期；soso-prod验证与回退。"
+      },
+      "expected_filter": "S1首报/验证，S2新报障，S3回滚记录。",
+      "expected_merge": "按X6同一验证码问题归一，核对身份及因果。",
+      "expected_attribution": "S3状态证据非修复动作；S2 report。",
+      "expected_recurrence": "first+rollback_regress。",
+      "basis": "S1 prod复测通过，S2同环境重现，S3镜像tag revert。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "S0",
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "recurrence-rules §2.2–§2.7",
+        "output-schema §9.1；recurrence-rules §3.7",
+        "output-schema §8/§10.5；recurrence-rules §2.6/§2.7",
+        "recurrence-rules §3.6"
+      ],
+      "count_constraints": {
+        "evidence_items": "按本案例实际 evidence 库的唯一证据身份重算；所有输入须在索引及筛选留痕，非缺陷上下文可单独留痕，不要求全部成为缺陷证据。"
+      },
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-R5-1",
+          "stage": "recurrence",
+          "check": "核对同环境曾验证及S3具体回退证据，判rollback_regress而非狭义复发。",
+          "expected": true,
+          "rule": "recurrence-rules §2.2–§2.7"
+        },
+        {
+          "id": "TC-R5-2",
+          "stage": "count",
+          "check": "2发生、1广义复发，其中rollback_regress=1。",
+          "expected": true,
+          "rule": "output-schema §9.1；recurrence-rules §3.7"
+        },
+        {
+          "id": "TC-R5-3",
+          "stage": "state",
+          "check": "历史soso-prod验证保留，当前重现未解决。",
+          "expected": true,
+          "rule": "output-schema §8/§10.5；recurrence-rules §2.6/§2.7"
+        },
+        {
+          "id": "TC-R5-4",
+          "stage": "count",
+          "check": "回滚不是修复动作，fix_actions=1。",
+          "expected": true,
+          "rule": "recurrence-rules §3.6"
+        },
+        {
+          "id": "TC-R5-5",
+          "stage": "negative",
+          "check": "不新建重复缺陷，不仅凭旧镜像字样定性。",
+          "expected": true,
+          "rule": "recurrence-rules §2.2–§2.7"
+        }
+      ],
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "case_id": "TC-R6",
+      "category": "事件去重（精度混合）",
+      "goal": "日期与秒级混合、report交集、反证与歧义",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": 0,
+        "evidence_items": null,
+        "fix_actions": null,
+        "independent_occurrences": 2,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "10-12～10-13；构造2条仅日期、2条秒级；1组确认合并、1条待复核。"
+      },
+      "expected_filter": "按既有发生记录的证据角色分析，不凭修复证据造新事件。",
+      "expected_merge": "先主记录DC-9001聚合；S1/S2一组；S3待复核；S4独立。",
+      "expected_attribution": "E1 report；E2 primary_fix；E3 report。",
+      "expected_recurrence": "2次已确认事件+1待复核，原记录保留；不从去重动作新造复发。",
+      "basis": "S1/S2共享E1同日；S3仅E2；S4新报障不同操作。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "S0",
+        "S1",
+        "S2",
+        "S3",
+        "S4"
+      ],
+      "judge_notes": "构造历史记录迁移/统计测试，非普通来源采集。原输入未提供完整证据对象与source_time；若预处理不支持，须标BLOCKED而不是生成假证据。",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "recurrence-rules §3.8"
+      ],
+      "count_constraints": {
+        "evidence_items": "按本案例实际 evidence 库的唯一证据身份重算；所有输入须在索引及筛选留痕，非缺陷上下文可单独留痕，不要求全部成为缺陷证据。",
+        "fix_actions": "仅枚举有证据的独立处置；无法确认时实际值必须为 null，并披露原因。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。"
+      },
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-R6-1",
+          "stage": "integrity",
+          "check": "先聚合主记录，再按§3.8事件去重。",
+          "expected": true,
+          "rule": "recurrence-rules §3.8"
+        },
+        {
+          "id": "TC-R6-2",
+          "stage": "count",
+          "check": "S1/S2合并为1组，S4独立，确认2次。",
+          "expected": true,
+          "rule": "recurrence-rules §3.8"
+        },
+        {
+          "id": "TC-R6-3",
+          "stage": "recurrence",
+          "check": "S3仅共享修复证据，不自动合并也不直接确认另一事件，recurrence_check=1。",
+          "expected": true,
+          "rule": "recurrence-rules §3.8"
+        },
+        {
+          "id": "TC-R6-4",
+          "stage": "integrity",
+          "check": "S1/S3保留日期精度，无虚构时分秒；原始记录不删除。",
+          "expected": true,
+          "rule": "recurrence-rules §3.8"
+        },
+        {
+          "id": "TC-R6-5",
+          "stage": "count",
+          "check": "披露合并组、待复核、时间精度覆盖；不把去重当复发。",
+          "expected": true,
+          "rule": "recurrence-rules §3.8"
+        }
+      ],
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "case_id": "TC-R7",
+      "category": "归并迁移（occurrence）",
+      "goal": "迁移保留kind、原编号、历史审计",
+      "expected_defect_count": "1",
+      "expected_counts": {
+        "confirmed_defects": 1,
+        "suspect_defects": 0,
+        "evidence_items": null,
+        "fix_actions": null,
+        "independent_occurrences": 2,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 1,
+        "unresolved_open_bugs": 1,
+        "related_cases": 0,
+        "bugs_without_occurrence": 0,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "10-12～10-20；构造秒级；主记录及别名历史。"
+      },
+      "expected_filter": "按既有主记录与别名迁移，不新建业务候选。",
+      "expected_merge": "DC-9002→DC-9001；保留别名及审计。",
+      "expected_attribution": "E9迁移到主记录，不新增修复角色。",
+      "expected_recurrence": "OC-0001 first + OC-0007 repeat_unresolved；0复发。",
+      "basis": "输入明确merge.merged_into及原kind。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "S0",
+        "S1",
+        "S2"
+      ],
+      "judge_notes": "历史ID仅为构造输入引用；允许审计保留，不能作为本轮新分配的正式编号。若缺完整历史库适配则BLOCKED。",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "dedup-rules §3/§4.3/§5",
+        "recurrence-rules §3.8",
+        "recurrence-rules §2.2–§2.7"
+      ],
+      "count_constraints": {
+        "evidence_items": "按本案例实际 evidence 库的唯一证据身份重算；所有输入须在索引及筛选留痕，非缺陷上下文可单独留痕，不要求全部成为缺陷证据。",
+        "fix_actions": "仅枚举有证据的独立处置；无法确认时实际值必须为 null，并披露原因。"
+      },
+      "manual_review_items": [],
+      "assertions": [
+        {
+          "id": "TC-R7-1",
+          "stage": "merge",
+          "check": "别名发生全部纳入主记录，无孤儿。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-R7-2",
+          "stage": "integrity",
+          "check": "OC-0007 kind及时间保留，不在归并时重判。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-R7-3",
+          "stage": "count",
+          "check": "主记录聚合2发生、1 repeat_unresolved、0复发。",
+          "expected": true,
+          "rule": "recurrence-rules §3.8"
+        },
+        {
+          "id": "TC-R7-4",
+          "stage": "integrity",
+          "check": "别名原编号、证据映射及审计保留；离线新增对象不得分配正式号。",
+          "expected": true,
+          "rule": "dedup-rules §3/§4.3/§5"
+        },
+        {
+          "id": "TC-R7-5",
+          "stage": "negative",
+          "check": "不删除历史原记录、不因归并补记复发。",
+          "expected": true,
+          "rule": "recurrence-rules §2.2–§2.7"
+        }
+      ],
+      "execution_status": "NOT_RUN"
+    },
+    {
+      "case_id": "TC-R8",
+      "category": "运行边界（offline）",
+      "goal": "离线隔离、配置降级、版本一致性",
+      "expected_defect_count": "原设计1；S2仅摘要，缺原始身份/内容时先BLOCKED或按规则挂起，不要求硬生成1。",
+      "expected_counts": {
+        "confirmed_defects": null,
+        "suspect_defects": null,
+        "evidence_items": null,
+        "fix_actions": null,
+        "independent_occurrences": null,
+        "recurrence_events": 0,
+        "repeat_unresolved_events": 0,
+        "unresolved_open_bugs": null,
+        "related_cases": 0,
+        "bugs_without_occurrence": null,
+        "recurrence_by_subtype": {
+          "repeat_after_fix": 0,
+          "rollback_regress": 0
+        },
+        "verified_environments": "未知/未披露（无可归一的有效环境验证记录；不外推）",
+        "coverage": "构造offline配置与批次摘要；无完整实际来源身份、时间；正式模式未覆盖。"
+      },
+      "expected_filter": "空测试提交不建缺陷，修复摘要按证据评估；__TBD__不作真实参数。",
+      "expected_merge": "无真实编号分配。",
+      "expected_attribution": "S2为构造批次摘要，不造真实commit/禅道ID。",
+      "expected_recurrence": "业务发生数暂不固定；此案重点是隔离。",
+      "basis": "S0固定写V0.1.3，当前被测Skill V0.1.5；S2仅摘要，无独立原始字段。",
+      "negatives": "不得违反本案明确的排除条件、证据归属及发生门槛；参见 assertions 中的 negative/filter/integrity/recurrence 断言。",
+      "evidence_refs": [
+        "S0",
+        "S1",
+        "S2",
+        "S3"
+      ],
+      "judge_notes": "",
+      "needs_human_confirm": true,
+      "rule_refs": [
+        "execution-rules §4/§5/§9",
+        "output-schema §1.2/§1.3",
+        "SKILL §2；execution-rules §4",
+        "execution-rules §4/§5",
+        "quality-checklist QC-40–44；output-schema §10.6"
+      ],
+      "count_constraints": {
+        "confirmed_defects": "原设计1；S2仅摘要，缺原始身份/内容时先BLOCKED或按规则挂起，不要求硬生成1。",
+        "suspect_defects": "实际证据不足时挂起或复核，不虚构。",
+        "independent_occurrences": "原设计1；当前§2.8下无可核验来源时间，不强制生成，先补fixture或BLOCKED。",
+        "evidence_items": "按本案例实际 evidence 库的唯一证据身份重算；所有输入须在索引及筛选留痕，非缺陷上下文可单独留痕，不要求全部成为缺陷证据。",
+        "fix_actions": "仅枚举有证据的独立处置；无法确认时实际值必须为 null，并披露原因。",
+        "unresolved_open_bugs": "按实际合法 lifecycle 为 open/fixing 的唯一缺陷主记录重算；保留源状态，不能把未验证写成验证通过。",
+        "bugs_without_occurrence": "按实际有效主记录中没有可计入发生记录者重算；不得虚构发生。"
+      },
+      "manual_review_items": [
+        "S0版本仍为V0.1.3，需另行更新构造配置；S2缺完整可供脚本处理的记录字段。"
+      ],
+      "assertions": [
+        {
+          "id": "TC-R8-1",
+          "stage": "integrity",
+          "check": "正式state/library/raw/水位/编号计数器运行前后不变（有权限时做真实前后对账）。",
+          "expected": true,
+          "rule": "execution-rules §4/§5/§9"
+        },
+        {
+          "id": "TC-R8-2",
+          "stage": "integrity",
+          "check": "新对象使用offline-<run_id>-，隔离目录输出run/report。",
+          "expected": true,
+          "rule": "output-schema §1.2/§1.3"
+        },
+        {
+          "id": "TC-R8-3",
+          "stage": "integrity",
+          "check": "真实加载Skill/default版本一致为V0.1.5；S0旧版本冲突必须披露，不改写输入。",
+          "expected": true,
+          "rule": "SKILL §2；execution-rules §4"
+        },
+        {
+          "id": "TC-R8-4",
+          "stage": "filter",
+          "check": "__TBD__按不完整配置降级，storage_root=null不触发正式写入。",
+          "expected": true,
+          "rule": "execution-rules §4/§5"
+        },
+        {
+          "id": "TC-R8-5",
+          "stage": "negative",
+          "check": "不伪造S2缺失的身份、时间和证据，不宣称完成正式测试。",
+          "expected": true,
+          "rule": "quality-checklist QC-40–44；output-schema §10.6"
+        }
+      ],
+      "execution_status": "NOT_RUN"
+    }
+  ]
+}
